@@ -2,8 +2,10 @@ import { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { seriesData as series } from '../data/photos';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 const Series = () => {
+    const { t, i18n } = useTranslation();
     const [columns, setColumns] = useState(1);
 
     // Handle Window Resize for responsive columns
@@ -51,7 +53,7 @@ const Series = () => {
                 transition={{ duration: 0.8 }}
                 className="text-4xl md:text-6xl font-space-mono font-bold text-off-white mb-16 text-center tracking-tighter"
             >
-                Séries
+                {t('nav.series')}
             </motion.h1>
 
             <div className="flex gap-12 md:gap-20 items-start">
@@ -81,7 +83,7 @@ const Series = () => {
                                         <span className="text-sm font-inter text-silver opacity-60">{seriesItem.year}</span>
                                     </div>
                                     <p className="mt-4 text-silver font-inter text-sm max-w-md opacity-80 group-hover:opacity-100 transition-opacity">
-                                        {seriesItem.description}
+                                        {seriesItem.description[i18n.language.startsWith('en') ? 'en' : 'fr']}
                                     </p>
                                 </Link>
                             </motion.div>

@@ -1,8 +1,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { photos } from '../data/photos';
+import { useTranslation } from 'react-i18next';
 
 const Hero = () => {
+    const { t } = useTranslation();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
@@ -66,7 +68,7 @@ const Hero = () => {
                             transition={{ duration: 2, repeat: Infinity }}
                             className="text-warm-sepia font-space-mono text-sm tracking-[0.5em] uppercase"
                         >
-                            Developing...
+                            {t('home.loading')}
                         </motion.p>
                     </motion.div>
                 )}
@@ -101,7 +103,7 @@ const Hero = () => {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 2.2, duration: 1, ease: "easeOut" }}
-                    className="text-6xl md:text-8xl font-serif text-off-white tracking-wide mb-6 font-light italic"
+                    className="text-4xl md:text-6xl font-space-mono font-bold text-off-white tracking-tighter mb-6 uppercase"
                 >
                     Théophile Dequecker
                 </motion.h1>
@@ -112,7 +114,7 @@ const Hero = () => {
                     transition={{ delay: 2.8, duration: 1 }}
                     className="text-sm md:text-base font-space-mono text-silver uppercase tracking-[0.3em]"
                 >
-                    Photographie Argentique
+                    {t('home.subtitle')}
                 </motion.h2>
             </div>
         </section>

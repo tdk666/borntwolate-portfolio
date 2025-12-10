@@ -1,27 +1,39 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, X, Lightbulb, LightbulbOff } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, Lightbulb, LightbulbOff, Instagram } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useDarkroom } from '../context/DarkroomContext';
+import { useTranslation } from 'react-i18next';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { isDarkroom, toggleDarkroom } = useDarkroom();
+    const { t, i18n } = useTranslation();
+    const location = useLocation();
 
     const toggleMenu = () => setIsOpen(!isOpen);
 
+    const toggleLanguage = () => {
+        const newLang = i18n.language.startsWith('fr') ? 'en' : 'fr';
+        i18n.changeLanguage(newLang);
+    };
+
     const menuItems = [
-        { title: 'Portfolio', path: '/portfolio' },
-        { title: 'Séries', path: '/series' },
-        { title: 'À Propos', path: '/about' },
-        { title: 'Contact', path: '/contact' },
+        { title: t('nav.portfolio'), path: '/portfolio' },
+        { title: t('nav.series'), path: '/series' },
+        { title: t('nav.about'), path: '/about' },
+        { title: t('nav.contact'), path: '/contact' },
     ];
 
     return (
         <nav className="fixed top-0 left-0 w-full z-50 px-6 py-6 flex justify-between items-center bg-gradient-to-b from-black/80 to-transparent text-off-white">
-            <Link to="/" className="text-xl font-space-mono font-bold tracking-tighter uppercase relative z-50">
-                Théophile Dequecker
-            </Link>
+            <div>
+                {location.pathname !== '/' && (
+                    <Link to="/" className="text-xl font-space-mono font-bold tracking-tighter uppercase relative z-50 whitespace-nowrap">
+                        Théophile Dequecker
+                    </Link>
+                )}
+            </div>
 
             <div className="flex items-center space-x-6 z-50">
                 {/* Desktop Menu */}
@@ -39,7 +51,18 @@ const Navbar = () => {
 
                 {/* Toggles */}
                 <div className="flex items-center space-x-4">
-                    {/* Volume Button removed as requested */}
+                    <a
+                        href="https://instagram.com/borntwolate"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label="Instagram"
+                        className="hover:text-warm-sepia transition-colors cursor-pointer"
+                    >
+                        <Instagram size={20} />
+                    </a>
+                    <button onClick={toggleLanguage} className="font-space-mono text-xs uppercase hover:text-warm-sepia transition-colors cursor-pointer w-6 text-center">
+                        {i18n.language.startsWith('fr') ? 'EN' : 'FR'}
+                    </button>
                     <button onClick={toggleDarkroom} aria-label="Toggle Darkroom Mode" className="hover:text-warm-sepia transition-colors cursor-pointer">
                         {isDarkroom ? <LightbulbOff size={20} /> : <Lightbulb size={20} />}
                     </button>
@@ -71,6 +94,9 @@ const Navbar = () => {
                                 {item.title}
                             </Link>
                         ))}
+                        <button onClick={() => { toggleLanguage(); toggleMenu(); }} className="text-xl font-space-mono uppercase tracking-widest hover:text-warm-sepia transition-colors mt-8">
+                            {i18n.language.startsWith('fr') ? 'Switch to English' : 'Passer en Français'}
+                        </button>
                     </motion.div>
                 )}
             </AnimatePresence>

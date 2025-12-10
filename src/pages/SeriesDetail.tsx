@@ -1,13 +1,18 @@
 import { useParams, Link } from 'react-router-dom';
+import { SEO } from '../components/SEO';
 import { motion, AnimatePresence } from 'framer-motion';
 import { seriesData } from '../data/photos';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Masonry from 'react-masonry-css';
 import Lightbox from '../components/Lightbox';
+import { useTranslation } from 'react-i18next';
 
 const SeriesDetail = () => {
     const { id } = useParams<{ id: string }>();
+    const { i18n } = useTranslation();
+    const currentLang = i18n.language.split('-')[0] as 'fr' | 'en';
+
     const seriesIndex = seriesData.findIndex((s) => s.id === id);
     const series = seriesData[seriesIndex];
     const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
@@ -34,30 +39,65 @@ const SeriesDetail = () => {
     const handleNextPhoto = () => selectedPhotoIndex !== null && setSelectedPhotoIndex((prev) => (prev! + 1) % series.photos.length);
     const handlePrevPhoto = () => selectedPhotoIndex !== null && setSelectedPhotoIndex((prev) => (prev! - 1 + series.photos.length) % series.photos.length);
 
+    const artworkSchema = {
+        "@context": "https://schema.org",
+        "@type": "ImageGallery",
+        "name": series.title,
+        "description": series.description[currentLang],
+        "author": { "@type": "Person", "name": "Théophile Dequecker" },
+        "hasPart": series.photos.map(photo => ({
+            "@type": "VisualArtwork",
+            "name": photo.title,
+            "description": photo.alt_accessible?.[currentLang] || photo.title,
+            "artMedium": "Analog Photography",
+            "artform": photo.category,
+            "material": "Film Photography",
+            "image": `https://borntwolate.com${photo.url}`
+        }))
+    };
+
     return (
         <div key={id} className="min-h-screen pt-24 px-4 md:px-8 pb-12 transition-colors duration-1000 ease-in-out">
+            <SEO
+                title={series.title}
+                description={series.description[currentLang].substring(0, 150) + "..."}
+                image={`https://borntwolate.com${series.coverImage}`}
+                type="article"
+                schema={artworkSchema}
+            />
             <div className="max-w-4xl mx-auto mb-16 text-center">
                 <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-5xl md:text-7xl font-bold font-space-mono mb-6 uppercase tracking-tighter" style={{ color: series.theme?.text }}>{series.title}</motion.h1>
                 <p className="text-silver font-inter text-sm tracking-widest uppercase mb-8">{series.year}</p>
                 <div className="w-12 h-0.5 bg-current mx-auto mb-8 opacity-50" />
-                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="text-xl md:text-2xl leading-relaxed font-inter font-light whitespace-pre-line opacity-90">{series.description}</motion.p>
+                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="text-xl md:text-2xl leading-relaxed font-inter font-light whitespace-pre-line opacity-90">{series.description[currentLang]}</motion.p>
             </div>
 
             <div className="w-full max-w-[90%] mx-auto">
-                <Masonry breakpointCols={{ default: 2, 700: 1 }} className="my-masonry-grid flex w-full mx-auto -ml-10" columnClassName="pl-10 bg-clip-padding space-y-10">
+                <Masonry breakpointCols={{ default: 2, 700: 1 }} className="my-masonry-grid flex w-full mx-auto -ml-4 md:-ml-10" columnClassName="pl-4 md:pl-10 bg-clip-padding space-y-10">
                     {series.photos.map((photo, index) => (
-                        <motion.div
+                        <motion.figure
                             key={photo.id}
                             initial={{ opacity: 0, scale: 0.95 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true, margin: "500px" }}
                             transition={{ duration: 0.5, delay: index * 0.05 }}
-                            className="mb-10 gallery-matting cursor-examine relative group"
+                            className="mb-10 gallery-matting cursor-examine relative group block m-0"
                             onClick={() => setSelectedPhotoIndex(index)}
                         >
-                            <img src={photo.url} alt={photo.alt_accessible || photo.title} loading={index < 4 ? "eager" : "lazy"} className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.01]" />
-                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
-                        </motion.div>
+                            <img
+                                src={photo.url}
+                                alt={photo.alt_accessible?.[currentLang] || photo.title}
+                                loading="eager"
+                                className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.01]"
+                                onContextMenu={(e) => e.preventDefault()}
+                                draggable="false"
+                            />
+                            <figcaption className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center pointer-events-none">
+                                <span className="text-off-white font-space-mono text-sm uppercase tracking-widest transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 drop-shadow-md">
+                                    {photo.title}
+                                </span>
+                            </figcaption>
+                        </motion.figure>
                     ))}
                 </Masonry>
             </div>

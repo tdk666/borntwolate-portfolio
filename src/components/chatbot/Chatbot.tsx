@@ -1,53 +1,160 @@
-import { useState } from 'react';
-import { FlaskConical, X } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { FlaskConical, X, Send, Loader2 } from 'lucide-react';
+import { sendMessageToGemini } from '../../services/gemini';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const Chatbot = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<{ sender: 'user' | 'bot'; text: string }[]>([]);
+    const [inputValue, setInputValue] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const messagesEndRef = useRef<HTMLDivElement>(null);
 
-    const handleSendMessage = () => {
-        // Mock response
-        setMessages([
-            ...messages,
-            { sender: 'user', text: "J'ai une question !" },
-            { sender: 'bot', text: 'Je suis en développement dans le révélateur...' }
-        ]);
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
     };
 
-    if (!isOpen) {
-        return (
-            <button
-                onClick={() => setIsOpen(true)}
-                className="fixed bottom-6 right-6 bg-darkroom-red text-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform z-50 cursor-pointer"
-                aria-label="Ouvrir le chatbot"
-            >
-                <FlaskConical size={28} />
-            </button>
-        );
-    }
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
+    const handleSendMessage = async () => {
+        if (!inputValue.trim()) return;
+
+        const userMsg = inputValue;
+        setInputValue('');
+        setMessages(prev => [...prev, { sender: 'user', text: userMsg }]);
+        setIsLoading(true);
+
+        try {
+            // Format history for Gemini
+            const history = messages.map(m => ({
+                role: m.sender === 'user' ? 'user' : 'model',
+                parts: [{ text: m.text }]
+            }));
+
+            // @ts-ignore - simple mapping fix
+            const response = await sendMessageToGemini(userMsg, history);
+
+            setMessages(prev => [...prev, { sender: 'bot', text: response }]);
+        } catch (error: any) {
+            console.error("Capture d'erreur Chatbot:", error);
+            let errorMsg = "Le processus de développement a échoué. Essayez plus tard.";
+
+            if (error.message === 'API_KEY_MISSING') {
+                errorMsg = "Configuration manquante : Clé API (VITE_GEMINI_API_KEY) introuvable dans le laboratoire.";
+            } else if (error.message.includes('429') || error.message.includes('Quota')) {
+                errorMsg = "Le Labo est surchargé (Quota dépassé). Veuillez attendre quelques instants avant de reposer votre question.";
+            } else if (error.message) {
+                // Temporary debugging: show the real error
+                errorMsg = `Erreur technique: ${error.message}`;
+            }
+
+            setMessages(prev => [...prev, { sender: 'bot', text: errorMsg }]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            handleSendMessage();
+        }
+    };
 
     return (
-        <div className="fixed bottom-6 right-6 w-80 h-96 bg-deep-black border border-gray-700 rounded-lg shadow-xl flex flex-col z-50">
-            <div className="flex justify-between items-center p-3 border-b border-gray-700">
-                <h3 className="font-bold text-white">Le Labo</h3>
-                <button onClick={() => setIsOpen(false)} aria-label="Fermer le chatbot" className="cursor-pointer">
-                    <X size={20} className="text-gray-400 hover:text-white" />
-                </button>
-            </div>
-            <div className="flex-1 p-4 overflow-y-auto text-sm text-white">
-                {/* Messages */}
-                <p className="bg-gray-800 p-2 rounded-lg mb-2 w-fit">Bonjour ! Posez-moi une question sur la photo argentique.</p>
-                {messages.map((msg, index) => (
-                    <p key={index} className={`p-2 rounded-lg mb-2 w-fit ${msg.sender === 'bot' ? 'bg-gray-800' : 'bg-darkroom-red ml-auto'}`}>
-                        {msg.text}
-                    </p>
-                ))}
-            </div>
-            <div className="p-2 border-t border-gray-700">
-                <button onClick={handleSendMessage} className="w-full bg-darkroom-red text-white p-2 rounded text-sm hover:bg-red-900 transition-colors cursor-pointer">
-                    Poser une question (mock)
-                </button>
-            </div>
-        </div>
+        <>
+            {!isOpen && (
+                <motion.button
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    whileHover={{ scale: 1.1, rotate: 10 }}
+                    onClick={() => setIsOpen(true)}
+                    className="fixed bottom-6 right-6 bg-darkroom-red text-white p-4 rounded-full shadow-lg z-50 cursor-pointer border border-white/10"
+                    aria-label="Ouvrir le Labo"
+                >
+                    <FlaskConical size={24} />
+                </motion.button>
+            )}
+
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 20, scale: 0.95 }}
+                        className="fixed bottom-6 right-6 w-80 sm:w-96 h-[500px] bg-deep-black/95 backdrop-blur-md border border-white/10 rounded-lg shadow-2xl flex flex-col z-50 overflow-hidden"
+                    >
+                        {/* Header */}
+                        <div className="flex justify-between items-center p-4 border-b border-white/10 bg-black/40">
+                            <div className="flex items-center gap-2">
+                                <FlaskConical size={18} className="text-darkroom-red" />
+                                <h3 className="font-space-mono font-bold text-off-white tracking-widest uppercase text-sm">Le Labo AI</h3>
+                            </div>
+                            <button onClick={() => setIsOpen(false)} className="text-silver hover:text-off-white transition-colors">
+                                <X size={18} />
+                            </button>
+                        </div>
+
+                        {/* Messages Area */}
+                        <div className="flex-1 p-4 overflow-y-auto space-y-4 scrollbar-thin scrollbar-thumb-darkroom-red/50 scrollbar-track-transparent">
+                            {messages.length === 0 && (
+                                <div className="text-center mt-10 opacity-60">
+                                    <FlaskConical size={48} className="mx-auto mb-4 text-silver/20" />
+                                    <p className="font-space-mono text-xs text-silver">
+                                        Initialisation du bain révélateur...<br />
+                                        Posez une question à l'assistant.
+                                    </p>
+                                </div>
+                            )}
+
+                            {messages.map((msg, index) => (
+                                <div key={index} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                    <div className={`max-w-[85%] p-3 text-sm font-inter leading-relaxed rounded-2xl ${msg.sender === 'user'
+                                        ? 'bg-off-white text-deep-black rounded-tr-none'
+                                        : 'bg-white/5 text-silver border border-white/5 rounded-tl-none'
+                                        }`}>
+                                        {msg.text}
+                                    </div>
+                                </div>
+                            ))}
+
+                            {isLoading && (
+                                <div className="flex justify-start">
+                                    <div className="bg-white/5 p-3 rounded-2xl rounded-tl-none flex items-center gap-2">
+                                        <Loader2 size={14} className="animate-spin text-darkroom-red" />
+                                        <span className="text-xs font-space-mono text-silver animate-pulse">Développement...</span>
+                                    </div>
+                                </div>
+                            )}
+                            <div ref={messagesEndRef} />
+                        </div>
+
+                        {/* Input Area */}
+                        <div className="p-3 border-t border-white/10 bg-black/40">
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    value={inputValue}
+                                    onChange={(e) => setInputValue(e.target.value)}
+                                    onKeyDown={handleKeyPress}
+                                    placeholder="Écrivez votre message..."
+                                    className="flex-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm text-off-white focus:outline-none focus:border-darkroom-red transition-colors font-inter placeholder:text-silver/40"
+                                    disabled={isLoading}
+                                />
+                                <button
+                                    onClick={handleSendMessage}
+                                    disabled={isLoading || !inputValue.trim()}
+                                    className="bg-darkroom-red text-white p-2 rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                                >
+                                    <Send size={18} />
+                                </button>
+                            </div>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </>
     );
 };

@@ -44,21 +44,37 @@ body {
 .gallery-matting {
   padding: 12px;
   background-color: #F8F6F0;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
-.gallery-matting img { display: block; width: 100%; }
-.gallery-matting:hover { transform: scale(1.02); z-index: 10; }
+
+.gallery-matting img {
+  display: block;
+  width: 100%;
+}
+
+.gallery-matting:hover {
+  transform: scale(1.02);
+  z-index: 10;
+}
 
 .museum-text {
-  font-family: 'Inter', sans-serif;
-  font-weight: 300;
-  line-height: 1.8;
-  letter-spacing: 0.02em;
-  text-align: justify;
-  max-width: 65ch;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  /* Regular weight for Garamond readability */
+  font-style: italic;
+  font-size: 1.125rem;
+  /* text-lg */
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  text-align: center;
+  max-width: 50ch;
+  /* Narrower for better reading centered */
   margin-left: auto;
   margin-right: auto;
+  color: var(--color-warm-sepia);
+  /* Ensure color consistency */
+  opacity: 0.9;
 }
 
 .cursor-examine {
