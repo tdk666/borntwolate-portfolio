@@ -1,25 +1,5 @@
-export interface Photo {
-    id: number;
-    url: string;
-    title: string;
-    category: string;
-    seriesId?: string;
-    technical_info?: string;
-    orientation?: 'landscape' | 'portrait';
-}
-
-export interface Series {
-    id: string;
-    title: string;
-    year: string;
-    description: string;
-    coverImage: string;
-    photos: Photo[];
-    theme?: {
-        background: string;
-        text: string;
-    };
-}
+export interface Photo { id: number; url: string; title: string; category: string; seriesId?: string; technical_info?: string; orientation?: 'landscape' | 'portrait'; alt_accessible?: string; caption_artistic?: string; }
+export interface Series { id: string; title: string; year: string; description: string; coverImage: string; photos: Photo[]; theme?: { background: string; text: string; }; }
 
 export const seriesData: Series[] = [
     {
@@ -560,5 +540,4 @@ export const seriesData: Series[] = [
     }
 ];
 
-// CRITICAL: DYNAMIC EXPORT TO ENSURE SYNC
 export const photos: Photo[] = seriesData.flatMap(series => series.photos);
