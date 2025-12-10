@@ -95,7 +95,7 @@ Reste toujours dans le contexte du site. Ne parle pas de politique ou de cuisine
                 ...history
             ],
             generationConfig: {
-                maxOutputTokens: 150, // Keep it concise like a telegraph or a short note
+                maxOutputTokens: 1000,
             },
         });
 
