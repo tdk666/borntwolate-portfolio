@@ -7,11 +7,13 @@ let model: any = null;
 
 if (API_KEY) {
     genAI = new GoogleGenerativeAI(API_KEY);
-    model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' });
+    // Use gemini-1.5-flash for better speed/stability as requested
+    model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 }
 
 export const sendMessageToGemini = async (message: string, history: { role: 'user' | 'model', parts: { text: string }[] }[]) => {
     if (!model) {
+        console.error("Gemini API Key is missing or invalid.");
         throw new Error("API_KEY_MISSING");
     }
 
