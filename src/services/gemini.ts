@@ -96,9 +96,9 @@ if (API_KEY) {
     genAI = new GoogleGenerativeAI(API_KEY);
     // UTILISER LE NOUVEAU MODÈLE "gemini-1.5-flash" (Plus rapide, plus stable)
     // AVEC SYSTEM INSTRUCTION
-    // UTILISER LA VERSION STABLE "001" (Pour éviter les erreurs d'alias 404)
+    // UTILISER LE STANDARD SIMPLE "gemini-1.5-flash" (Avec nouvelle clé API)
     model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash-001',
+        model: 'gemini-1.5-flash',
         systemInstruction: SYSTEM_PROMPT
     });
 }
