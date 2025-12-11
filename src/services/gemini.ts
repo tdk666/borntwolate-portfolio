@@ -96,31 +96,32 @@ if (API_KEY) {
     genAI = new GoogleGenerativeAI(API_KEY);
     // UTILISER LE NOUVEAU MODÈLE "gemini-1.5-flash" (Plus rapide, plus stable)
     // AVEC SYSTEM INSTRUCTION
-    model = genAI.getGenerativeModel({ 
-        model: 'gemini-1.5-flash',
-        systemInstruction: SYSTEM_PROMPT 
+    // UTILISER LA VERSION STABLE "001" (Pour éviter les erreurs d'alias 404)
+    model = genAI.getGenerativeModel({
+        model: 'gemini-1.5-flash-001',
+        systemInstruction: SYSTEM_PROMPT
     });
 }
 
-    export const sendMessageToGemini = async (message: string, history: { role: 'user' | 'model', parts: { text: string }[] }[]) => {
-        if (!model) {
-            console.error("Gemini API Key is missing or invalid.");
-            throw new Error("API_KEY_MISSING");
-        }
+export const sendMessageToGemini = async (message: string, history: { role: 'user' | 'model', parts: { text: string }[] }[]) => {
+    if (!model) {
+        console.error("Gemini API Key is missing or invalid.");
+        throw new Error("API_KEY_MISSING");
+    }
 
-        try {
-            const chat = model.startChat({
-                history: history, // On passe l'historique brut, le system instruction est géré par la config
-                generationConfig: {
-                    maxOutputTokens: 1000,
-                },
-            });
+    try {
+        const chat = model.startChat({
+            history: history, // On passe l'historique brut, le system instruction est géré par la config
+            generationConfig: {
+                maxOutputTokens: 1000,
+            },
+        });
 
-            const result = await chat.sendMessage(message);
-            const response = await result.response;
-            return response.text();
-        } catch (error) {
-            console.error("Gemini Error:", error);
-            throw error;
-        }
-    };
+        const result = await chat.sendMessage(message);
+        const response = await result.response;
+        return response.text();
+    } catch (error) {
+        console.error("Gemini Error:", error);
+        throw error;
+    }
+};
