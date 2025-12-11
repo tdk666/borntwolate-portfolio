@@ -57,8 +57,8 @@ const Navbar = () => {
                 className="fixed top-0 left-0 w-full z-40 px-6 py-6 flex justify-between items-center mix-blend-difference text-off-white bg-gradient-to-b from-black/50 to-transparent pointer-events-auto"
             >
                 {/* Logo Adaptatif */}
-                <Link to="/" className="text-xl md:text-2xl font-bold font-space-mono tracking-tighter uppercase hover:opacity-70 transition-opacity z-50">
-                    Born Too Late
+                <Link to="/" className="text-xl md:text-2xl font-bold font-space-mono tracking-tighter uppercase hover:opacity-70 transition-opacity z-50 whitespace-nowrap">
+                    Théophile Dequecker
                 </Link>
 
                 {/* Desktop Menu */}

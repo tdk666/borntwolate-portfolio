@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useState } from 'react';
-import { motion, useAnimation, type PanInfo, AnimatePresence } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Info } from 'lucide-react';
+import { motion, useAnimation, type PanInfo } from 'framer-motion';
+import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Photo } from '../data/photos';
 import { useTranslation } from 'react-i18next';
 
@@ -101,34 +101,57 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                 </div>
 
                 {/* VERSION MOBILE (SM) : Bottom Sheet Intelligente */}
-                <div className="md:hidden absolute bottom-0 left-0 w-full z-40">
-                    <AnimatePresence>
-                        {/* Barre Titre (Toujours visible) */}
+                {/* VERSION MOBILE (SM) : Bottom Sheet Intelligente (Drag to Reveal) */}
+                <div className="md:hidden absolute bottom-0 left-0 w-full z-40 pointer-events-none">
+                    <motion.div
+                        drag="y"
+                        dragConstraints={{ top: -300, bottom: 0 }}
+                        dragElastic={0.2}
+                        onDragEnd={(_, info) => {
+                            if (info.offset.y < -50) setShowInfo(true);
+                            else if (info.offset.y > 50) setShowInfo(false);
+                        }}
+                        animate={{ y: showInfo ? -20 : 0 }} // Slight bounce or position check
+                        className="pointer-events-auto"
+                    >
+                        {/* Handle / Teaser Area */}
                         <div
-                            className="bg-gradient-to-t from-black via-black/80 to-transparent pt-12 pb-8 px-6 flex justify-between items-end cursor-pointer"
+                            className="bg-gradient-to-t from-black via-black/80 to-transparent pt-16 pb-6 px-6 cursor-pointer flex flex-col items-center"
                             onClick={() => setShowInfo(!showInfo)}
                         >
-                            <div>
-                                <h3 className="text-xl font-mono text-off-white uppercase tracking-widest leading-none">{photo.title}</h3>
-                                {!showInfo && <p className="text-[10px] text-silver/50 uppercase tracking-widest mt-2 font-space-mono">Plus d'infos</p>}
+                            {!showInfo && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                                    className="flex flex-col items-center gap-2 mb-2"
+                                >
+                                    <div className="w-12 h-1 bg-white/30 rounded-full" />
+                                    <span className="text-[10px] text-white/50 uppercase tracking-widest font-space-mono">
+                                        Scan / Scroll Up
+                                    </span>
+                                </motion.div>
+                            )}
+
+                            <div className="w-full flex justify-between items-end">
+                                <h3 className="text-xl font-mono text-off-white uppercase tracking-widest leading-none drop-shadow-md">
+                                    {photo.title}
+                                </h3>
+                                {/* Hidden Info Icon (Optional or keep as backup click target) */}
                             </div>
-                            <button className="text-white/80 p-2 bg-white/10 rounded-full backdrop-blur-sm">
-                                <Info size={20} />
-                            </button>
                         </div>
 
-                        {/* Contenu Dépliable */}
-                        {showInfo && (
-                            <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                className="bg-black/90 backdrop-blur-xl px-6 pb-12 border-t border-white/10"
-                            >
-                                <div className="w-12 h-1 bg-white/20 rounded-full mx-auto my-4" />
-
+                        {/* Expandable Content */}
+                        <motion.div
+                            initial={false}
+                            animate={{
+                                height: showInfo ? 'auto' : 0,
+                                opacity: showInfo ? 1 : 0
+                            }}
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            className="bg-black/95 backdrop-blur-xl px-6 overflow-hidden border-t border-white/10"
+                        >
+                            <div className="py-8 space-y-6">
                                 {photo.technical_info && (
-                                    <p className="font-mono text-xs text-darkroom-red uppercase tracking-widest mb-4">
+                                    <p className="font-mono text-xs text-darkroom-red uppercase tracking-widest">
                                         {photo.technical_info}
                                     </p>
                                 )}
@@ -138,9 +161,18 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                                         {getLocalizedText(photo.caption_artistic)}
                                     </p>
                                 )}
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+
+                                <div className="pt-8 flex justify-center">
+                                    <button
+                                        onClick={() => setShowInfo(false)}
+                                        className="text-xs text-white/30 uppercase tracking-widest hover:text-white"
+                                    >
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
                 </div>
 
             </div>
