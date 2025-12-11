@@ -11,6 +11,9 @@ import Contact from './pages/Contact';
 import { useDarkroom } from './context/DarkroomContext';
 import { Chatbot } from './components/chatbot/Chatbot';
 
+import Footer from './components/Footer';
+import NotFound from './pages/NotFound';
+
 function AnimatedRoutes() {
   const location = useLocation();
 
@@ -23,6 +26,7 @@ function AnimatedRoutes() {
         <Route path="/series/:id" element={<SeriesDetail />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>
   );
@@ -33,10 +37,16 @@ function App() {
 
   return (
     <Router>
-      <div className={`min-h-screen transition-colors duration-700 font-sans selection:bg-darkroom-red selection:text-off-white ${isDarkroom ? 'darkroom-mode' : ''}`}>
+      <div
+        className={`min-h-screen transition-colors duration-700 font-sans selection:bg-darkroom-red selection:text-off-white ${isDarkroom ? 'darkroom-mode' : ''} flex flex-col`}
+        onContextMenu={(e) => (e.target as HTMLElement).tagName === 'IMG' && e.preventDefault()}
+      >
         <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }}></div>
         <Navbar />
-        <AnimatedRoutes />
+        <main className="flex-grow">
+          <AnimatedRoutes />
+        </main>
+        <Footer />
         <Chatbot />
       </div>
     </Router>

@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { FlaskConical, X, Send, Loader2 } from 'lucide-react';
 import { sendMessageToGemini } from '../../services/gemini';
+import { sendOrderToArtist } from '../../services/email';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export const Chatbot = () => {
@@ -18,6 +19,8 @@ export const Chatbot = () => {
         scrollToBottom();
     }, [messages]);
 
+    // ... (rest of imports)
+
     const handleSendMessage = async () => {
         if (!inputValue.trim()) return;
 
@@ -34,11 +37,54 @@ export const Chatbot = () => {
             }));
 
             // @ts-ignore - simple mapping fix
-            const response = await sendMessageToGemini(userMsg, history);
+            let response = await sendMessageToGemini(userMsg, history);
 
-            setMessages(prev => [...prev, { sender: 'bot', text: response }]);
+            // --- MISSION: INTERCEPT ORDER ACTION ---
+            if (response.includes("<<<ORDER_ACTION>>>")) {
+                try {
+                    // 1. Extraction du JSON caché
+                    const parts = response.split("<<<ORDER_ACTION>>>");
+                    const cleanMessage = parts[0].trim();
+                    const jsonPart = parts[1].split("<<<END_ACTION>>>")[0];
+                    const orderData = JSON.parse(jsonPart);
+
+                    console.log("🛒 Action Détectée : Commande", orderData);
+
+                    // 2. Envoi de l'email
+                    await sendOrderToArtist({
+                        artwork_title: orderData.artwork_title || "Inconnue",
+                        series_title: orderData.series_title || "Inconnue",
+                        format: orderData.format || "Non spécifié",
+                        address: orderData.address || "Non communiquée",
+                        client_email: orderData.client_email || "Non communiqué",
+                        ai_summary: orderData.ai_summary || ""
+                    });
+
+                    // 3. Mise à jour de l'UI : Message IA nettoyé + Notification Système
+                    setMessages(prev => [
+                        ...prev,
+                        { sender: 'bot', text: cleanMessage },
+                        { sender: 'bot', text: "✅ Commande transmise avec succès à l'atelier." } // System message styled as bot for now
+                    ]);
+
+                    // Fin du traitement pour ce tour
+                    return;
+
+                } catch (e) {
+                    console.error("Erreur parsing JSON Order", e);
+                    // Fallback: Affiche tout si erreur
+                }
+            }
+            // ---------------------------------------
+
+            // Si pas d'action spéciale, on affiche le message normal
+            if (response.trim().length > 0) {
+                setMessages(prev => [...prev, { sender: 'bot', text: response }]);
+            }
+
         } catch (error: any) {
             console.error("Capture d'erreur Chatbot:", error);
+            // ... (error handling code remains same)
             let errorMsg = "Le processus de développement a échoué. Essayez plus tard.";
 
             if (error.message === 'API_KEY_MISSING') {
