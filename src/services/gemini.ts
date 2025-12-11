@@ -7,8 +7,8 @@ let model: any = null;
 
 if (API_KEY) {
     genAI = new GoogleGenerativeAI(API_KEY);
-    // Use gemini-1.5-flash for better speed/stability as requested
-    model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    // Use gemini-1.5-flash-latest for valid model version
+    model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash-latest' });
 }
 
 export const sendMessageToGemini = async (message: string, history: { role: 'user' | 'model', parts: { text: string }[] }[]) => {

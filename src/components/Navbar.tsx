@@ -77,6 +77,10 @@ const Navbar = () => {
                     <button onClick={toggleLang} className="hover:text-warm-sepia transition-colors ml-4 font-bold">
                         {i18n.language === 'fr' ? 'EN' : 'FR'}
                     </button>
+                    {/* Instagram Desktop */}
+                    <a href="https://instagram.com/borntwolate" target="_blank" rel="noopener noreferrer" className="hover:text-warm-sepia transition-colors ml-4">
+                        <Instagram size={20} />
+                    </a>
                     {/* Darkroom Toggle Desktop */}
                     <button onClick={toggleDarkroom} className="ml-4 hover:text-darkroom-red transition-colors">
                         {isDarkroom ? <Sun size={20} /> : <Moon size={20} />}
