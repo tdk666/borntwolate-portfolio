@@ -56,9 +56,20 @@ const Navbar = () => {
                             <span className="absolute -bottom-1 left-0 w-0 h-px bg-warm-sepia transition-all duration-300 group-hover:w-full" />
                         </Link>
                     ))}
-                    <button onClick={toggleLang} className="hover:text-warm-sepia transition-colors ml-4 font-bold">
-                        {i18n.language === 'fr' ? 'EN' : 'FR'}
-                    </button>
+
+                    <div className="flex items-center gap-6 ml-4 px-6 border-l border-white/20">
+                        <button onClick={toggleLang} className="hover:text-warm-sepia transition-colors font-bold">
+                            {i18n.language === 'fr' ? 'EN' : 'FR'}
+                        </button>
+
+                        <button onClick={toggleDarkroom} className="hover:text-darkroom-red transition-colors" aria-label="Darkroom Mode">
+                            {isDarkroom ? <Sun size={20} /> : <Moon size={20} />}
+                        </button>
+
+                        <a href="https://instagram.com/theophiledequecker" target="_blank" rel="noopener noreferrer" className="hover:text-darkroom-red transition-colors">
+                            <Instagram size={20} />
+                        </a>
+                    </div>
                 </div>
 
                 {/* Mobile Hamburger Button */}
