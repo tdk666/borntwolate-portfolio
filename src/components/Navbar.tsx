@@ -66,7 +66,7 @@ const Navbar = () => {
                             {isDarkroom ? <Sun size={20} /> : <Moon size={20} />}
                         </button>
 
-                        <a href="https://instagram.com/theophiledequecker" target="_blank" rel="noopener noreferrer" className="hover:text-darkroom-red transition-colors">
+                        <a href="https://instagram.com/borntwolate" target="_blank" rel="noopener noreferrer" className="hover:text-darkroom-red transition-colors">
                             <Instagram size={20} />
                         </a>
                     </div>
@@ -119,7 +119,7 @@ const Navbar = () => {
                                 </button>
 
                                 {/* Instagram */}
-                                <a href="https://instagram.com/theophiledequecker" target="_blank" rel="noopener noreferrer" className="text-silver hover:text-darkroom-red transition-colors">
+                                <a href="https://instagram.com/borntwolate" target="_blank" rel="noopener noreferrer" className="text-silver hover:text-darkroom-red transition-colors">
                                     <Instagram size={24} />
                                 </a>
                             </div>
