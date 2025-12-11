@@ -37,8 +37,11 @@ const Contact = () => {
                 <h1 className="text-4xl md:text-5xl font-space-mono text-off-white mb-2 uppercase tracking-tighter text-center">
                     {t('contact.title')}
                 </h1>
-                <p className="text-silver font-inter text-center mb-12">
+                <p className="text-silver font-inter text-center mb-2">
                     {t('contact.subtitle')}
+                </p>
+                <p className="font-space-mono text-xs text-darkroom-red uppercase tracking-widest text-center mb-12">
+                    Tirages d'art disponibles sur demande. Éditions limitées.
                 </p>
 
                 <form
