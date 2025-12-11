@@ -13,6 +13,7 @@ import { Chatbot } from './components/chatbot/Chatbot';
 
 import Footer from './components/Footer';
 import NotFound from './pages/NotFound';
+import Legals from './pages/Legals';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -26,6 +27,7 @@ function AnimatedRoutes() {
         <Route path="/series/:id" element={<SeriesDetail />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/legals" element={<Legals />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>
