@@ -5,25 +5,7 @@ const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 let genAI: GoogleGenerativeAI | null = null;
 let model: any = null;
 
-if (API_KEY) {
-    genAI = new GoogleGenerativeAI(API_KEY);
-    // Fallback to gemini-pro (v1.0) as 1.5-flash is returning 404s for this API key/region
-    model = genAI.getGenerativeModel({ model: 'gemini-pro' });
-}
-
-export const sendMessageToGemini = async (message: string, history: { role: 'user' | 'model', parts: { text: string }[] }[]) => {
-    if (!model) {
-        console.error("Gemini API Key is missing or invalid.");
-        throw new Error("API_KEY_MISSING");
-    }
-
-    try {
-        const chat = model.startChat({
-            history: [
-                {
-                    role: 'user',
-                    parts: [{
-                        text: `TON RÔLE : Tu es "Le Labo AI", l'assistant virtuel, curateur et expert technique du portfolio "Born Too Late" du photographe Théophile Dequecker. Tu n'es pas un simple chatbot ; tu es un guide de galerie d'art et un technicien de chambre noire. Tu t'adresses au visiteur avec une élégance professionnelle, une passion pour l'argentique et une touche de sophistication "Swiss Style".
+const SYSTEM_PROMPT = `TON RÔLE : Tu es "Le Labo AI", l'assistant virtuel, curateur et expert technique du portfolio "Born Too Late" du photographe Théophile Dequecker. Tu n'es pas un simple chatbot ; tu es un guide de galerie d'art et un technicien de chambre noire. Tu t'adresses au visiteur avec une élégance professionnelle, une passion pour l'argentique et une touche de sophistication "Swiss Style".
 
 TA MISSION : Accompagner le visiteur dans l'exploration du site. Tu dois contextualiser les images, expliquer les choix techniques (pellicules, appareils) et raconter l'histoire derrière chaque série. Tu valorises la lenteur, le grain et l'imperfection poétique face à la perfection numérique.
 
@@ -108,24 +90,37 @@ Interactivité : Ne fais pas de longs monologues. Pose des questions : "Aimez-vo
 DIRECTIVES DE COMPORTEMENT :
 Si l'utilisateur demande qui tu es : "Je suis Le Labo, l'esprit numérique de cette chambre noire virtuelle."
 Si l'utilisateur critique le "flou" ou le "bruit" : Explique pédagogiquement que c'est du grain et que c'est un choix esthétique, pas un défaut.
-Reste toujours dans le contexte du site. Ne parle pas de politique ou de cuisine (sauf si c'est la raclette de la série Retro Mountain).` }]
-                },
-                {
-                    role: 'model',
-                    parts: [{ text: "Bien reçu. Les bains sont prêts, la lumière rouge est allumée. Je suis à votre service pour révéler l'essence de ce travail." }]
-                },
-                ...history
-            ],
-            generationConfig: {
-                maxOutputTokens: 1000,
-            },
-        });
+Reste toujours dans le contexte du site. Ne parle pas de politique ou de cuisine (sauf si c'est la raclette de la série Retro Mountain).`;
 
-        const result = await chat.sendMessage(message);
-        const response = await result.response;
-        return response.text();
-    } catch (error) {
-        console.error("Gemini Error:", error);
-        throw error;
-    }
-};
+if (API_KEY) {
+    genAI = new GoogleGenerativeAI(API_KEY);
+    // UTILISER LE NOUVEAU MODÈLE "gemini-1.5-flash" (Plus rapide, plus stable)
+    // AVEC SYSTEM INSTRUCTION
+    model = genAI.getGenerativeModel({ 
+        model: 'gemini-1.5-flash',
+        systemInstruction: SYSTEM_PROMPT 
+    });
+}
+
+    export const sendMessageToGemini = async (message: string, history: { role: 'user' | 'model', parts: { text: string }[] }[]) => {
+        if (!model) {
+            console.error("Gemini API Key is missing or invalid.");
+            throw new Error("API_KEY_MISSING");
+        }
+
+        try {
+            const chat = model.startChat({
+                history: history, // On passe l'historique brut, le system instruction est géré par la config
+                generationConfig: {
+                    maxOutputTokens: 1000,
+                },
+            });
+
+            const result = await chat.sendMessage(message);
+            const response = await result.response;
+            return response.text();
+        } catch (error) {
+            console.error("Gemini Error:", error);
+            throw error;
+        }
+    };
