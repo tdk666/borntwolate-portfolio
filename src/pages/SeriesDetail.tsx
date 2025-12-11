@@ -51,7 +51,7 @@ const SeriesDetail = () => {
             "description": photo.alt_accessible?.[currentLang] || photo.title,
             "artMedium": "Analog Photography",
             "artform": photo.category,
-            "material": "Film Photography",
+            "material": photo.technical_info || "Film Photography",
             "image": `https://borntwolate.com${photo.url}`
         }))
     };
@@ -81,7 +81,7 @@ const SeriesDetail = () => {
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true, margin: "500px" }}
                             transition={{ duration: 0.5, delay: index * 0.05 }}
-                            className="mb-10 gallery-matting cursor-examine relative group block m-0"
+                            className="mb-10 gallery-matting cursor-examine relative group block m-0 bg-white/5 min-h-[200px]"
                             onClick={() => setSelectedPhotoIndex(index)}
                         >
                             <img
@@ -92,8 +92,8 @@ const SeriesDetail = () => {
                                 onContextMenu={(e) => e.preventDefault()}
                                 draggable="false"
                             />
-                            <figcaption className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center pointer-events-none">
-                                <span className="text-off-white font-space-mono text-sm uppercase tracking-widest transform translate-y-2 group-hover:translate-y-0 transition-transform duration-500 drop-shadow-md">
+                            <figcaption className="absolute inset-0 flex items-end justify-center pb-6 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                                <span className="text-off-white font-space-mono text-sm uppercase tracking-widest transform translate-y-0 md:translate-y-2 md:group-hover:translate-y-0 transition-transform duration-500 drop-shadow-md">
                                     {photo.title}
                                 </span>
                             </figcaption>

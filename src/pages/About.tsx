@@ -8,13 +8,13 @@ const About = () => {
     const content = aboutData.manifesto;
 
     return (
-        <div className="min-h-screen pt-32 px-6 md:px-12 pb-20 flex flex-col md:flex-row gap-16 max-w-7xl mx-auto items-start">
+        <div className="min-h-screen pt-24 px-4 md:pt-32 md:px-12 pb-20 flex flex-col md:flex-row gap-8 md:gap-16 max-w-7xl mx-auto items-start">
             {/* Colonne Gauche : Image Portrait */}
             <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.8 }}
-                className="w-full md:w-5/12 sticky top-32"
+                className="w-full md:w-5/12 md:sticky md:top-32"
             >
                 <div className="relative overflow-hidden group border border-white/5 p-2">
                     <div className="overflow-hidden">
@@ -81,7 +81,7 @@ const About = () => {
                                 <h3 className="text-off-white font-serif text-2xl mb-2 italic">
                                     {item.title[currentLang]}
                                 </h3>
-                                <p className="text-silver font-sans text-sm font-light leading-relaxed">
+                                <p className="text-silver font-sans text-base md:text-sm font-light leading-relaxed">
                                     {item.desc[currentLang]}
                                 </p>
                             </div>

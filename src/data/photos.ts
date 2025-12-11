@@ -280,9 +280,9 @@ export const seriesData: Series[] = [
                 caption_artistic: { fr: "Géométrie acide. Les ombres ne sont plus noires mais bleues profondes, le soleil devient froid. Une architecture de science-fiction.", en: "Acid geometry. Shadows are no longer black but deep blue, the sun becomes cold. Science fiction architecture." }
             },
             {
-                id: 9206, url: '/images/psychadelic-mtl/frvr-in-d-r.JPG', title: 'Forever in Dream', category: 'urban', seriesId: 'psychadelic-mtl', technical_info: 'Rollei 35 | LomoChrome Turquoise', orientation: 'landscape',
+                id: 9206, url: '/images/psychadelic-mtl/frvr-in-d-r.JPG', title: 'Forever in the Air', category: 'urban', seriesId: 'psychadelic-mtl', technical_info: 'Rollei 35 | LomoChrome Turquoise', orientation: 'landscape',
                 alt_accessible: { fr: "Scène de rue onirique avec des passants flous et des couleurs irréelles.", en: "Dreamlike street scene with blurry passersby and unreal colors." },
-                caption_artistic: { fr: "Forever in Dream. Le mouvement des passants se dilue dans cette atmosphère aquatique. Le temps semble s'écouler différemment.", en: "Forever in Dream. The movement of passersby dilutes in this aquatic atmosphere. Time seems to flow differently." }
+                caption_artistic: { fr: "Forever in the Air. Une suspension du temps et de la gravité. L'atmosphère turquoise semble porter les corps, comme si la ville retenait son souffle.", en: "Forever in the Air. A suspension of time and gravity. The turquoise atmosphere seems to carry the bodies, as if the city were holding its breath." }
             },
             {
                 id: 9204, url: '/images/psychadelic-mtl/duo-on-cliff.JPG', title: 'Duo on Cliff', category: 'urban', seriesId: 'psychadelic-mtl', technical_info: 'Rollei 35 | LomoChrome Turquoise', orientation: 'landscape',
