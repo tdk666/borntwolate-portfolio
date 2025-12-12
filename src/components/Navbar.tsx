@@ -4,6 +4,7 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-
 import { useState, useEffect } from 'react';
 import { Menu, X, Instagram, Moon, Sun } from 'lucide-react';
 import { useDarkroom } from '../context/DarkroomContext';
+import { useSound } from '../hooks/useSound';
 
 const Navbar = () => {
     const location = useLocation();
@@ -23,6 +24,22 @@ const Navbar = () => {
     useEffect(() => { document.body.style.overflow = isOpen ? 'hidden' : 'unset'; }, [isOpen]);
 
     const toggleLang = () => i18n.changeLanguage(i18n.language === 'fr' ? 'en' : 'fr');
+
+    // SOUND DESIGN
+    // SFX for navigation interaction
+    const { play: playClick } = useSound('/sounds/shutter-click.mp3', { volume: 0.4 });
+    const { play: playHover } = useSound('/sounds/slide-projector.mp3', { volume: 0.1 });
+
+    // NEGATIVE PREVIEW LOGIC
+    const [hoveredLink, setHoveredLink] = useState<string | null>(null);
+
+    const previewImages: Record<string, string> = {
+        '/portfolio': '/images/canadian-evasion/autoportrait.JPG',
+        '/series': '/images/retro-mountain/mountain-retro.jpg',
+        '/about': '/images/mauvais-garcons/gab-bouquin.jpg',
+        '/contact': '/images/ny-winter/subway.JPG'
+    };
+
     const links = [
         { path: '/portfolio', label: t('nav.portfolio') },
         { path: '/series', label: t('nav.series') },
@@ -32,6 +49,26 @@ const Navbar = () => {
 
     return (
         <>
+            {/* NEGATIVE PREVIEW OVERLAY (Desktop Only) */}
+            <AnimatePresence>
+                {hoveredLink && previewImages[hoveredLink] && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+                        animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                        exit={{ opacity: 0, scale: 0.8, rotate: 5 }}
+                        transition={{ duration: 0.4, ease: "circOut" }}
+                        className="fixed top-24 left-1/2 -translate-x-1/2 pointer-events-none z-0 hidden md:block mix-blend-difference opacity-60"
+                        key="preview-image"
+                    >
+                        <img
+                            src={previewImages[hoveredLink]}
+                            className="w-80 h-auto rounded-sm border border-white/20 filter grayscale invert contrast-125 shadow-2xl skew-x-[-2deg]" // Added 'invert' and 'grayscale' for negative effect
+                            alt="Preview"
+                        />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <motion.nav
                 variants={{ visible: { y: 0 }, hidden: { y: '-100%' } }}
                 animate={hidden ? "hidden" : "visible"}
@@ -46,20 +83,55 @@ const Navbar = () => {
                     )}
                 </div>
 
-                <div className="hidden md:flex items-center gap-8 font-space-mono text-sm tracking-widest uppercase">
-                    {links.map((link) => (
-                        <Link key={link.path} to={link.path} className="hover:text-warm-sepia transition-colors relative group hover-analog">
-                            {link.label}
-                            <span className="absolute -bottom-1 left-0 w-0 h-px bg-warm-sepia transition-all duration-300 group-hover:w-full" />
-                        </Link>
-                    ))}
-                    <button onClick={toggleLang} aria-label="Changer la langue" className="hover:text-warm-sepia transition-colors ml-4 font-bold">
+                {/* DESKTOP NAVIGATION */}
+                <div className="hidden md:flex items-center gap-6 font-space-mono text-sm tracking-widest uppercase">
+                    {links.map((link) => {
+                        const isActive = location.pathname === link.path;
+                        return (
+                            <Link
+                                key={link.path}
+                                to={link.path}
+                                onClick={() => playClick()}
+                                onMouseEnter={() => {
+                                    setHoveredLink(link.path);
+                                    playHover();
+                                }}
+                                onMouseLeave={() => setHoveredLink(null)}
+                                className="relative group px-4 py-2" // Padding for glow area
+                            >
+                                <span className={`relative z-10 transition-colors duration-300 ${isActive ? 'text-white' : 'text-silver group-hover:text-white'} hover-analog inline-block`}>
+                                    {link.label}
+                                </span>
+
+                                {/* Red Light District - Active Glow */}
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="activeNav"
+                                        className="absolute inset-0 bg-darkroom-red/30 blur-xl rounded-full z-0"
+                                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                    />
+                                )}
+
+                                {/* Active LED Dot */}
+                                {isActive && (
+                                    <motion.div
+                                        layoutId="activeDot"
+                                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-darkroom-red rounded-full shadow-[0_0_12px_3px_rgba(139,0,0,1)]"
+                                    />
+                                )}
+                            </Link>
+                        );
+                    })}
+
+                    <div className="w-px h-6 bg-white/20 mx-2" />
+
+                    <button onClick={toggleLang} aria-label="Changer la langue" className="hover:text-warm-sepia transition-colors font-bold">
                         {i18n.language === 'fr' ? 'EN' : 'FR'}
                     </button>
-                    <a href="https://instagram.com/borntwolate" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-warm-sepia transition-colors ml-4">
+                    <a href="https://instagram.com/borntwolate" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-warm-sepia transition-colors">
                         <Instagram size={20} />
                     </a>
-                    <button onClick={toggleDarkroom} aria-label="Mode Chambre Noire" className="ml-4 hover:text-darkroom-red transition-colors">
+                    <button onClick={toggleDarkroom} aria-label="Mode Chambre Noire" className="hover:text-darkroom-red transition-colors">
                         {isDarkroom ? <Sun size={20} /> : <Moon size={20} />}
                     </button>
                 </div>

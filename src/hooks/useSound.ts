@@ -1,23 +1,43 @@
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
 
-export const useSound = (soundFile: string) => {
+interface UseSoundOptions {
+    loop?: boolean;
+    volume?: number;
+}
+
+export const useSound = (soundFile: string, { loop = false, volume = 0.5 }: UseSoundOptions = {}) => {
     const [isPlaying, setIsPlaying] = useState(false);
 
-    // useMemo to create Audio instance only once
     const audio = useMemo(() => {
         const a = new Audio(soundFile);
-        a.loop = true;
+        a.loop = loop;
+        a.volume = volume;
         return a;
-    }, [soundFile]);
+    }, [soundFile, loop, volume]);
 
-    const toggleSound = useCallback(() => {
-        if (isPlaying) {
+    useEffect(() => {
+        return () => {
             audio.pause();
-        } else {
-            audio.play().catch(e => console.error("La lecture automatique a été bloquée par le navigateur.", e));
-        }
-        setIsPlaying(prev => !prev);
-    }, [isPlaying, audio]);
+        };
+    }, [audio]);
 
-    return { isPlaying, toggleSound };
+    const play = useCallback(() => {
+        if (!loop) {
+            audio.currentTime = 0;
+        }
+        audio.play().catch(e => console.error("Audio playback blocked:", e));
+        if (loop) setIsPlaying(true);
+    }, [audio, loop]);
+
+    const stop = useCallback(() => {
+        audio.pause();
+        if (loop) setIsPlaying(false);
+    }, [audio, loop]);
+
+    const toggle = useCallback(() => {
+        if (isPlaying) stop();
+        else play();
+    }, [isPlaying, play, stop]);
+
+    return { play, stop, toggle, isPlaying };
 };
