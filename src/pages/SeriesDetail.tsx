@@ -40,6 +40,11 @@ const SeriesDetail = () => {
     const handleNextPhoto = () => selectedPhotoIndex !== null && setSelectedPhotoIndex((prev) => (prev! + 1) % series.photos.length);
     const handlePrevPhoto = () => selectedPhotoIndex !== null && setSelectedPhotoIndex((prev) => (prev! - 1 + series.photos.length) % series.photos.length);
 
+    const isLongTitle = series.title.length > 15;
+    const titleSizeClass = isLongTitle
+        ? "text-4xl md:text-6xl lg:text-7xl"
+        : "text-6xl md:text-8xl lg:text-9xl";
+
     const artworkSchema = {
         "@context": "https://schema.org",
         "@type": "ImageGallery",
@@ -83,7 +88,7 @@ const SeriesDetail = () => {
                             Série N° {series.id.length} — {series.year}
                         </span>
                         <h1
-                            className="text-6xl md:text-8xl lg:text-9xl font-bold font-space-mono uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default break-words md:break-normal md:whitespace-nowrap hyphens-auto md:hyphens-none"
+                            className={`${titleSizeClass} font-bold font-space-mono uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default break-words md:break-normal md:whitespace-nowrap hyphens-auto md:hyphens-none`}
                             style={{ color: series.theme?.text }}
                         >
                             {series.title.split(' ').map((word, i) => (
