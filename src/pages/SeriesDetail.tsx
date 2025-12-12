@@ -40,17 +40,22 @@ const SeriesDetail = () => {
     const handleNextPhoto = () => selectedPhotoIndex !== null && setSelectedPhotoIndex((prev) => (prev! + 1) % series.photos.length);
     const handlePrevPhoto = () => selectedPhotoIndex !== null && setSelectedPhotoIndex((prev) => (prev! - 1 + series.photos.length) % series.photos.length);
 
-    // SMART TYPOGRAPHY LOGIC
-    // < 12 chars: Monumental (Default)
-    // 12-20 chars: Large (Safe for mid-length like "Retro Mountain")
-    // > 20 chars: Medium (Necessary for very long titles)
-    let titleSizeClass = "text-6xl md:text-8xl lg:text-9xl"; // Default (Monumental)
+    // FLUID TYPOGRAPHY LOGIC
+    // We want the title to fill roughly 45vw on desktop (column width) and 90vw on mobile.
+    // Space Mono (monospace) width factor approx 0.6.
+    // Calculation: TargetWidth / (CharCount * 0.6) = FontSize
+    // Desktop: 45 / (L * 0.6) = 75/L vw
+    // Mobile: 90 / (L * 0.6) = 150/L vw
 
-    if (series.title.length > 20) {
-        titleSizeClass = "text-4xl md:text-6xl lg:text-7xl"; // Medium
-    } else if (series.title.length >= 12) {
-        titleSizeClass = "text-5xl md:text-7xl lg:text-8xl"; // Large
-    }
+    const charCount = series.title.length;
+
+    // Desktop Calculation
+    const desktopFactor = 75;
+    const desktopSize = `${desktopFactor / charCount}vw`;
+
+    // Mobile Calculation
+    const mobileFactor = 150;
+    const mobileSize = `${mobileFactor / charCount}vw`;
 
     const artworkSchema = {
         "@context": "https://schema.org",
@@ -95,12 +100,29 @@ const SeriesDetail = () => {
                             Série N° {series.id.length} — {series.year}
                         </span>
                         <h1
-                            className={`${titleSizeClass} font-bold font-space-mono uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default break-words md:break-normal md:whitespace-nowrap hyphens-auto md:hyphens-none`}
-                            style={{ color: series.theme?.text }}
+                            className="font-bold font-space-mono uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default break-words md:break-normal md:whitespace-nowrap hyphens-auto md:hyphens-none"
+                            style={{
+                                color: series.theme?.text,
+                                fontSize: `clamp(2.5rem, ${mobileSize}, 6rem)` // Mobile Default
+                            }}
                         >
-                            {series.title.split(' ').map((word, i) => (
-                                <span key={i} className="block">{word}</span>
-                            ))}
+                            {/* Responsive Override via CSS Variable or Media Query logic if needed, but inline style overwrites.
+                                We need to apply different logic for desktop.
+                                Since we can't easily use media queries in inline styles for complex calc,
+                                we'll use a CSS variable strategy or standard Tailwind for base + custom style for fluid.
+                            */}
+                            <span className="md:hidden">
+                                {series.title.split(' ').map((word, i) => (
+                                    <span key={i} className="block">{word}</span>
+                                ))}
+                            </span>
+                            {/* Desktop only: Apply the specific fluid calculated size */}
+                            <span
+                                className="hidden md:block"
+                                style={{ fontSize: `clamp(3.5rem, ${desktopSize}, 10rem)` }}
+                            >
+                                {series.title}
+                            </span>
                         </h1>
                     </motion.div>
                 </div>
