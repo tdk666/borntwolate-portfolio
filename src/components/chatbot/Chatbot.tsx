@@ -56,6 +56,7 @@ export const Chatbot = () => {
                         artwork_title: orderData.artwork_title || "Inconnue",
                         series_title: orderData.series_title || "Inconnue",
                         format: orderData.format || "Non spécifié",
+                        price: orderData.price || "Sur devis",
                         address: orderData.address || "Non communiquée",
                         client_email: orderData.client_email || "Non communiqué",
                         client_name: orderData.client_name || "Non communiqué",
