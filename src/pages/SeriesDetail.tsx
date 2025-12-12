@@ -40,22 +40,36 @@ const SeriesDetail = () => {
     const handleNextPhoto = () => selectedPhotoIndex !== null && setSelectedPhotoIndex((prev) => (prev! + 1) % series.photos.length);
     const handlePrevPhoto = () => selectedPhotoIndex !== null && setSelectedPhotoIndex((prev) => (prev! - 1 + series.photos.length) % series.photos.length);
 
-    // FLUID TYPOGRAPHY LOGIC
-    // We want the title to fill roughly 45vw on desktop (column width) and 90vw on mobile.
-    // Space Mono (monospace) width factor approx 0.6.
-    // Calculation: TargetWidth / (CharCount * 0.6) = FontSize
-    // Desktop: 45 / (L * 0.6) = 75/L vw
-    // Mobile: 90 / (L * 0.6) = 150/L vw
+    // HYBRID FLUID TYPOGRAPHY LOGIC (Mobile & Desktop)
+    // 1. Split title into lines based on length (Short: 1 word/line, Long: 2 words/line)
+    // 2. Calculate font size based on the longest line to fill the width
 
-    const charCount = series.title.length;
+    const words = series.title.split(' ');
+    const isShortTitle = series.title.length <= 14;
+    let lines: string[] = [];
 
-    // Desktop Calculation
+    if (isShortTitle) {
+        // 1 word per line
+        lines = words;
+    } else {
+        // 2 words per line (grouping)
+        for (let i = 0; i < words.length; i += 2) {
+            lines.push(words.slice(i, i + 2).join(' '));
+        }
+    }
+
+    // Find the longest line to calculate the scaling factor
+    const longestLineChars = Math.max(...lines.map(line => line.length));
+
+    // Desktop Calculation (Target ~45vw width)
+    // Factor derived from Space Mono aspect ratio (~0.6): 45 / 0.6 = 75
     const desktopFactor = 75;
-    const desktopSize = `${desktopFactor / charCount}vw`;
+    const desktopSize = `${desktopFactor / longestLineChars}vw`;
 
-    // Mobile Calculation
-    const mobileFactor = 150;
-    const mobileSize = `${mobileFactor / charCount}vw`;
+    // Mobile Calculation (Target ~90vw width)
+    // Factor: 90 / 0.6 = 150. Using 140 for safety padding.
+    const mobileFactor = 140;
+    const mobileSize = `${mobileFactor / longestLineChars}vw`;
 
     const artworkSchema = {
         "@context": "https://schema.org",
@@ -100,28 +114,27 @@ const SeriesDetail = () => {
                             Série N° {series.id.length} — {series.year}
                         </span>
                         <h1
-                            className="font-bold font-space-mono uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default break-words md:break-normal md:whitespace-nowrap hyphens-auto md:hyphens-none"
-                            style={{
-                                color: series.theme?.text,
-                                fontSize: `clamp(2.5rem, ${mobileSize}, 6rem)` // Mobile Default
-                            }}
+                            className="font-bold font-space-mono uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default break-words hyphens-auto"
+                            style={{ color: series.theme?.text }}
                         >
-                            {/* Responsive Override via CSS Variable or Media Query logic if needed, but inline style overwrites.
-                                We need to apply different logic for desktop.
-                                Since we can't easily use media queries in inline styles for complex calc,
-                                we'll use a CSS variable strategy or standard Tailwind for base + custom style for fluid.
-                            */}
-                            <span className="md:hidden">
-                                {series.title.split(' ').map((word, i) => (
-                                    <span key={i} className="block">{word}</span>
+                            {/* Mobile Structure: Fluid based on mobileSize */}
+                            <span
+                                className="md:hidden block"
+                                style={{ fontSize: `clamp(2.5rem, ${mobileSize}, 6rem)` }}
+                            >
+                                {lines.map((line, i) => (
+                                    <span key={i} className="block">{line}</span>
                                 ))}
                             </span>
-                            {/* Desktop only: Apply the specific fluid calculated size */}
+
+                            {/* Desktop Structure: Fluid based on desktopSize */}
                             <span
                                 className="hidden md:block"
-                                style={{ fontSize: `clamp(3.5rem, ${desktopSize}, 10rem)` }}
+                                style={{ fontSize: `clamp(3.5rem, ${desktopSize}, 14rem)` }}
                             >
-                                {series.title}
+                                {lines.map((line, i) => (
+                                    <span key={i} className="block">{line}</span>
+                                ))}
                             </span>
                         </h1>
                     </motion.div>
