@@ -81,13 +81,24 @@ const SeriesDetail = () => {
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true, margin: "500px" }}
                             transition={{ duration: 0.5, delay: index * 0.05 }}
-                            className="mb-10 gallery-matting cursor-examine relative group block m-0 bg-white/5 min-h-[200px]"
+                            className="mb-10 gallery-matting cursor-examine relative group block m-0 bg-white/5 min-h-[200px] focus:outline-none focus:ring-2 focus:ring-current focus:ring-offset-4 focus:ring-offset-black rounded-sm"
                             onClick={() => setSelectedPhotoIndex(index)}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    setSelectedPhotoIndex(index);
+                                }
+                            }}
+                            tabIndex={0}
+                            role="button"
+                            aria-label={`Agrandir la photo : ${photo.title}`}
                         >
                             <img
                                 src={photo.url}
                                 alt={photo.alt_accessible?.[currentLang] || photo.title}
-                                loading="eager"
+                                loading={index < 2 ? "eager" : "lazy"}
+                                fetchPriority={index < 2 ? "high" : "auto"}
+                                decoding={index < 2 ? "sync" : "async"}
                                 className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.01]"
                                 onContextMenu={(e) => e.preventDefault()}
                                 draggable="false"

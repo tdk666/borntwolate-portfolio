@@ -90,6 +90,9 @@ const Hero = () => {
                             src={currentPhotos[currentIndex]?.url}
                             alt="Hero Background"
                             className="w-full h-full object-cover opacity-50"
+                            loading={currentIndex === 0 ? "eager" : "lazy"}
+                            fetchPriority={currentIndex === 0 ? "high" : "auto"}
+                            decoding={currentIndex === 0 ? "sync" : "async"}
                         />
                     )}
                     {/* Gradient Overlay */}
