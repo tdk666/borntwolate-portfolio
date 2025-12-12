@@ -40,10 +40,17 @@ const SeriesDetail = () => {
     const handleNextPhoto = () => selectedPhotoIndex !== null && setSelectedPhotoIndex((prev) => (prev! + 1) % series.photos.length);
     const handlePrevPhoto = () => selectedPhotoIndex !== null && setSelectedPhotoIndex((prev) => (prev! - 1 + series.photos.length) % series.photos.length);
 
-    const isLongTitle = series.title.length > 12;
-    const titleSizeClass = isLongTitle
-        ? "text-4xl md:text-6xl lg:text-7xl"
-        : "text-6xl md:text-8xl lg:text-9xl";
+    // SMART TYPOGRAPHY LOGIC
+    // < 12 chars: Monumental (Default)
+    // 12-20 chars: Large (Safe for mid-length like "Retro Mountain")
+    // > 20 chars: Medium (Necessary for very long titles)
+    let titleSizeClass = "text-6xl md:text-8xl lg:text-9xl"; // Default (Monumental)
+
+    if (series.title.length > 20) {
+        titleSizeClass = "text-4xl md:text-6xl lg:text-7xl"; // Medium
+    } else if (series.title.length >= 12) {
+        titleSizeClass = "text-5xl md:text-7xl lg:text-8xl"; // Large
+    }
 
     const artworkSchema = {
         "@context": "https://schema.org",
