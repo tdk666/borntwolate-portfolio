@@ -74,14 +74,29 @@ const Hero = () => {
                 )}
             </AnimatePresence>
 
-            {/* Slideshow */}
+            {/* Slideshow with Shutter Reveal */}
             <AnimatePresence mode='wait'>
                 <motion.div
-                    key={`${isMobile ? 'mobile' : 'desktop'}-${currentIndex}`} // Unique key forces re-render if mode changes
-                    initial={{ opacity: 0, scale: 1.05 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 2, ease: "easeInOut" }}
+                    key={`${isMobile ? 'mobile' : 'desktop'}-${currentIndex}`}
+                    initial={{
+                        clipPath: 'inset(0 50% 0 50%)',
+                        scale: 1.1,
+                        filter: 'grayscale(100%) blur(5px)'
+                    }}
+                    animate={{
+                        clipPath: 'inset(0 0% 0 0%)',
+                        scale: 1,
+                        filter: 'grayscale(0%) blur(0px)',
+                        transition: {
+                            duration: 1.8,
+                            ease: [0.25, 1, 0.5, 1],
+                            filter: { duration: 2.5 }
+                        }
+                    }}
+                    exit={{
+                        opacity: 0,
+                        transition: { duration: 1 }
+                    }}
                     className="absolute inset-0 w-full h-full"
                 >
                     {/* Check if we have photos before trying to render */}
@@ -100,22 +115,39 @@ const Hero = () => {
                 </motion.div>
             </AnimatePresence>
 
-            {/* Overlay Text */}
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4">
+            {/* Overlay Text with Focus Breathing */}
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4 mix-blend-difference">
                 <motion.h1
-                    initial={{ opacity: 0, y: 30 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 2.2, duration: 1, ease: "easeOut" }}
-                    className="text-4xl md:text-6xl font-space-mono font-bold text-off-white tracking-tighter mb-6 uppercase"
+                    custom={2.2}
+                    initial={{ opacity: 0, filter: 'blur(15px)', y: 20 }}
+                    animate={{
+                        opacity: 1,
+                        filter: 'blur(0px)',
+                        y: 0,
+                        transition: { delay: 2.2, duration: 1.2, ease: "easeOut" }
+                    }}
+                    className="text-5xl md:text-8xl font-serif italic text-off-white tracking-tighter mb-6"
                 >
                     Théophile Dequecker
                 </motion.h1>
-                <div className="h-px w-24 bg-warm-sepia/60 mb-6" />
+
+                <motion.div
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{ delay: 2.8, duration: 1.5, ease: "circOut" }}
+                    className="h-px w-32 bg-darkroom-red/80 mb-6"
+                />
+
                 <motion.h2
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 0.8 }}
-                    transition={{ delay: 2.8, duration: 1 }}
-                    className="text-sm md:text-base font-space-mono text-silver uppercase tracking-[0.3em]"
+                    custom={3.0}
+                    initial={{ opacity: 0, filter: 'blur(15px)', y: 20 }}
+                    animate={{
+                        opacity: 1,
+                        filter: 'blur(0px)',
+                        y: 0,
+                        transition: { delay: 3.0, duration: 1.2, ease: "easeOut" }
+                    }}
+                    className="text-xs md:text-sm font-space-mono text-silver uppercase tracking-[0.5em]"
                 >
                     {t('home.subtitle')}
                 </motion.h2>
