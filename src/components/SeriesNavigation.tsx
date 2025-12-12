@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 interface SeriesNavigationProps {
     nextId: string;
@@ -20,39 +20,45 @@ const SeriesNavigation = ({ nextId, prevId }: SeriesNavigationProps) => {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [nextId, prevId, navigate]);
 
-    // SWIPE NAVIGATION (Mobile)
-    const [touchStart, setTouchStart] = useState<number | null>(null);
-    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+    // GLOBAL SWIPE NAVIGATION (Mobile)
+    // We attach listeners to window to ensure swipe works everywhere, regardless of z-index
+    useEffect(() => {
+        let touchStartX = 0;
+        let touchStartY = 0;
 
-    const minSwipeDistance = 50;
+        const handleTouchStart = (e: TouchEvent) => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        };
 
-    const onTouchStart = (e: React.TouchEvent) => {
-        setTouchEnd(null);
-        setTouchStart(e.targetTouches[0].clientX);
-    };
+        const handleTouchEnd = (e: TouchEvent) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
 
-    const onTouchMove = (e: React.TouchEvent) => setTouchEnd(e.targetTouches[0].clientX);
+            const diffX = touchStartX - touchEndX;
+            const diffY = touchStartY - touchEndY;
 
-    const onTouchEnd = () => {
-        if (!touchStart || !touchEnd) return;
-        const distance = touchStart - touchEnd;
-        const isLeftSwipe = distance > minSwipeDistance;
-        const isRightSwipe = distance < -minSwipeDistance;
+            const minSwipeDistance = 50;
+            const maxVerticalSpread = 100; // Allow some vertical drift but prioritize horizontal
 
-        if (isLeftSwipe) navigate(`/series/${nextId}`);
-        if (isRightSwipe) navigate(`/series/${prevId}`);
-    };
+            // Check if horizontal swipe dominates and meets threshold AND isn't a huge vertical scroll
+            if (Math.abs(diffX) > minSwipeDistance && Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffY) < maxVerticalSpread) {
+                if (diffX > 0) navigate(`/series/${nextId}`); // Swipe Left -> Next
+                else navigate(`/series/${prevId}`); // Swipe Right -> Prev
+            }
+        };
+
+        window.addEventListener('touchstart', handleTouchStart);
+        window.addEventListener('touchend', handleTouchEnd);
+
+        return () => {
+            window.removeEventListener('touchstart', handleTouchStart);
+            window.removeEventListener('touchend', handleTouchEnd);
+        };
+    }, [nextId, prevId, navigate]);
 
     return (
         <>
-            {/* SWIPE ZONE (Invisible layer for mobile) */}
-            <div
-                className="fixed inset-0 z-0 md:hidden"
-                onTouchStart={onTouchStart}
-                onTouchMove={onTouchMove}
-                onTouchEnd={onTouchEnd}
-            />
-
             {/* DESKTOP ARROWS (Fixed) */}
             <button
                 onClick={() => navigate(`/series/${prevId}`)}
@@ -72,5 +78,4 @@ const SeriesNavigation = ({ nextId, prevId }: SeriesNavigationProps) => {
         </>
     );
 };
-
 export default SeriesNavigation;

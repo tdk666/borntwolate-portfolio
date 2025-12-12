@@ -40,7 +40,7 @@ const SeriesDetail = () => {
     const handleNextPhoto = () => selectedPhotoIndex !== null && setSelectedPhotoIndex((prev) => (prev! + 1) % series.photos.length);
     const handlePrevPhoto = () => selectedPhotoIndex !== null && setSelectedPhotoIndex((prev) => (prev! - 1 + series.photos.length) % series.photos.length);
 
-    const isLongTitle = series.title.length > 15;
+    const isLongTitle = series.title.length > 12;
     const titleSizeClass = isLongTitle
         ? "text-4xl md:text-6xl lg:text-7xl"
         : "text-6xl md:text-8xl lg:text-9xl";
