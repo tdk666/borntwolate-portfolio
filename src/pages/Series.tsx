@@ -51,7 +51,7 @@ const Series = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
-                className="text-4xl md:text-6xl font-space-mono font-bold text-off-white mb-16 text-center tracking-tighter"
+                className="text-4xl md:text-6xl font-space-mono font-bold text-off-white mb-16 text-center tracking-tighter hover-analog"
             >
                 {t('nav.series')}
             </motion.h1>
@@ -78,7 +78,7 @@ const Series = () => {
                                         className="block focus:outline-none focus:ring-2 focus:ring-darkroom-red focus:ring-offset-4 focus:ring-offset-black rounded-sm"
                                         aria-label={`Voir la série ${seriesItem.title}`}
                                     >
-                                        <div className="overflow-hidden mb-6 bg-gray-900"> {/* Fond gris pour éviter flash */}
+                                        <div className="overflow-hidden mb-6 bg-gray-900 border border-white/5"> {/* Fond gris pour éviter flash */}
                                             <img
                                                 src={seriesItem.coverImage}
                                                 alt="" // Alt vide car le titre est juste en dessous (évite redondance pour lecteurs d'écran)

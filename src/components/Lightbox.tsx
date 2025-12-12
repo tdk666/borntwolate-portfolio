@@ -54,8 +54,8 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
 
                 {/* Image Area - Contains Image AND Buttons now */}
                 <div className="relative flex-1 h-full w-full flex items-center justify-center p-0 md:p-2 bg-black/90 group">
-                    <button onClick={(e) => { e.stopPropagation(); onPrev(); }} aria-label="Image précédente" className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-all z-50 hidden md:block p-2 hover:bg-white/10 rounded-full"><ChevronLeft size={48} strokeWidth={0.5} /></button>
-                    <button onClick={(e) => { e.stopPropagation(); onNext(); }} aria-label="Image suivante" className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-all z-50 hidden md:block p-2 hover:bg-white/10 rounded-full"><ChevronRight size={48} strokeWidth={0.5} /></button>
+                    <button onClick={(e) => { e.stopPropagation(); onPrev(); }} title="Vue précédente (Négatif gauche)" aria-label="Vue précédente (Négatif gauche)" className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-all z-50 hidden md:block p-2 hover:bg-white/10 rounded-full"><ChevronLeft size={48} strokeWidth={0.5} /></button>
+                    <button onClick={(e) => { e.stopPropagation(); onNext(); }} title="Vue suivante" aria-label="Vue suivante" className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-all z-50 hidden md:block p-2 hover:bg-white/10 rounded-full"><ChevronRight size={48} strokeWidth={0.5} /></button>
 
                     <motion.img
                         key={photo.url}

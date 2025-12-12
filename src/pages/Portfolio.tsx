@@ -82,7 +82,7 @@ const Portfolio = () => {
                         key={category}
                         onClick={() => setFilter(category)}
                         aria-label={`Filtrer par ${t(`categories.${category}`)}`}
-                        className={`text-sm font-space-mono uppercase tracking-widest transition-colors duration-300 ${filter === category ? 'text-darkroom-red underline underline-offset-4' : 'text-silver hover:text-off-white'}`}
+                        className={`text-sm font-space-mono uppercase tracking-widest transition-colors duration-300 hover-analog ${filter === category ? 'text-darkroom-red underline underline-offset-4' : 'text-silver hover:text-off-white'}`}
                     >
                         {t(`categories.${category}`)}
                     </button>
@@ -112,7 +112,7 @@ const Portfolio = () => {
                                         aria-label={`Voir ${photo.title}`}
                                     >
                                         {/* DESIGN GALERIE */}
-                                        <div className="bg-[#F9F8F4] p-3 shadow-md group-hover:shadow-xl transition-shadow duration-300 ease-out">
+                                        <div className="bg-[#F9F8F4] p-3 shadow-md group-hover:shadow-xl transition-shadow duration-300 ease-out border border-white/5">
                                             <div className="relative overflow-hidden bg-gray-200">
                                                 <img
                                                     src={photo.url}

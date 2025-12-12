@@ -106,9 +106,9 @@ const Contact = () => {
                             disabled={status === 'submitting'}
                             className="text-off-white font-space-mono uppercase tracking-widest text-sm border border-white/20 px-8 py-3 hover:bg-white/5 hover:border-off-white transition-all duration-300 disabled:opacity-50"
                         >
-                            {status === 'submitting' ? 'Sending...' : status === 'success' ? 'Sent!' : t('contact.send')}
+                            {status === 'submitting' ? 'Développement en cours...' : status === 'success' ? 'Fixé dans le bain.' : t('contact.send')}
                         </button>
-                        {status === 'error' && <p className="text-red-500 font-space-mono text-xs mt-4">Error sending message.</p>}
+                        {status === 'error' && <p className="text-red-500 font-space-mono text-xs mt-4">Erreur de chimie. Réessayez.</p>}
                     </div>
                 </form>
 
