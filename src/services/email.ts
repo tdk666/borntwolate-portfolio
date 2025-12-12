@@ -1,22 +1,22 @@
 import emailjs from '@emailjs/browser';
 
 interface OrderDetails extends Record<string, unknown> {
+    client_name: string;
     artwork_title: string;
     series_title: string;
     format: string;
     address: string;
     client_email: string;
-    client_name: string;
     ai_summary: string;
 }
 
 export const sendOrderToArtist = async (details: OrderDetails) => {
     try {
         const response = await emailjs.send(
-            "service_xxx",          // <--- ÉCRIVEZ VOTRE ID EN DUR ICI
-            "template_xxx",         // <--- ÉCRIVEZ VOTRE ID EN DUR ICI
+            import.meta.env.VITE_EMAILJS_SERVICE_ID,
+            import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
             details,
-            "f_7R6Lzf9d8tbFTP3"     // <--- VOTRE CLÉ PUBLIQUE EN DUR ICI
+            import.meta.env.VITE_EMAILJS_PUBLIC_KEY
         );
         return { success: true, status: response.status };
     } catch (error) {
