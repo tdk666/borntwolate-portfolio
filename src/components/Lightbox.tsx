@@ -58,6 +58,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                     <button onClick={(e) => { e.stopPropagation(); onNext(); }} title="Vue suivante" aria-label="Vue suivante" className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-all z-50 hidden md:block p-2 hover:bg-white/10 rounded-full"><ChevronRight size={48} strokeWidth={0.5} /></button>
 
                     <motion.img
+                        layoutId={`photo-${photo.id}`} // <--- Magic Move Key
                         key={photo.url}
                         src={photo.url}
                         alt={photo.title}
@@ -65,9 +66,8 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                         dragConstraints={{ left: 0, right: 0 }}
                         dragElastic={0.2}
                         onDragEnd={handleDragEnd}
-                        animate={controls}
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
+                        // animate={controls} // Removed to let layoutId handle entry
+                        // initial={{ opacity: 0 }} // Removed
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
                         onContextMenu={(e) => e.preventDefault()}
                         draggable={false}

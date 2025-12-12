@@ -4,6 +4,7 @@ import { photos, type Photo } from '../data/photos';
 import { useTranslation } from 'react-i18next';
 import { SEO } from '../components/SEO'; // AJOUT SEO
 import Lightbox from '../components/Lightbox';
+import { Magnetic } from '../components/Magnetic';
 
 const categories = ['all', 'urban', 'nature', 'portrait', 'bnw'];
 
@@ -78,14 +79,15 @@ const Portfolio = () => {
             {/* Filters */}
             <div className="flex flex-wrap justify-center gap-6 mb-12">
                 {categories.map((category) => (
-                    <button
-                        key={category}
-                        onClick={() => setFilter(category)}
-                        aria-label={`Filtrer par ${t(`categories.${category}`)}`}
-                        className={`text-sm font-space-mono uppercase tracking-widest transition-colors duration-300 hover-analog ${filter === category ? 'text-darkroom-red underline underline-offset-4' : 'text-silver hover:text-off-white'}`}
-                    >
-                        {t(`categories.${category}`)}
-                    </button>
+                    <Magnetic key={category}>
+                        <button
+                            onClick={() => setFilter(category)}
+                            aria-label={`Filtrer par ${t(`categories.${category}`)}`}
+                            className={`text-sm font-space-mono uppercase tracking-widest transition-colors duration-300 hover-analog ${filter === category ? 'text-darkroom-red underline underline-offset-4' : 'text-silver hover:text-off-white'}`}
+                        >
+                            {t(`categories.${category}`)}
+                        </button>
+                    </Magnetic>
                 ))}
             </div>
 
@@ -96,13 +98,37 @@ const Portfolio = () => {
                         <div key={colIndex} className="flex flex-col gap-4 flex-1 min-w-0">
                             {column.map((photo, imgIndex) => {
                                 const isPriority = imgIndex < 2; // Smart Loading
+
+                                // Developing Entrance Variants (Sequential)
+                                const developVariants = {
+                                    hidden: {
+                                        opacity: 0,
+                                        filter: "blur(10px) sepia(100%)", // Flou et sépia (chimie)
+                                        scale: 0.95
+                                    },
+                                    visible: {
+                                        opacity: 1,
+                                        filter: "blur(0px) sepia(0%)",
+                                        scale: 1,
+                                        transition: {
+                                            duration: 1.2,
+                                            ease: [0.25, 1, 0.5, 1] as [number, number, number, number] // Courbe "Liquid"
+                                        }
+                                    },
+                                    exit: {
+                                        opacity: 0,
+                                        filter: "blur(10px)",
+                                        transition: { duration: 0.5 }
+                                    }
+                                };
+
                                 return (
                                     <motion.figure
                                         layout
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        exit={{ opacity: 0, scale: 0.9 }}
-                                        transition={{ duration: 0.5 }}
+                                        variants={developVariants} // Utilise les nouveaux variants
+                                        initial="hidden"
+                                        animate="visible"
+                                        exit="exit"
                                         key={photo.id}
                                         className="relative group cursor-pointer m-0 outline-none focus:ring-2 focus:ring-darkroom-red rounded-sm"
                                         onClick={() => handlePhotoClick(photo)}
@@ -114,7 +140,8 @@ const Portfolio = () => {
                                         {/* DESIGN GALERIE - BORDER REMOVED */}
                                         <div className="group-hover:shadow-xl transition-shadow duration-300 ease-out border border-white/10">
                                             <div className="relative overflow-hidden bg-gray-900">
-                                                <img
+                                                <motion.img
+                                                    layoutId={`photo-${photo.id}`} // <--- Magic Move Key
                                                     src={photo.url}
                                                     alt={photo.alt_accessible?.[i18n.language.startsWith('en') ? 'en' : 'fr'] || photo.title}
                                                     className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105 select-none block"
