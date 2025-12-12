@@ -78,7 +78,7 @@ const Series = () => {
                                         className="block focus:outline-none focus:ring-2 focus:ring-darkroom-red focus:ring-offset-4 focus:ring-offset-black rounded-sm"
                                         aria-label={`Voir la série ${seriesItem.title}`}
                                     >
-                                        <div className="overflow-hidden mb-6 bg-gray-900 border border-white/5"> {/* Fond gris pour éviter flash */}
+                                        <div className="overflow-hidden mb-6 bg-gray-900 border border-white/10"> {/* Fond gris pour éviter flash */}
                                             <img
                                                 src={seriesItem.coverImage}
                                                 alt="" // Alt vide car le titre est juste en dessous (évite redondance pour lecteurs d'écran)

@@ -112,7 +112,7 @@ const Portfolio = () => {
                                         aria-label={`Voir ${photo.title}`}
                                     >
                                         {/* DESIGN GALERIE - BORDER REMOVED */}
-                                        <div className="group-hover:shadow-xl transition-shadow duration-300 ease-out border border-white/5">
+                                        <div className="group-hover:shadow-xl transition-shadow duration-300 ease-out border border-white/10">
                                             <div className="relative overflow-hidden bg-gray-900">
                                                 <img
                                                     src={photo.url}

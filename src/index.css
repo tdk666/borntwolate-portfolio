@@ -82,20 +82,14 @@ body {
 }
 
 /* ANALOG GLITCH INTERACTION */
+/* ANALOG GLITCH INTERACTION */
 .hover-analog {
-  @apply transition-all duration-200 ease-out;
+  @apply transition-all duration-200 ease-out inline-block;
+  /* Added inline-block to ensure transform works on inline elements like links */
 }
 
 .hover-analog:hover {
-  transform: skewX(-6deg);
-  color: var(--color-off-white);
-  /* Fallback */
-}
-
-/* Use a slightly different color or weight if needed, adjusting per component context if strictly required, 
-   but the requirement mentioned #E5E5E5 (off-white) or #A83F39. 
-   Since our --color-off-white is #F8F6F0, let's use the requested hex or our var. 
-   Let's stick to a subtle shift. */
-.hover-analog:hover {
+  transform: skewX(-12deg);
+  /* Increased skew for better visibility */
   color: #E5E5E5;
 }
