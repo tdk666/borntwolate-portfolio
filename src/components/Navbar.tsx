@@ -75,7 +75,7 @@ const Navbar = () => {
                 transition={{ duration: 0.35, ease: "easeInOut" }}
                 className="fixed top-0 left-0 w-full z-40 px-6 py-6 flex justify-between items-center mix-blend-difference text-off-white bg-gradient-to-b from-black/50 to-transparent pointer-events-auto"
             >
-                <div className="z-50">
+                <div className="z-50 drop-shadow-md">
                     {location.pathname !== '/' && (
                         <Link to="/" className="text-xl md:text-2xl font-bold font-space-mono tracking-tighter uppercase hover:opacity-70 transition-opacity whitespace-nowrap">
                             Théophile Dequecker
@@ -84,7 +84,7 @@ const Navbar = () => {
                 </div>
 
                 {/* DESKTOP NAVIGATION */}
-                <div className="hidden md:flex items-center gap-6 font-space-mono text-sm tracking-widest uppercase">
+                <div className="hidden md:flex items-center gap-6 font-space-mono text-sm tracking-widest uppercase drop-shadow-md">
                     {links.map((link) => {
                         const isActive = location.pathname === link.path;
                         return (
@@ -128,7 +128,7 @@ const Navbar = () => {
                     </button>
                 </div>
 
-                <button onClick={() => setIsOpen(!isOpen)} aria-label="Menu" className="md:hidden z-50 p-2 -mr-2 text-off-white">
+                <button onClick={() => setIsOpen(!isOpen)} aria-label="Menu" className="md:hidden z-50 p-2 -mr-2 text-off-white drop-shadow-md">
                     {isOpen ? <X size={28} /> : <Menu size={28} />}
                 </button>
             </motion.nav>

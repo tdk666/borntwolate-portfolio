@@ -66,9 +66,9 @@ const SeriesDetail = () => {
                 schema={artworkSchema}
             />
             <div className="relative w-full px-6 md:px-12 mb-24 mt-12 grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-                
+
                 {/* COLONNE GAUCHE : Titre Sticky & Monumental */}
-                <div className="md:col-span-5 md:sticky md:top-32 z-10 mix-blend-difference">
+                <div className="md:col-span-5 md:sticky md:top-32 z-10">
                     <motion.div
                         initial={{ opacity: 0, x: -50 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -77,8 +77,8 @@ const SeriesDetail = () => {
                         <span className="block font-space-mono text-xs text-darkroom-red uppercase tracking-widest mb-4">
                             Série N° {series.id.length} — {series.year}
                         </span>
-                        <h1 
-                            className="text-6xl md:text-9xl font-bold font-space-mono uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default"
+                        <h1
+                            className="text-6xl md:text-8xl lg:text-9xl font-bold font-space-mono uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default break-words hyphens-auto"
                             style={{ color: series.theme?.text }}
                         >
                             {series.title.split(' ').map((word, i) => (
@@ -90,7 +90,7 @@ const SeriesDetail = () => {
 
                 {/* COLONNE DROITE : Texte Éditorial */}
                 <div className="md:col-span-7 md:mt-24">
-                    <motion.div 
+                    <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.5, duration: 0.8 }}
