@@ -8,9 +8,11 @@ import Masonry from 'react-masonry-css';
 import Lightbox from '../components/Lightbox';
 import { useTranslation } from 'react-i18next';
 import SeriesNavigation from '../components/SeriesNavigation';
+import { useDarkroom } from '../context/DarkroomContext';
 
 const SeriesDetail = () => {
     const { id } = useParams<{ id: string }>();
+    const { isDarkroom } = useDarkroom();
     const { i18n } = useTranslation();
     const currentLang = i18n.language.split('-')[0] as 'fr' | 'en';
 
@@ -21,7 +23,7 @@ const SeriesDetail = () => {
     useEffect(() => {
         window.scrollTo(0, 0);
         const root = document.getElementById('root');
-        if (series?.theme) {
+        if (series?.theme && !isDarkroom) {
             document.body.style.backgroundColor = series.theme.background;
             document.body.style.color = series.theme.text;
             if (root) { root.style.backgroundColor = series.theme.background; root.style.color = series.theme.text; }
@@ -30,7 +32,7 @@ const SeriesDetail = () => {
             document.body.style.backgroundColor = ''; document.body.style.color = '';
             if (root) { root.style.backgroundColor = ''; root.style.color = ''; }
         };
-    }, [series, id]);
+    }, [series, id, isDarkroom]);
 
     if (!series) return <div className="min-h-screen flex items-center justify-center">Series not found.</div>;
 
@@ -117,7 +119,7 @@ const SeriesDetail = () => {
                         </span>
                         <h1
                             className="font-bold font-space-mono uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default whitespace-nowrap"
-                            style={{ color: series.theme?.text }}
+                            style={{ color: isDarkroom ? undefined : series.theme?.text }}
                         >
                             {/* Mobile Structure: Fluid based on mobileSize */}
                             <span
