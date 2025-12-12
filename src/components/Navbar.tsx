@@ -65,7 +65,7 @@ const Navbar = () => {
                                 onMouseEnter={() => playHover()}
                                 className="relative group px-4 py-2 overflow-hidden"
                             >
-                                <span className={`relative z-10 transition-colors duration-500 ${isActive ? 'text-off-white font-medium' : 'text-silver/70 group-hover:text-white'} hover-analog inline-block drop-shadow-lg`}>
+                                <span className={`relative z-10 transition-colors duration-500 ${isActive ? 'text-off-white font-medium' : 'text-off-white/90 group-hover:text-warm-sepia'} hover-analog inline-block drop-shadow-lg`}>
                                     {link.label}
                                 </span>
 

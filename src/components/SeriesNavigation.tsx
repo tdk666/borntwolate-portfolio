@@ -1,5 +1,4 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useEffect } from 'react';
 
 interface SeriesNavigationProps {
@@ -59,7 +58,8 @@ const SeriesNavigation = ({ nextId, prevId }: SeriesNavigationProps) => {
 
     return (
         <>
-            {/* DESKTOP ARROWS (Fixed) */}
+            {/* DESKTOP ARROWS (Hidden by user request - Swipe & Keyword or Footer Link only) */}
+            {/* 
             <button
                 onClick={() => navigate(`/series/${prevId}`)}
                 className="hidden md:flex fixed left-8 top-1/2 -translate-y-1/2 z-40 text-off-white/50 hover:text-off-white hover:scale-110 transition-all duration-300 mix-blend-difference"
@@ -75,6 +75,7 @@ const SeriesNavigation = ({ nextId, prevId }: SeriesNavigationProps) => {
             >
                 <ArrowRight size={48} strokeWidth={1} />
             </button>
+            */}
         </>
     );
 };

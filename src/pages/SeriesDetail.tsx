@@ -103,7 +103,7 @@ const SeriesDetail = () => {
             {/* LATERAL NAVIGATION */}
             <SeriesNavigation nextId={nextSeries.id} prevId={prevSeries.id} />
 
-            <div className="relative w-full px-6 md:px-12 mb-24 mt-12 grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+            <div className="relative w-full px-6 md:px-12 mb-24 mt-12 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
 
                 {/* COLONNE GAUCHE : Titre Sticky & Monumental */}
                 <div className="md:col-span-5 md:sticky md:top-32 z-10">
