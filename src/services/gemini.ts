@@ -98,7 +98,7 @@ if (API_KEY) {
     // AVEC SYSTEM INSTRUCTION
     // UTILISER LE STANDARD SIMPLE "gemini-1.5-flash" (Avec nouvelle clé API)
     model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash',
+        model: 'gemini-1.5-flash-8b',
         systemInstruction: SYSTEM_PROMPT
     });
 }
