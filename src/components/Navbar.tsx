@@ -48,7 +48,7 @@ const Navbar = () => {
                 <div className="z-50 drop-shadow-md">
                     {location.pathname !== '/' && (
                         <Link to="/" className="text-xl md:text-2xl font-bold font-space-mono tracking-tighter uppercase hover:opacity-70 transition-opacity whitespace-nowrap">
-                            Théophile Dequecker
+                            borntwolate
                         </Link>
                     )}
                 </div>
