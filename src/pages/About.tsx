@@ -61,18 +61,37 @@ const About = () => {
                     </h1>
                     <div className="h-px w-24 bg-darkroom-red/60 mb-10" />
 
-                    <div className="space-y-8 text-silver font-sans font-light leading-relaxed text-lg text-justify">
-                        <p className="text-xl font-serif text-off-white/90 italic border-l-2 border-darkroom-red pl-6 py-2">
-                            {content.intro[currentLang]}
+                    <div className="space-y-16 text-silver font-sans font-light leading-relaxed text-lg">
+
+                        {/* Introduction avec Lettrine (Drop Cap) */}
+                        <p className="drop-cap text-xl md:text-2xl text-justify">
+                            {content.intro[currentLang].replace(/"/g, '')} {/* On retire les guillemets car la lettrine suffit */}
                         </p>
-                        <p>
-                            <span className="text-off-white font-medium uppercase tracking-wider text-sm mr-2 font-space-mono">Born Too Late</span>
-                            {content.bornTooLate[currentLang]}
-                        </p>
-                        <p>
-                            {content.exploration[currentLang]}
-                        </p>
-                        <p>
+
+                        {/* Pull Quote (Citation en exergue) */}
+                        <div className="relative py-8 my-12 border-y border-white/10">
+                            <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-deep-black px-2 text-darkroom-red text-4xl font-serif">“</span>
+                            <p className="text-3xl md:text-4xl font-serif italic text-off-white text-center leading-tight">
+                                {t('home.subtitle')}
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div>
+                                <span className="text-off-white font-space-mono text-xs uppercase tracking-widest block mb-2 border-b border-darkroom-red w-12 pb-1">Concept</span>
+                                <p className="text-sm md:text-base opacity-80">
+                                    <strong className="text-off-white">Born Too Late</strong> {content.bornTooLate[currentLang]}
+                                </p>
+                            </div>
+                            <div>
+                                <span className="text-off-white font-space-mono text-xs uppercase tracking-widest block mb-2 border-b border-darkroom-red w-12 pb-1">Vision</span>
+                                <p className="text-sm md:text-base opacity-80">
+                                    {content.exploration[currentLang]}
+                                </p>
+                            </div>
+                        </div>
+
+                        <p className="text-xl font-serif italic text-center text-warm-sepia">
                             {content.archive[currentLang]}
                         </p>
                     </div>

@@ -141,3 +141,28 @@ body {
   /* Increased skew for better visibility */
   color: #E5E5E5;
 }
+
+/* Typographie "Outline" (Contour) */
+.text-outline {
+  -webkit-text-stroke: 1px currentColor;
+  color: transparent;
+  transition: all 0.5s ease;
+}
+
+.text-outline:hover {
+  -webkit-text-stroke: 0px;
+  color: currentColor;
+  /* Se remplit au survol */
+}
+
+/* Lettrine Magazine */
+.drop-cap::first-letter {
+  float: left;
+  font-family: var(--font-serif);
+  font-size: 4.5rem;
+  line-height: 0.8;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  color: var(--color-darkroom-red);
+  font-style: italic;
+}

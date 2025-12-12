@@ -65,11 +65,43 @@ const SeriesDetail = () => {
                 type="article"
                 schema={artworkSchema}
             />
-            <div className="max-w-4xl mx-auto mb-16 text-center">
-                <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-5xl md:text-7xl font-bold font-space-mono mb-6 uppercase tracking-tighter" style={{ color: series.theme?.text }}>{series.title}</motion.h1>
-                <p className="text-silver font-inter text-sm tracking-widest uppercase mb-8">{series.year}</p>
-                <div className="w-12 h-0.5 bg-current mx-auto mb-8 opacity-50" />
-                <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="text-xl md:text-2xl leading-relaxed font-inter font-light whitespace-pre-line opacity-90">{series.description[currentLang]}</motion.p>
+            <div className="relative w-full px-6 md:px-12 mb-24 mt-12 grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                
+                {/* COLONNE GAUCHE : Titre Sticky & Monumental */}
+                <div className="md:col-span-5 md:sticky md:top-32 z-10 mix-blend-difference">
+                    <motion.div
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 1 }}
+                    >
+                        <span className="block font-space-mono text-xs text-darkroom-red uppercase tracking-widest mb-4">
+                            Série N° {series.id.length} — {series.year}
+                        </span>
+                        <h1 
+                            className="text-6xl md:text-9xl font-bold font-space-mono uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default"
+                            style={{ color: series.theme?.text }}
+                        >
+                            {series.title.split(' ').map((word, i) => (
+                                <span key={i} className="block">{word}</span>
+                            ))}
+                        </h1>
+                    </motion.div>
+                </div>
+
+                {/* COLONNE DROITE : Texte Éditorial */}
+                <div className="md:col-span-7 md:mt-24">
+                    <motion.div 
+                        initial={{ opacity: 0, y: 30 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.5, duration: 0.8 }}
+                        className="prose prose-invert prose-lg max-w-none"
+                    >
+                        {/* Utilisation de la Lettrine CSS définie plus tôt */}
+                        <p className="font-inter font-light text-xl md:text-2xl leading-relaxed text-justify drop-cap opacity-90">
+                            {series.description[currentLang]}
+                        </p>
+                    </motion.div>
+                </div>
             </div>
 
             <div className="w-full max-w-[90%] mx-auto">
