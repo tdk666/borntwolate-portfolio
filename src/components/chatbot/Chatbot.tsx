@@ -39,19 +39,20 @@ export const Chatbot = () => {
             // @ts-ignore - simple mapping fix
             let response = await sendMessageToGemini(userMsg, history);
 
-            // --- MISSION: INTERCEPT ORDER ACTION ---
             if (response.includes("<<<ORDER_ACTION>>>")) {
                 try {
-                    // 1. Extraction du JSON caché
-                    const parts = response.split("<<<ORDER_ACTION>>>");
-                    const cleanMessage = parts[0].trim();
-                    const jsonPart = parts[1].split("<<<END_ACTION>>>")[0];
+                    // 1. Extraction et Nettoyage du JSON (Support du Markdown)
+                    let jsonPart = response.split("<<<ORDER_ACTION>>>")[1].split("<<<END_ACTION>>>")[0];
+                    // Enlever les ```json éventuels
+                    jsonPart = jsonPart.replace(/```json/g, "").replace(/```/g, "").trim();
+
                     const orderData = JSON.parse(jsonPart);
+                    const cleanMessage = response.split("<<<ORDER_ACTION>>>")[0].trim();
 
                     console.log("🛒 Action Détectée : Commande", orderData);
 
                     // 2. Envoi de l'email
-                    await sendOrderToArtist({
+                    const emailResult = await sendOrderToArtist({
                         artwork_title: orderData.artwork_title || "Inconnue",
                         series_title: orderData.series_title || "Inconnue",
                         format: orderData.format || "Non spécifié",
@@ -61,19 +62,25 @@ export const Chatbot = () => {
                         ai_summary: orderData.ai_summary || ""
                     });
 
-                    // 3. Mise à jour de l'UI : Message IA nettoyé + Notification Système
-                    setMessages(prev => [
-                        ...prev,
-                        { sender: 'bot', text: cleanMessage },
-                        { sender: 'bot', text: "✅ Commande transmise avec succès à l'atelier." } // System message styled as bot for now
-                    ]);
+                    // 3. Gestion de la réponse UI selon le succès RÉEL
+                    const newMessages: { sender: 'bot', text: string }[] = [{ sender: 'bot', text: cleanMessage }];
+
+                    if (emailResult.success) {
+                        newMessages.push({ sender: 'bot', text: "✅ Commande transmise avec succès à l'atelier. Vous allez recevoir un email de confirmation." });
+                    } else {
+                        console.error("Echec EmailJS:", emailResult);
+                        newMessages.push({ sender: 'bot', text: "⚠️ Erreur technique : La commande a été notée par l'IA mais l'email de confirmation n'a pas pu partir. Veuillez nous contacter via la page Contact." });
+                    }
+
+                    // Mise à jour de l'UI
+                    setMessages(prev => [...prev, ...newMessages]);
 
                     // Fin du traitement pour ce tour
                     return;
 
                 } catch (e) {
-                    console.error("Erreur parsing JSON Order", e);
-                    // Fallback: Affiche tout si erreur
+                    console.error("Erreur parsing commande:", e);
+                    // Fallback: Affiche tout si erreur de parsing (mais sans crasher le bot)
                 }
             }
             // ---------------------------------------
