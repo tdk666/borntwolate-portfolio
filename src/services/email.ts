@@ -13,10 +13,10 @@ interface OrderDetails extends Record<string, unknown> {
 export const sendOrderToArtist = async (details: OrderDetails) => {
     try {
         const response = await emailjs.send(
-            import.meta.env.VITE_EMAILJS_SERVICE_ID,
-            import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+            "service_xxx",          // <--- ÉCRIVEZ VOTRE ID EN DUR ICI
+            "template_xxx",         // <--- ÉCRIVEZ VOTRE ID EN DUR ICI
             details,
-            import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+            "f_7R6Lzf9d8tbFTP3"     // <--- VOTRE CLÉ PUBLIQUE EN DUR ICI
         );
         return { success: true, status: response.status };
     } catch (error) {
