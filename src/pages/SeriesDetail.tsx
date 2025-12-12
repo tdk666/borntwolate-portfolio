@@ -102,8 +102,12 @@ const SeriesDetail = () => {
                 schema={artworkSchema}
             />
 
-            {/* LATERAL NAVIGATION */}
-            <SeriesNavigation nextId={nextSeries.id} prevId={prevSeries.id} />
+            {/* LATERAL NAVIGATION (Disabled when Lightbox is open) */}
+            <SeriesNavigation
+                nextId={nextSeries.id}
+                prevId={prevSeries.id}
+                isActive={selectedPhotoIndex === null}
+            />
 
             <div className="relative w-full px-6 md:px-12 mb-24 mt-12 grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
 

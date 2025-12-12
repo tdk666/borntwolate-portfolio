@@ -4,13 +4,16 @@ import { useEffect } from 'react';
 interface SeriesNavigationProps {
     nextId: string;
     prevId: string;
+    isActive: boolean;
 }
 
-const SeriesNavigation = ({ nextId, prevId }: SeriesNavigationProps) => {
+const SeriesNavigation = ({ nextId, prevId, isActive }: SeriesNavigationProps) => {
     const navigate = useNavigate();
 
     // KEYBOARD NAVIGATION
     useEffect(() => {
+        if (!isActive) return; // Disable if Lightbox is open
+
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'ArrowRight') navigate(`/series/${nextId}`);
             if (e.key === 'ArrowLeft') navigate(`/series/${prevId}`);
