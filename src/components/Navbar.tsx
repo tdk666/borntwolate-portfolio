@@ -123,13 +123,13 @@ const Navbar = () => {
                             initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }}
                             className="pt-8 border-t border-white/10 w-48 flex flex-col items-center gap-6"
                         >
-                            <button onClick={toggleLang} className="font-space-mono text-sm text-silver uppercase tracking-widest">
+                            <button onClick={toggleLang} aria-label="Changer la langue" className="font-space-mono text-sm text-silver uppercase tracking-widest">
                                 {i18n.language === 'fr' ? 'Switch to EN' : 'Passer en FR'}
                             </button>
 
                             <div className="flex items-center gap-8">
                                 {/* Darkroom Toggle Mobile */}
-                                <button onClick={toggleDarkroom} className="text-silver hover:text-darkroom-red transition-colors">
+                                <button onClick={toggleDarkroom} aria-label="Activer le mode chambre noire" className="text-silver hover:text-darkroom-red transition-colors">
                                     {isDarkroom ? <Sun size={24} /> : <Moon size={24} />}
                                 </button>
 

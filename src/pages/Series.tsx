@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { seriesData as series } from '../data/photos';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { SEO } from '../components/SEO'; // <--- AJOUT SEO
 
 const Series = () => {
     const { t, i18n } = useTranslation();
@@ -26,18 +27,11 @@ const Series = () => {
         const heights = new Array(columns).fill(0);
 
         series.forEach((seriesItem) => {
-            // Find cover photo to determine orientation
             const coverPhoto = seriesItem.photos.find(p => p.url === seriesItem.coverImage);
             const isPortrait = coverPhoto?.orientation === 'portrait';
-
-            // Find shortest column
             const shortestColIndex = heights.indexOf(Math.min(...heights));
 
-            // Add to column
             cols[shortestColIndex].push(seriesItem);
-
-            // Update height (Portrait = 1.6, Landscape = 1)
-            // We add extra for text height roughly
             const heightToAdd = isPortrait ? 1.6 : 1.0;
             heights[shortestColIndex] += heightToAdd;
         });
@@ -47,6 +41,12 @@ const Series = () => {
 
     return (
         <div className="min-h-screen pt-32 px-4 md:px-12 pb-20">
+            {/* SEO META DESCRIPTION */}
+            <SEO
+                title="Séries"
+                description="Explorez les séries thématiques de Théophile Dequecker. De l'hiver new-yorkais aux montagnes polonaises, chaque série raconte une histoire unique sur pellicule."
+            />
+
             <motion.h1
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -59,35 +59,49 @@ const Series = () => {
             <div className="flex gap-12 md:gap-20 items-start">
                 {distributedSeries.map((column, colIndex) => (
                     <div key={colIndex} className="flex flex-col gap-12 md:gap-20 flex-1 min-w-0">
-                        {column.map((seriesItem, index) => (
-                            <motion.div
-                                key={seriesItem.id}
-                                initial={{ opacity: 0, y: 40 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.8, delay: index * 0.2 }}
-                                className="group relative cursor-pointer"
-                            >
-                                <Link to={`/series/${seriesItem.id}`} className="block">
-                                    <div className="overflow-hidden mb-6">
-                                        <img
-                                            src={seriesItem.coverImage}
-                                            alt={seriesItem.title}
-                                            className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105"
-                                        />
-                                    </div>
-                                    <div className="flex justify-between items-baseline border-b border-silver/20 pb-4 group-hover:border-warm-sepia transition-colors duration-500">
-                                        <h2 className="text-2xl md:text-3xl font-space-mono text-off-white group-hover:text-warm-sepia transition-colors duration-300">
-                                            {seriesItem.title}
-                                        </h2>
-                                        <span className="text-sm font-inter text-silver opacity-60">{seriesItem.year}</span>
-                                    </div>
-                                    <p className="mt-4 text-silver font-inter text-sm max-w-md opacity-80 group-hover:opacity-100 transition-opacity">
-                                        {seriesItem.description[i18n.language.startsWith('en') ? 'en' : 'fr']}
-                                    </p>
-                                </Link>
-                            </motion.div>
-                        ))}
+                        {column.map((seriesItem, index) => {
+                            // OPTIMISATION LCP :
+                            // On charge en priorité la première image de chaque colonne (les 2 du haut sur desktop)
+                            const isPriority = index === 0;
+
+                            return (
+                                <motion.div
+                                    key={seriesItem.id}
+                                    initial={{ opacity: 0, y: 40 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.8, delay: index * 0.2 }}
+                                    className="group relative cursor-pointer"
+                                >
+                                    <Link
+                                        to={`/series/${seriesItem.id}`}
+                                        className="block focus:outline-none focus:ring-2 focus:ring-darkroom-red focus:ring-offset-4 focus:ring-offset-black rounded-sm"
+                                        aria-label={`Voir la série ${seriesItem.title}`}
+                                    >
+                                        <div className="overflow-hidden mb-6 bg-gray-900"> {/* Fond gris pour éviter flash */}
+                                            <img
+                                                src={seriesItem.coverImage}
+                                                alt="" // Alt vide car le titre est juste en dessous (évite redondance pour lecteurs d'écran)
+                                                className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105 block"
+                                                // PERFORMANCE
+                                                loading={isPriority ? "eager" : "lazy"}
+                                                fetchPriority={isPriority ? "high" : "auto"}
+                                                decoding={isPriority ? "sync" : "async"}
+                                            />
+                                        </div>
+                                        <div className="flex justify-between items-baseline border-b border-silver/20 pb-4 group-hover:border-warm-sepia transition-colors duration-500">
+                                            <h2 className="text-2xl md:text-3xl font-space-mono text-off-white group-hover:text-warm-sepia transition-colors duration-300">
+                                                {seriesItem.title}
+                                            </h2>
+                                            <span className="text-sm font-inter text-silver opacity-60">{seriesItem.year}</span>
+                                        </div>
+                                        <p className="mt-4 text-silver font-inter text-sm max-w-md opacity-80 group-hover:opacity-100 transition-opacity">
+                                            {seriesItem.description[i18n.language.startsWith('en') ? 'en' : 'fr']}
+                                        </p>
+                                    </Link>
+                                </motion.div>
+                            );
+                        })}
                     </div>
                 ))}
             </div>
