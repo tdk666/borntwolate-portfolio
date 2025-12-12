@@ -68,8 +68,9 @@ const SeriesDetail = () => {
     const desktopSize = `${desktopFactor / longestLineChars}vw`;
 
     // Mobile Calculation (Target ~90vw width)
-    // Factor reduced to 100 for safety.
-    const mobileFactor = 100;
+    // Factor: 90 / 0.6 = 150. 
+    // Increased to 120 for "Monumental" mobile feel (was 100), safe within margins.
+    const mobileFactor = 120;
     const mobileSize = `${mobileFactor / longestLineChars}vw`;
 
     const artworkSchema = {
@@ -121,7 +122,7 @@ const SeriesDetail = () => {
                             {/* Mobile Structure: Fluid based on mobileSize */}
                             <span
                                 className="md:hidden block"
-                                style={{ fontSize: `clamp(2rem, ${mobileSize}, 6rem)` }}
+                                style={{ fontSize: `clamp(2rem, ${mobileSize}, 10rem)` }}
                             >
                                 {lines.map((line, i) => (
                                     <span key={i} className="block">{line}</span>
