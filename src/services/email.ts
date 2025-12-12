@@ -6,6 +6,7 @@ interface OrderDetails extends Record<string, unknown> {
     format: string;
     address: string;
     client_email: string;
+    client_name: string;
     ai_summary: string;
 }
 

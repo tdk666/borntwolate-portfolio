@@ -57,6 +57,7 @@ export const Chatbot = () => {
                         format: orderData.format || "Non spécifié",
                         address: orderData.address || "Non communiquée",
                         client_email: orderData.client_email || "Non communiqué",
+                        client_name: orderData.client_name || "Non communiqué",
                         ai_summary: orderData.ai_summary || ""
                     });
 
