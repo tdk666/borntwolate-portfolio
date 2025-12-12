@@ -13,7 +13,8 @@ export const Magnetic = ({ children }: { children: React.ReactNode }) => {
         const { height, width, left, top } = ref.current.getBoundingClientRect();
         const middleX = clientX - (left + width / 2);
         const middleY = clientY - (top + height / 2);
-        setPosition({ x: middleX * 0.1, y: middleY * 0.1 }); // Force magnétique faible
+        // On divise par 5 pour une attraction subtile (le bouton bouge moins vite que la souris)
+        setPosition({ x: middleX * 0.2, y: middleY * 0.2 });
     };
 
     const reset = () => setPosition({ x: 0, y: 0 });

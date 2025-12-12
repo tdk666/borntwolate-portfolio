@@ -103,22 +103,24 @@ const Portfolio = () => {
                                 const developVariants = {
                                     hidden: {
                                         opacity: 0,
-                                        filter: "blur(10px) sepia(100%)", // Flou et sépia (chimie)
-                                        scale: 0.95
+                                        filter: "blur(8px) sepia(0.8) contrast(1.2)", // L'image latente
+                                        scale: 0.98,
+                                        y: 20
                                     },
                                     visible: {
                                         opacity: 1,
-                                        filter: "blur(0px) sepia(0%)",
+                                        filter: "blur(0px) sepia(0) contrast(1)", // Le fixateur agit
                                         scale: 1,
+                                        y: 0,
                                         transition: {
                                             duration: 1.2,
-                                            ease: [0.25, 1, 0.5, 1] as [number, number, number, number] // Courbe "Liquid"
+                                            ease: [0.25, 1, 0.5, 1] as [number, number, number, number] // Courbe "liquide"
                                         }
                                     },
                                     exit: {
                                         opacity: 0,
-                                        filter: "blur(10px)",
-                                        transition: { duration: 0.5 }
+                                        filter: "blur(5px)",
+                                        transition: { duration: 0.3 }
                                     }
                                 };
 
