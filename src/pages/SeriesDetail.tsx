@@ -45,7 +45,8 @@ const SeriesDetail = () => {
     // 2. Calculate font size based on the longest line to fill the width
 
     const words = series.title.split(' ');
-    const isShortTitle = series.title.length <= 14;
+    // Threshold increased to 18 to include "Puglia Famiglia" (15) & "Psychadelic MTL" (15) in the 'Short' stack logic (1 word/line)
+    const isShortTitle = series.title.length <= 18;
     let lines: string[] = [];
 
     if (isShortTitle) {
@@ -61,16 +62,14 @@ const SeriesDetail = () => {
     // Find the longest line to calculate the scaling factor
     const longestLineChars = Math.max(...lines.map(line => line.length));
 
-    // Desktop Calculation (Target ~45vw width)
-    // Factor derived from Space Mono aspect ratio (~0.6): 45 / 0.6 = 75. 
-    // Adjusted to 68 for safety margin (prevent word breaking).
-    const desktopFactor = 68;
+    // Desktop Calculation (Target STRICT ~35vw width to avoid overlap)
+    // Left col is ~37vw (5/12 of 90vw). Factor 55 ensures strictly safe width.
+    const desktopFactor = 55;
     const desktopSize = `${desktopFactor / longestLineChars}vw`;
 
     // Mobile Calculation (Target ~90vw width)
-    // Factor: 90 / 0.6 = 150. 
-    // Adjusted to 125 for safety margin.
-    const mobileFactor = 125;
+    // Factor reduced to 100 for safety.
+    const mobileFactor = 100;
     const mobileSize = `${mobileFactor / longestLineChars}vw`;
 
     const artworkSchema = {
@@ -122,7 +121,7 @@ const SeriesDetail = () => {
                             {/* Mobile Structure: Fluid based on mobileSize */}
                             <span
                                 className="md:hidden block"
-                                style={{ fontSize: `clamp(2.5rem, ${mobileSize}, 6rem)` }}
+                                style={{ fontSize: `clamp(2rem, ${mobileSize}, 6rem)` }}
                             >
                                 {lines.map((line, i) => (
                                     <span key={i} className="block">{line}</span>
@@ -132,7 +131,7 @@ const SeriesDetail = () => {
                             {/* Desktop Structure: Fluid based on desktopSize */}
                             <span
                                 className="hidden md:block"
-                                style={{ fontSize: `clamp(3.5rem, ${desktopSize}, 14rem)` }}
+                                style={{ fontSize: `clamp(3rem, ${desktopSize}, 12rem)` }}
                             >
                                 {lines.map((line, i) => (
                                     <span key={i} className="block">{line}</span>
