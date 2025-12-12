@@ -63,8 +63,8 @@ const SeriesDetail = () => {
     const longestLineChars = Math.max(...lines.map(line => line.length));
 
     // Desktop Calculation (Target STRICT ~35vw width to avoid overlap)
-    // Left col is ~37vw (5/12 of 90vw). Factor 55 ensures strictly safe width.
-    const desktopFactor = 55;
+    // Left col is ~37vw (5/12 of 90vw). Factor reduced to 50 for absolute safety (fixes "White Mounts").
+    const desktopFactor = 50;
     const desktopSize = `${desktopFactor / longestLineChars}vw`;
 
     // Mobile Calculation (Target ~90vw width)
@@ -142,7 +142,7 @@ const SeriesDetail = () => {
                 </div>
 
                 {/* COLONNE DROITE : Texte Éditorial */}
-                <div className="md:col-span-7 md:mt-24">
+                <div className="md:col-span-7">
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
