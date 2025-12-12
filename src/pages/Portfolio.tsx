@@ -111,9 +111,9 @@ const Portfolio = () => {
                                         role="button"
                                         aria-label={`Voir ${photo.title}`}
                                     >
-                                        {/* DESIGN GALERIE */}
-                                        <div className="bg-[#F9F8F4] p-3 shadow-md group-hover:shadow-xl transition-shadow duration-300 ease-out border border-white/5">
-                                            <div className="relative overflow-hidden bg-gray-200">
+                                        {/* DESIGN GALERIE - BORDER REMOVED */}
+                                        <div className="group-hover:shadow-xl transition-shadow duration-300 ease-out border border-white/5">
+                                            <div className="relative overflow-hidden bg-gray-900">
                                                 <img
                                                     src={photo.url}
                                                     alt={photo.alt_accessible?.[i18n.language.startsWith('en') ? 'en' : 'fr'] || photo.title}
