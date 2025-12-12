@@ -20,7 +20,7 @@ const SeriesNavigation = ({ nextId, prevId, isActive }: SeriesNavigationProps) =
         };
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [nextId, prevId, navigate]);
+    }, [nextId, prevId, navigate, isActive]);
 
     // GLOBAL SWIPE NAVIGATION (Mobile)
     // We attach listeners to window to ensure swipe works everywhere, regardless of z-index
