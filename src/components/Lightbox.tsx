@@ -66,8 +66,8 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                         dragElastic={0.2}
                         onDragEnd={handleDragEnd}
                         animate={controls}
-                        initial={{ opacity: 0, scale: 0.96 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
+                        initial={{ opacity: 0 }}
+                        whileInView={{ opacity: 1 }}
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
                         onContextMenu={(e) => e.preventDefault()}
                         draggable={false}
