@@ -30,16 +30,6 @@ const Navbar = () => {
     const { play: playClick } = useSound('/sounds/shutter-click.mp3', { volume: 0.4 });
     const { play: playHover } = useSound('/sounds/slide-projector.mp3', { volume: 0.1 });
 
-    // NEGATIVE PREVIEW LOGIC
-    const [hoveredLink, setHoveredLink] = useState<string | null>(null);
-
-    const previewImages: Record<string, string> = {
-        '/portfolio': '/images/canadian-evasion/autoportrait.JPG',
-        '/series': '/images/retro-mountain/mountain-retro.jpg',
-        '/about': '/images/mauvais-garcons/gab-bouquin.jpg',
-        '/contact': '/images/ny-winter/subway.JPG'
-    };
-
     const links = [
         { path: '/portfolio', label: t('nav.portfolio') },
         { path: '/series', label: t('nav.series') },
@@ -49,26 +39,6 @@ const Navbar = () => {
 
     return (
         <>
-            {/* NEGATIVE PREVIEW OVERLAY (Desktop Only) */}
-            <AnimatePresence mode="wait">
-                {hoveredLink && previewImages[hoveredLink] && (
-                    <motion.div
-                        key={hoveredLink} // Keeping key={hoveredLink} for proper transition between images
-                        initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
-                        animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, rotate: 2 }}
-                        transition={{ duration: 0.3 }}
-                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10 hidden md:block"
-                    >
-                        <img
-                            src={previewImages[hoveredLink]}
-                            className="w-[500px] h-auto rounded-sm shadow-2xl grayscale contrast-125 opacity-80"
-                            alt="Preview"
-                        />
-                    </motion.div>
-                )}
-            </AnimatePresence>
-
             <motion.nav
                 variants={{ visible: { y: 0 }, hidden: { y: '-100%' } }}
                 animate={hidden ? "hidden" : "visible"}
@@ -92,11 +62,7 @@ const Navbar = () => {
                                 key={link.path}
                                 to={link.path}
                                 onClick={() => playClick()}
-                                onMouseEnter={() => {
-                                    setHoveredLink(link.path);
-                                    playHover();
-                                }}
-                                onMouseLeave={() => setHoveredLink(null)}
+                                onMouseEnter={() => playHover()}
                                 className="relative group px-4 py-2 overflow-hidden"
                             >
                                 <span className={`relative z-10 transition-colors duration-500 ${isActive ? 'text-off-white font-medium' : 'text-silver/70 group-hover:text-white'} hover-analog inline-block drop-shadow-lg`}>
