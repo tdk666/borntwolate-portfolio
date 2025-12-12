@@ -53,25 +53,16 @@ const Navbar = () => {
             <AnimatePresence mode="wait">
                 {hoveredLink && previewImages[hoveredLink] && (
                     <motion.div
-                        key={hoveredLink}
-                        initial={{ opacity: 0, scale: 0.95, filter: 'blur(5px)' }}
-                        animate={{
-                            opacity: 0.4,
-                            scale: 1,
-                            filter: 'blur(0px)',
-                            transition: { duration: 0.4, ease: "easeOut" }
-                        }}
-                        exit={{
-                            opacity: 0,
-                            scale: 0.98,
-                            filter: 'blur(5px)',
-                            transition: { duration: 0.2 }
-                        }}
-                        className="fixed top-24 left-1/2 -translate-x-1/2 pointer-events-none z-0 hidden md:block mix-blend-screen"
+                        key={hoveredLink} // Keeping key={hoveredLink} for proper transition between images
+                        initial={{ opacity: 0, scale: 0.9, rotate: -2 }}
+                        animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, rotate: 2 }}
+                        transition={{ duration: 0.3 }}
+                        className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none z-10 hidden md:block"
                     >
                         <img
                             src={previewImages[hoveredLink]}
-                            className="w-[400px] h-auto object-cover opacity-60 grayscale invert rounded-sm shadow-2xl skew-x-[-2deg]"
+                            className="w-[500px] h-auto rounded-sm shadow-2xl grayscale contrast-125 opacity-80"
                             alt="Preview"
                         />
                     </motion.div>
