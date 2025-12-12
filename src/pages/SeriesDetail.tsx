@@ -62,13 +62,15 @@ const SeriesDetail = () => {
     const longestLineChars = Math.max(...lines.map(line => line.length));
 
     // Desktop Calculation (Target ~45vw width)
-    // Factor derived from Space Mono aspect ratio (~0.6): 45 / 0.6 = 75
-    const desktopFactor = 75;
+    // Factor derived from Space Mono aspect ratio (~0.6): 45 / 0.6 = 75. 
+    // Adjusted to 68 for safety margin (prevent word breaking).
+    const desktopFactor = 68;
     const desktopSize = `${desktopFactor / longestLineChars}vw`;
 
     // Mobile Calculation (Target ~90vw width)
-    // Factor: 90 / 0.6 = 150. Using 140 for safety padding.
-    const mobileFactor = 140;
+    // Factor: 90 / 0.6 = 150. 
+    // Adjusted to 125 for safety margin.
+    const mobileFactor = 125;
     const mobileSize = `${mobileFactor / longestLineChars}vw`;
 
     const artworkSchema = {
@@ -114,7 +116,7 @@ const SeriesDetail = () => {
                             Série N° {series.id.length} — {series.year}
                         </span>
                         <h1
-                            className="font-bold font-space-mono uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default break-words hyphens-auto"
+                            className="font-bold font-space-mono uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default whitespace-nowrap"
                             style={{ color: series.theme?.text }}
                         >
                             {/* Mobile Structure: Fluid based on mobileSize */}
