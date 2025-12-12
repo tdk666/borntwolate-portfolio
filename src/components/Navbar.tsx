@@ -50,19 +50,28 @@ const Navbar = () => {
     return (
         <>
             {/* NEGATIVE PREVIEW OVERLAY (Desktop Only) */}
-            <AnimatePresence>
+            <AnimatePresence mode="wait">
                 {hoveredLink && previewImages[hoveredLink] && (
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-                        animate={{ opacity: 1, scale: 1, rotate: 0 }}
-                        exit={{ opacity: 0, scale: 0.8, rotate: 5 }}
-                        transition={{ duration: 0.4, ease: "circOut" }}
-                        className="fixed top-24 left-1/2 -translate-x-1/2 pointer-events-none z-0 hidden md:block mix-blend-difference opacity-60"
-                        key="preview-image"
+                        key={hoveredLink}
+                        initial={{ opacity: 0, scale: 0.95, filter: 'blur(5px)' }}
+                        animate={{
+                            opacity: 0.4,
+                            scale: 1,
+                            filter: 'blur(0px)',
+                            transition: { duration: 0.4, ease: "easeOut" }
+                        }}
+                        exit={{
+                            opacity: 0,
+                            scale: 0.98,
+                            filter: 'blur(5px)',
+                            transition: { duration: 0.2 }
+                        }}
+                        className="fixed top-24 left-1/2 -translate-x-1/2 pointer-events-none z-0 hidden md:block mix-blend-screen"
                     >
                         <img
                             src={previewImages[hoveredLink]}
-                            className="w-80 h-auto rounded-sm border border-white/20 filter grayscale invert contrast-125 shadow-2xl skew-x-[-2deg]" // Added 'invert' and 'grayscale' for negative effect
+                            className="w-[400px] h-auto object-cover opacity-60 grayscale invert rounded-sm shadow-2xl skew-x-[-2deg]"
                             alt="Preview"
                         />
                     </motion.div>
@@ -97,26 +106,18 @@ const Navbar = () => {
                                     playHover();
                                 }}
                                 onMouseLeave={() => setHoveredLink(null)}
-                                className="relative group px-4 py-2" // Padding for glow area
+                                className="relative group px-4 py-2 overflow-hidden"
                             >
-                                <span className={`relative z-10 transition-colors duration-300 ${isActive ? 'text-white' : 'text-silver group-hover:text-white'} hover-analog inline-block`}>
+                                <span className={`relative z-10 transition-colors duration-500 ${isActive ? 'text-off-white font-medium' : 'text-silver/70 group-hover:text-white'} hover-analog inline-block`}>
                                     {link.label}
                                 </span>
 
-                                {/* Red Light District - Active Glow */}
+                                {/* Red Light District - Active Glow (Safe Light) */}
                                 {isActive && (
                                     <motion.div
                                         layoutId="activeNav"
-                                        className="absolute inset-0 bg-darkroom-red/30 blur-xl rounded-full z-0"
-                                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                                    />
-                                )}
-
-                                {/* Active LED Dot */}
-                                {isActive && (
-                                    <motion.div
-                                        layoutId="activeDot"
-                                        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-darkroom-red rounded-full shadow-[0_0_12px_3px_rgba(139,0,0,1)]"
+                                        className="absolute inset-0 bg-gradient-to-t from-darkroom-red/40 to-transparent blur-md rounded-sm z-0"
+                                        transition={{ type: "spring", stiffness: 200, damping: 30 }}
                                     />
                                 )}
                             </Link>

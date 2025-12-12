@@ -14,6 +14,7 @@ import { Chatbot } from './components/chatbot/Chatbot';
 import Footer from './components/Footer';
 import NotFound from './pages/NotFound';
 import Legals from './pages/Legals';
+import ScrollToTop from './components/ScrollToTop';
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -44,6 +45,7 @@ function App() {
         onContextMenu={(e) => (e.target as HTMLElement).tagName === 'IMG' && e.preventDefault()}
       >
         <div className="fixed inset-0 pointer-events-none z-50 opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }}></div>
+        <ScrollToTop />
         <Navbar />
         <main className="flex-grow">
           <AnimatedRoutes />
