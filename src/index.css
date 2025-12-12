@@ -42,8 +42,7 @@ body {
 
 /* STYLE GALERIE */
 .gallery-matting {
-  padding: 12px;
-  background-color: #F8F6F0;
+  /* padding and background removed for no-border look */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
   transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
 }
