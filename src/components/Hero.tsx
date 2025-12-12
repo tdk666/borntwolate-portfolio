@@ -126,7 +126,7 @@ const Hero = () => {
                         y: 0,
                         transition: { delay: 2.2, duration: 1.2, ease: "easeOut" }
                     }}
-                    className="text-5xl md:text-8xl font-serif italic text-off-white tracking-tighter mb-6"
+                    className="text-5xl md:text-8xl font-serif italic text-off-white tracking-tighter mb-6 drop-shadow-lg"
                 >
                     Théophile Dequecker
                 </motion.h1>
@@ -135,7 +135,7 @@ const Hero = () => {
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ delay: 2.8, duration: 1.5, ease: "circOut" }}
-                    className="h-px w-32 bg-darkroom-red/80 mb-6"
+                    className="h-px w-32 bg-darkroom-red/80 mb-6 drop-shadow-lg"
                 />
 
                 <motion.h2
@@ -147,7 +147,7 @@ const Hero = () => {
                         y: 0,
                         transition: { delay: 3.0, duration: 1.2, ease: "easeOut" }
                     }}
-                    className="text-xs md:text-sm font-space-mono text-silver uppercase tracking-[0.5em]"
+                    className="text-xs md:text-sm font-space-mono text-silver uppercase tracking-[0.5em] drop-shadow-lg"
                 >
                     {t('home.subtitle')}
                 </motion.h2>

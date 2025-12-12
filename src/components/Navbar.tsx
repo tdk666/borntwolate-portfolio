@@ -84,7 +84,7 @@ const Navbar = () => {
                 </div>
 
                 {/* DESKTOP NAVIGATION */}
-                <div className="hidden md:flex items-center gap-6 font-space-mono text-sm tracking-widest uppercase drop-shadow-md">
+                <div className="hidden md:flex items-center gap-6 font-space-mono text-sm tracking-widest uppercase drop-shadow-lg">
                     {links.map((link) => {
                         const isActive = location.pathname === link.path;
                         return (
@@ -99,7 +99,7 @@ const Navbar = () => {
                                 onMouseLeave={() => setHoveredLink(null)}
                                 className="relative group px-4 py-2 overflow-hidden"
                             >
-                                <span className={`relative z-10 transition-colors duration-500 ${isActive ? 'text-off-white font-medium' : 'text-silver/70 group-hover:text-white'} hover-analog inline-block`}>
+                                <span className={`relative z-10 transition-colors duration-500 ${isActive ? 'text-off-white font-medium' : 'text-silver/70 group-hover:text-white'} hover-analog inline-block drop-shadow-lg`}>
                                     {link.label}
                                 </span>
 
@@ -117,18 +117,18 @@ const Navbar = () => {
 
                     <div className="w-px h-6 bg-white/20 mx-2" />
 
-                    <button onClick={toggleLang} aria-label="Changer la langue" className="hover:text-warm-sepia transition-colors font-bold">
+                    <button onClick={toggleLang} aria-label="Changer la langue" className="hover:text-warm-sepia transition-colors font-bold drop-shadow-lg">
                         {i18n.language === 'fr' ? 'EN' : 'FR'}
                     </button>
-                    <a href="https://instagram.com/borntwolate" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-warm-sepia transition-colors">
+                    <a href="https://instagram.com/borntwolate" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-warm-sepia transition-colors drop-shadow-lg">
                         <Instagram size={20} />
                     </a>
-                    <button onClick={toggleDarkroom} aria-label="Mode Chambre Noire" className="hover:text-darkroom-red transition-colors">
+                    <button onClick={toggleDarkroom} aria-label="Mode Chambre Noire" className="hover:text-darkroom-red transition-colors drop-shadow-lg">
                         {isDarkroom ? <Sun size={20} /> : <Moon size={20} />}
                     </button>
                 </div>
 
-                <button onClick={() => setIsOpen(!isOpen)} aria-label="Menu" className="md:hidden z-50 p-2 -mr-2 text-off-white drop-shadow-md">
+                <button onClick={() => setIsOpen(!isOpen)} aria-label="Menu" className="md:hidden z-50 p-2 -mr-2 text-off-white drop-shadow-lg">
                     {isOpen ? <X size={28} /> : <Menu size={28} />}
                 </button>
             </motion.nav>

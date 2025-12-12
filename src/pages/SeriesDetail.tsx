@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import Masonry from 'react-masonry-css';
 import Lightbox from '../components/Lightbox';
 import { useTranslation } from 'react-i18next';
+import SeriesNavigation from '../components/SeriesNavigation';
 
 const SeriesDetail = () => {
     const { id } = useParams<{ id: string }>();
@@ -65,6 +66,10 @@ const SeriesDetail = () => {
                 type="article"
                 schema={artworkSchema}
             />
+
+            {/* LATERAL NAVIGATION */}
+            <SeriesNavigation nextId={nextSeries.id} prevId={prevSeries.id} />
+
             <div className="relative w-full px-6 md:px-12 mb-24 mt-12 grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
 
                 {/* COLONNE GAUCHE : Titre Sticky & Monumental */}
@@ -78,7 +83,7 @@ const SeriesDetail = () => {
                             Série N° {series.id.length} — {series.year}
                         </span>
                         <h1
-                            className="text-6xl md:text-8xl lg:text-9xl font-bold font-space-mono uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default break-words hyphens-auto"
+                            className="text-6xl md:text-8xl lg:text-9xl font-bold font-space-mono uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default break-words md:break-normal md:whitespace-nowrap hyphens-auto md:hyphens-none"
                             style={{ color: series.theme?.text }}
                         >
                             {series.title.split(' ').map((word, i) => (
