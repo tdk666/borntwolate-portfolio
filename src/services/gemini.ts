@@ -65,7 +65,7 @@ export const sendMessageToGemini = async (message: string, history: { role: 'use
         const chat = model.startChat({
             history: history,
             generationConfig: {
-                maxOutputTokens: 500, // Augmenté un peu pour permettre le JSON complet
+                maxOutputTokens: 1500, // Augmenté pour éviter les coupures
             },
         });
 
