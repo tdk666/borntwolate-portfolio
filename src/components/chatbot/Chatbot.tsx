@@ -21,8 +21,19 @@ export const Chatbot = () => {
 
     // ... (rest of imports)
 
+    const [lastMessageTime, setLastMessageTime] = useState<number[]>([]);
+
     const handleSendMessage = async () => {
         if (!inputValue.trim()) return;
+
+        // Rate Limiting: Max 5 messages per minute
+        const now = Date.now();
+        const recentMessages = lastMessageTime.filter(time => now - time < 60000);
+        if (recentMessages.length >= 5) {
+            setMessages(prev => [...prev, { sender: 'bot', text: "⏳ Oups ! Vous parlez trop vite pour le Labo. Veuillez attendre une minute." }]);
+            return;
+        }
+        setLastMessageTime([...recentMessages, now]);
 
         const userMsg = inputValue;
         setInputValue('');
