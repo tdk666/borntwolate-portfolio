@@ -45,6 +45,11 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] bg-black/98 backdrop-blur-xl flex items-center justify-center"
             onClick={onClose}
+            onPanEnd={(_, info) => {
+                const threshold = 50;
+                if (info.offset.x > threshold) onPrev();
+                else if (info.offset.x < -threshold) onNext();
+            }}
         >
             <button onClick={onClose} aria-label="Fermer l'image" className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors p-2 z-50"><X size={32} strokeWidth={1} /></button>
 

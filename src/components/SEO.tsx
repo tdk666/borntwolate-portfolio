@@ -9,7 +9,7 @@ interface SEOProps {
 }
 
 export const SEO = ({ title, description, image, type = 'website', schema }: SEOProps) => {
-    const siteTitle = "Théophile Dequecker | Born Two Late";
+    const siteTitle = "Théophile Dequecker — Photographe Argentique";
     const metaTitle = title === "Home" ? siteTitle : `${title} | ${siteTitle}`;
 
     // Default image if none provided (e.g., autoportrait or a generic share image)
