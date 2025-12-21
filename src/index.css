@@ -18,6 +18,22 @@ body {
   color: var(--color-off-white);
   font-family: var(--font-sans);
   overflow-x: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Content Protection */
+img {
+  -webkit-user-drag: none;
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: auto;
+}
+
+input,
+textarea {
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 /* Living Grain Animation */

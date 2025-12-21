@@ -25,6 +25,14 @@ const SeriesNavigation = ({ nextId, prevId, isActive }: SeriesNavigationProps) =
     // GLOBAL SWIPE NAVIGATION (Mobile)
     // We attach listeners to window to ensure swipe works everywhere, regardless of z-index
     useEffect(() => {
+        // Prevent Series Swipe if Lightbox is OPEN (isActive is false when Lightbox is Open - see SeriesDetail.tsx line 109)
+        // Wait, let's double check SeriesDetail.tsx logic.
+        // Line 109: isActive={selectedPhotoIndex === null}
+        // So isActive is TRUE when Lightbox is CLOSED (we are in Overview).
+        // So if (!isActive) return; is CORRECT.
+
+        if (!isActive) return;
+
         let touchStartX = 0;
         let touchStartY = 0;
 
@@ -57,7 +65,7 @@ const SeriesNavigation = ({ nextId, prevId, isActive }: SeriesNavigationProps) =
             window.removeEventListener('touchstart', handleTouchStart);
             window.removeEventListener('touchend', handleTouchEnd);
         };
-    }, [nextId, prevId, navigate]);
+    }, [nextId, prevId, navigate, isActive]);
 
     return (
         <>

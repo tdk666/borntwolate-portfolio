@@ -28,6 +28,30 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, [handleKeyDown]);
 
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+    const onTouchStart = (e: React.TouchEvent) => {
+        e.stopPropagation();
+        setTouchEnd(null);
+        setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const onTouchMove = (e: React.TouchEvent) => {
+        e.stopPropagation();
+        setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const onTouchEnd = (e: React.TouchEvent) => {
+        e.stopPropagation();
+        if (!touchStart || !touchEnd) return;
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > 50;
+        const isRightSwipe = distance < -50;
+        if (isLeftSwipe) onNext();
+        if (isRightSwipe) onPrev();
+    };
+
     const handleDragEnd = (_: any, info: PanInfo) => {
         const threshold = 50;
         if (info.offset.x > threshold) onPrev();
@@ -45,11 +69,9 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] bg-black/98 backdrop-blur-xl flex items-center justify-center"
             onClick={onClose}
-            onPanEnd={(_, info) => {
-                const threshold = 50;
-                if (info.offset.x > threshold) onPrev();
-                else if (info.offset.x < -threshold) onNext();
-            }}
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
         >
             <button onClick={onClose} aria-label="Fermer l'image" className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors p-2 z-50"><X size={32} strokeWidth={1} /></button>
 
