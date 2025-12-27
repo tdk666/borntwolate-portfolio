@@ -69,14 +69,14 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
         if (isRightSwipe) handleNavigate('prev');
     };
 
-    const handleDragEnd = (_: any, info: PanInfo) => {
+    const handleDragEnd = (_: unknown, info: PanInfo) => {
         const threshold = 50;
         if (info.offset.x > threshold) handleNavigate('prev');
         else if (info.offset.x < -threshold) handleNavigate('next');
         else controls.start({ x: 0 });
     };
 
-    const getLocalizedText = (content: any) => {
+    const getLocalizedText = (content: { fr: string, en: string } | string) => {
         if (!content) return "";
         return typeof content === 'string' ? content : (content[currentLang] || content['fr']);
     };

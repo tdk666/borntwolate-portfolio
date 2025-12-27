@@ -119,7 +119,7 @@ const SeriesDetail = () => {
                         transition={{ duration: 1 }}
                     >
                         <span className="block font-space-mono text-xs text-darkroom-red uppercase tracking-widest mb-4">
-                            Série N° {series.id.length} — {series.year}
+                            Série N° {seriesData.length - seriesIndex} — {series.year}
                         </span>
                         <h1
                             className="font-bold font-space-mono uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default whitespace-nowrap"

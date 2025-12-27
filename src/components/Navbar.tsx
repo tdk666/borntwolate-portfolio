@@ -20,6 +20,7 @@ const Navbar = () => {
         else setHidden(false);
     });
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     useEffect(() => { setIsOpen(false); }, [location]);
     useEffect(() => { document.body.style.overflow = isOpen ? 'hidden' : 'unset'; }, [isOpen]);
 

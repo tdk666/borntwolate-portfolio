@@ -23,6 +23,7 @@ export const useSound = (soundFile: string, { loop = false, volume = 0.5 }: UseS
 
     const play = useCallback(() => {
         if (!loop) {
+            // eslint-disable-next-line react-hooks/immutability
             audio.currentTime = 0;
         }
         audio.play().catch(e => console.error("Audio playback blocked:", e));

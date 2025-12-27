@@ -16,7 +16,7 @@ const Portfolio = () => {
 
     // Filter & Shuffle
     const filteredPhotos = useMemo(() => {
-        let result = filter === 'all'
+        const result = filter === 'all'
             ? [...photos]
             : photos.filter((photo) => photo.category === filter);
 

@@ -47,8 +47,8 @@ export const Chatbot = () => {
                 parts: [{ text: m.text }]
             }));
 
-            // @ts-ignore - simple mapping fix
-            let response = await sendMessageToGemini(userMsg, history);
+            // @ts-expect-error - simple mapping fix
+            const response = await sendMessageToGemini(userMsg, history);
 
             if (response.includes("<<<ORDER_ACTION>>>")) {
                 try {
@@ -102,18 +102,20 @@ export const Chatbot = () => {
                 setMessages(prev => [...prev, { sender: 'bot', text: response }]);
             }
 
-        } catch (error: any) {
-            console.error("Capture d'erreur Chatbot:", error);
+        } catch (error) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const err = error as any;
+            console.error("Capture d'erreur Chatbot:", err);
             // ... (error handling code remains same)
             let errorMsg = "Le processus de développement a échoué. Essayez plus tard.";
 
-            if (error.message === 'API_KEY_MISSING') {
+            if (err.message === 'API_KEY_MISSING') {
                 errorMsg = "Configuration manquante : Clé API (VITE_GEMINI_API_KEY) introuvable dans le laboratoire.";
-            } else if (error.message.includes('429') || error.message.includes('Quota')) {
+            } else if (err.message?.includes('429') || err.message?.includes('Quota')) {
                 errorMsg = "Le Labo est surchargé (Quota dépassé). Veuillez attendre quelques instants avant de reposer votre question.";
-            } else if (error.message) {
+            } else if (err.message) {
                 // Temporary debugging: show the real error
-                errorMsg = `Erreur technique: ${error.message}`;
+                errorMsg = `Erreur technique: ${err.message}`;
             }
 
             setMessages(prev => [...prev, { sender: 'bot', text: errorMsg }]);

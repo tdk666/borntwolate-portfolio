@@ -1,6 +1,6 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { photos } from '../data/photos';
+import { photos, type Photo } from '../data/photos';
 import { useTranslation } from 'react-i18next';
 
 const Hero = () => {
@@ -9,14 +9,16 @@ const Hero = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
 
-    // Pre-calculate shuffled lists for both orientations
-    const landscapePhotos = useMemo(() =>
-        photos.filter(p => p.orientation === 'landscape').sort(() => 0.5 - Math.random()).slice(0, 8)
-        , []);
+    // State for shuffled photos to avoid impure render calls
+    const [landscapePhotos, setLandscapePhotos] = useState<Photo[]>([]);
+    const [portraitPhotos, setPortraitPhotos] = useState<Photo[]>([]);
 
-    const portraitPhotos = useMemo(() =>
-        photos.filter(p => p.orientation === 'portrait').sort(() => 0.5 - Math.random()).slice(0, 8)
-        , []);
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setLandscapePhotos(photos.filter(p => p.orientation === 'landscape').sort(() => 0.5 - Math.random()).slice(0, 8));
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setPortraitPhotos(photos.filter(p => p.orientation === 'portrait').sort(() => 0.5 - Math.random()).slice(0, 8));
+    }, []);
 
     // Select the active list based on screen width
     const currentPhotos = isMobile ? portraitPhotos : landscapePhotos;
@@ -33,6 +35,7 @@ const Hero = () => {
 
     useEffect(() => {
         // Reset index when switching modes to avoid out-of-bounds
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCurrentIndex(0);
     }, [isMobile]);
 
