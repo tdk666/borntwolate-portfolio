@@ -15,47 +15,64 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
     const { i18n } = useTranslation();
     const currentLang = i18n.language.split('-')[0] as 'fr' | 'en';
     const controls = useAnimation();
-    const [showInfo, setShowInfo] = useState(false); // État pour le panneau mobile
+    const [isNavigating, setIsNavigating] = useState(false);
+    const [showInfo, setShowInfo] = useState(false);
+
+    const handleNavigate = useCallback((direction: 'next' | 'prev') => {
+        if (isNavigating) return;
+        setIsNavigating(true);
+        if (direction === 'next') onNext();
+        else onPrev();
+
+        // Cooldown to prevent double-swipes
+        setTimeout(() => setIsNavigating(false), 500);
+    }, [isNavigating, onNext, onPrev]);
 
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
         if (e.key === 'Escape') onClose();
-        if (e.key === 'ArrowRight') onNext();
-        if (e.key === 'ArrowLeft') onPrev();
-    }, [onClose, onNext, onPrev]);
+        if (e.key === 'ArrowRight') handleNavigate('next');
+        if (e.key === 'ArrowLeft') handleNavigate('prev');
+    }, [onClose, handleNavigate]);
 
     useEffect(() => {
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, [handleKeyDown]);
 
+    // Use Framer Motion's onDragEnd for the image swipe, but we can also keep simple touch logic for the background
+    // However, if we drag the image, it might trigger background touch events if we don't stop propagation.
+    // The previous implementation had both drag on image AND touch on container.
+
+    // Improved background touch handler with debounce check
     const [touchStart, setTouchStart] = useState<number | null>(null);
     const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
     const onTouchStart = (e: React.TouchEvent) => {
-        e.stopPropagation();
+        // Only track touch if we are NOT on the image (which has its own drag handler)
+        // But e.target check might be complex with internal elements.
+        // Simplest: just track it universally but respect the isNavigating flag.
         setTouchEnd(null);
         setTouchStart(e.targetTouches[0].clientX);
     };
 
     const onTouchMove = (e: React.TouchEvent) => {
-        e.stopPropagation();
         setTouchEnd(e.targetTouches[0].clientX);
     };
 
-    const onTouchEnd = (e: React.TouchEvent) => {
-        e.stopPropagation();
+    const onTouchEnd = () => {
         if (!touchStart || !touchEnd) return;
         const distance = touchStart - touchEnd;
         const isLeftSwipe = distance > 50;
         const isRightSwipe = distance < -50;
-        if (isLeftSwipe) onNext();
-        if (isRightSwipe) onPrev();
+
+        if (isLeftSwipe) handleNavigate('next');
+        if (isRightSwipe) handleNavigate('prev');
     };
 
     const handleDragEnd = (_: any, info: PanInfo) => {
         const threshold = 50;
-        if (info.offset.x > threshold) onPrev();
-        else if (info.offset.x < -threshold) onNext();
+        if (info.offset.x > threshold) handleNavigate('prev');
+        else if (info.offset.x < -threshold) handleNavigate('next');
         else controls.start({ x: 0 });
     };
 
