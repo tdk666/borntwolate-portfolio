@@ -1,46 +1,24 @@
+
 export const aboutData = {
-    manifesto: {
-        intro: {
-            fr: `"À une époque obsédée par l'immédiateté et la perfection numérique, j'ai choisi la voie lente. Celle de l'attente, de l'incertitude et de la chimie."`,
-            en: `"In an era obsessed with immediacy and digital perfection, I chose the slow path. The one of waiting, uncertainty, and chemistry."`
-        },
-        bornTooLate: {
-            fr: "n'est pas seulement un nom, c'est une posture. C'est la volonté de capturer le monde contemporain avec l'âme d'une autre époque. Armé de boîtiers mécaniques, je traque cette fraction de seconde où la lumière, la texture et l'émotion s'alignent pour former un souvenir tangible.",
-            en: "is not just a name, it's a stance. It is the will to capture the contemporary world with the soul of another era. Armed with mechanical cameras, I hunt for that fraction of a second where light, texture, and emotion align to form a tangible memory."
-        },
-        exploration: {
-            fr: "Mon travail est une exploration du grain. Du scintillement des montagnes alpines à la blancheur crayeuse des Pouilles, en passant par la mélancolie hivernale de New York, je cherche à révéler la poésie brute du quotidien. Je ne retouche pas la réalité ; je choisis la pellicule qui saura la raconter avec le plus de justesse.",
-            en: "My work is an exploration of grain. From the shimmer of Alpine mountains to the chalky whiteness of Puglia, through the winter melancholy of New York, I seek to reveal the raw poetry of daily life. I do not retouch reality; I choose the film stock that will tell it with the most accuracy."
-        },
-        archive: {
-            fr: "Ce portfolio est une archive vivante de ces errances. Une invitation à ralentir et à regarder vraiment.",
-            en: "This portfolio is a living archive of these wanderings. An invitation to slow down and truly look."
-        },
-        timeline: [
-            {
-                year: "2020",
-                title: { fr: "L'Initiation", en: "The Initiation" },
-                desc: {
-                    fr: "La découverte de l'obturateur mécanique. S'éloigner du pixel pour embrasser l'imprévisibilité du processus chimique. Les premières pellicules sont une leçon de patience.",
-                    en: "The discovery of the mechanical shutter. Moving away from the pixel to embrace the unpredictability of the chemical process. The first rolls are a lesson in patience."
-                }
-            },
-            {
-                year: "2023",
-                title: { fr: "L'Errance", en: "The Wandering" },
-                desc: {
-                    fr: "De la \"Canadian Evasion\" aux rues de Montréal. Une année de route et de mouvement. Expérimentation des films couleur (Portra, LomoChrome) pour traduire l'immensité des paysages nord-américains.",
-                    en: "From \"Canadian Evasion\" to the streets of Montreal. A year of road and movement. Experimenting with color films (Portra, LomoChrome) to translate the vastness of North American landscapes."
-                }
-            },
-            {
-                year: "2024-2025",
-                title: { fr: "Le Grain & La Matière", en: "The Grain & The Matter" },
-                desc: {
-                    fr: "Définition d'une signature esthétique. La série \"Retro Mountain\" marque un tournant vers des contrastes plus profonds et des compositions structurelles. L'usage de la Rollei Retro 400S apporte une texture charbonneuse au travail.",
-                    en: "Definition of an aesthetic signature. The \"Retro Mountain\" series marks a turning point towards deeper contrasts and structural compositions. The use of Rollei Retro 400S brings a charcoal texture to the work."
-                }
-            }
+    fr: {
+        title: "L'Art de la Nostalgie",
+        subtitle: "Photographie Argentique",
+        text: [
+            "Tout commence en juin 2020, par la transmission d'un héritage : un Nikon F301 reçu de ma mère. Ce boîtier a été le déclencheur d'une obsession pour le grain et la matière. Si mes premiers clichés capturaient l'insouciance des vacances entre amis, j'ai rapidement ressenti le besoin de structurer mon regard, de dépasser l'instantané pour construire une narration.",
+            "C'est là que le projet « Born Too Late » prend tout son sens. Ce nom n'est pas un regret, c'est une déclaration. Celle d'une nostalgie fantôme pour une époque que je n'ai pas vécue, mais que je cherche à ressusciter à travers la chimie de la pellicule. Contrairement au numérique, l'argentique impose une philosophie de la rareté : chaque déclenchement est un choix, un renoncement, une prise de risque.",
+            "Mon équipement a évolué vers un Rollei 35, plus compact, plus discret, compagnon idéal pour saisir le vif des voyages et l'intimité des scènes de rue. J'aime cette temporalité étirée : l'attente du développement, l'incertitude du résultat, et finalement la redécouverte d'un souvenir qu'on avait laissé mûrir.",
+            "Depuis mars 2023 et la série fondatrice « Rue des Mauvais Garçons », je conçois mon travail par cycles. Il n'y a pas de style unique, figé ou répétitif. Au contraire, chaque série est une rupture. Je change d'appareil, de pellicule et d'approche pour m'adapter au sujet. La seule constante, c'est cette recherche d'une esthétique qui traverse le temps, cherchant à ancrer le présent dans une douce éternité."
         ]
-    }
+    },
+    en: {
+        title: "The Art of Nostalgia",
+        subtitle: "Analog Photography",
+        text: [
+            "It all began in June 2020 with a passed-down legacy: a Nikon F301 from my mother. This camera triggered an obsession for grain and texture. While my first shots captured the carefree nature of holidays with friends, I quickly felt the need to structure my gaze, to go beyond the snapshot to build a narrative.",
+            "That is where the 'Born Too Late' project makes perfect sense. This name is not a regret; it is a declaration. One of a phantom nostalgia for an era I did not live through but seek to resurrect through the chemistry of film. Unlike digital, analog imposes a philosophy of scarcity: each click is a choice, a renunciation, a risk.",
+            "My gear evolved towards a Rollei 35, more compact, more discreet, the ideal companion for capturing the liveliness of travel and the intimacy of street scenes. I love this stretched temporality: the wait for development, the uncertainty of the result, and finally the rediscovery of a memory left to mature.",
+            "Since March 2023 and the founding series 'Rue des Mauvais Garçons', I conceive my work in cycles. There is no unique, fixed, or repetitive style. On the contrary, each series is a rupture. I change cameras, film stocks, and approaches to adapt to the subject. The only constant is this search for an aesthetic that spans time, seeking to anchor the present in a gentle eternity."
+        ]
+    },
+    image: "/images/canadian-evasion/autoportrait.JPG"
 };
