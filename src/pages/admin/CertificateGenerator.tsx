@@ -17,7 +17,7 @@ const CertificateGenerator = () => {
         window.print();
     };
 
-    // --- LE TEMPLATE DU CERTIFICAT (Défini une fois, utilisé deux fois) ---
+    // --- LE TEMPLATE DU CERTIFICAT (Composant pur) ---
     const CertificateTemplate = () => (
         <div className="bg-white text-black w-[210mm] h-[296mm] p-[20mm] relative box-border overflow-hidden mx-auto">
             {/* Bordure de sécurité */}
@@ -83,42 +83,50 @@ const CertificateGenerator = () => {
         <div className="min-h-screen bg-neutral-900 text-white p-4 md:p-8">
             <SEO title="Générateur Certificat" description="Admin only" robots="noindex" />
 
-            {/* --- CSS D'IMPRESSION (Blindé) --- */}
+            {/* --- CSS BLINDÉ POUR L'IMPRESSION --- */}
             <style>{`
         @media print {
-            /* 1. On cache TOUT le contenu normal du site */
-            body > *:not(#print-layer) {
-                display: none !important;
+            /* 1. On rend TOUT invisible par défaut */
+            body * {
+                visibility: hidden;
             }
-            
-            /* 2. Configuration de la page A4 stricte */
+
+            /* 2. On configure la page A4 sans marges */
             @page {
                 size: A4 portrait;
                 margin: 0;
             }
 
-            /* 3. On affiche uniquement le calque d'impression */
+            /* 3. C'est ici la magie : On cible le conteneur d'impression */
+            #print-layer, #print-layer * {
+                visibility: visible !important;
+            }
+
+            /* 4. On sort le calque du flux et on le colle sur la vitre */
             #print-layer {
-                display: block !important;
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 210mm;
-                height: 297mm;
-                background: white;
-                z-index: 9999;
-                padding: 0;
-                margin: 0;
+                position: fixed !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 210mm !important;
+                height: 297mm !important;
+                z-index: 999999 !important;
+                background: white !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
             }
         }
       `}</style>
 
-            {/* --- ZONE D'IMPRESSION (Invisible à l'écran, visible au Print) --- */}
+            {/* --- ZONE D'IMPRESSION (Cachée à l'écran par 'hidden', gérée par CSS @print) --- */}
             <div id="print-layer" className="hidden">
-                <CertificateTemplate />
+                {/* On monte le composant ici sans AUCUN zoom ni transformation */}
+                <div className="w-full h-full flex items-center justify-center">
+                    <CertificateTemplate />
+                </div>
             </div>
 
-            {/* --- INTERFACE ADMIN (Visible à l'écran, cachée au Print) --- */}
+            {/* --- INTERFACE ADMIN (Visible écran) --- */}
             <div className="max-w-[1600px] mx-auto mb-12 grid lg:grid-cols-[400px_1fr] gap-8 items-start">
 
                 {/* COLONNE GAUCHE : FORMULAIRE */}
@@ -168,7 +176,7 @@ const CertificateGenerator = () => {
                     <div className="mt-8 pt-6 border-t border-white/10 space-y-4">
                         <div className="flex items-start gap-2 text-xs text-silver/60 bg-darkroom-red/10 p-3 rounded">
                             <AlertCircle size={14} className="mt-0.5 shrink-0 text-darkroom-red" />
-                            <p>N'oubliez pas de décocher "En-têtes et pieds de page" dans la fenêtre d'impression.</p>
+                            <p>N'oubliez pas de décocher "En-têtes et pieds de page" dans les options d'impression.</p>
                         </div>
 
                         <button
@@ -180,7 +188,7 @@ const CertificateGenerator = () => {
                     </div>
                 </div>
 
-                {/* COLONNE DROITE : APERÇU ÉCRAN (Avec Zoom, n'affecte pas l'impression) */}
+                {/* COLONNE DROITE : APERÇU ÉCRAN (Avec Zoom pour le confort, indépendant de l'impression) */}
                 <div className="flex flex-col items-center justify-start min-h-[600px] bg-black/20 rounded-xl border border-white/5 p-8 overflow-hidden relative">
                     <p className="absolute top-4 text-silver/30 text-xs font-space-mono uppercase tracking-widest mb-4">Aperçu Écran</p>
 
