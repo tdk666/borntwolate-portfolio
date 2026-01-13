@@ -205,46 +205,130 @@ export const seriesData: Series[] = [
         title: 'A Winter in the Fruit',
         year: 'Décembre 2023',
         description: {
-            fr: "New York dépouillée de sa frénésie.\n\nCapturée sous la lumière rase de décembre, la métropole de verre et d'acier révèle sa fragilité. Les ombres s'allongent, les briques rougissent, et l'humain devient une silhouette furtive écrasée par la verticalité du mythe américain.",
-            en: "New York stripped of its frenzy.\n\nCaptured under December's low light, the metropolis of glass and steel reveals its fragility. Shadows lengthen, bricks redden, and the human becomes a furtive silhouette crushed by the verticality of the American myth."
+            fr: "Décembre 2023. Premier pas sur le continent américain. New York ne se découvre pas, elle se confronte. Cette série documente le choc initial face à la verticalité absolue de Manhattan. Sous un soleil d'hiver rasant qui découpe les ombres au scalpel, la ville se révèle dans ses contrastes : la froideur minérale des gratte-ciels, le silence végétal de Central Park et la chaleur souterraine du métro. Le grain chaud de la Kodak Gold 400 capture l'esthétique brute de la métropole, figée dans l'air glacé, entre mythe cinématographique et réalité de béton.",
+            en: "December 2023. First steps on the American continent. New York is not discovered, it is confronted. This series documents the initial shock of Manhattan's absolute verticality. Under a grazing winter sun that cuts shadows with a scalpel, the city reveals itself in its contrasts: the mineral coldness of skyscrapers, the vegetable silence of Central Park, and the subterranean heat of the subway. The warm grain of Kodak Gold 400 captures the metropolis's raw aesthetic, frozen in icy air, between cinematic myth and concrete reality."
         },
-        coverImage: '/images/ny-winter/empire-state-building.JPG',
+        coverImage: '/images/winter-in-the-fruit/empire-state.jpg',
         theme: { background: '#D1D5DB', text: '#8B0000' },
         photos: [
             {
-                id: 9401, url: '/images/ny-winter/empire-state-building.JPG', title: 'King of Midtown', category: 'urban', seriesId: 'winter-in-the-fruit', technical_info: 'Rollei 35 | Kodak Gold 400', orientation: 'portrait',
-                alt_accessible: { fr: "Empire State Building vu d'en bas, ciel bleu clair.", en: "Empire State Building seen from below, clear blue sky." },
-                caption_artistic: { fr: "Le colosse de pierre capturé dans sa majesté solitaire, fendant un ciel d'hiver sans nuage.", en: "The stone colossus captured in its solitary majesty, splitting a cloudless winter sky." }
+                id: 9401,
+                url: '/images/winter-in-the-fruit/empire-state.jpg',
+                title: 'King of Midtown',
+                category: 'urban',
+                seriesId: 'winter-in-the-fruit',
+                technical_info: 'Rollei 35 | Kodak Gold 400',
+                orientation: 'portrait',
+                alt_accessible: {
+                    fr: "Empire State Building vu en contre-plongée, fendant un ciel bleu pâle.",
+                    en: "Empire State Building seen from a low angle, splitting a pale blue sky."
+                },
+                caption_artistic: {
+                    fr: "L'icône absolue. L'Empire State Building ne se contente pas d'être dans le cadre, il le règne. Pris en contre-plongée, le colosse s'élance depuis l'ombre urbaine pour percer un ciel d'hiver bleu pâle. Le grain de la pellicule nimbe le gratte-ciel d'un halo presque irréel, détachant sa silhouette Art Déco de la grisaille. Le 'Roi de Midtown' écrase la ville sombre à ses pieds pour capter toute la lumière.",
+                    en: "The absolute icon. The Empire State Building is not just in the frame, it reigns over it. Taken from a low angle, the colossus soars from the urban shadow to pierce a pale blue winter sky. The film grain halos the skyscraper in an almost unreal aura, detaching its Art Deco silhouette from the greyness. The 'King of Midtown' crushes the dark city at its feet to capture all the light."
+                }
             },
             {
-                id: 9402, url: '/images/ny-winter/reading-girl-under-tree.JPG', title: 'Quiet Central', category: 'portrait', seriesId: 'winter-in-the-fruit', technical_info: 'Rollei 35 | Kodak Gold 400', orientation: 'portrait',
-                alt_accessible: { fr: "Jeune femme lisant assise au pied d'un arbre gigantesque dans Central Park.", en: "Young woman reading sitting at the foot of a gigantic tree in Central Park." },
-                caption_artistic: { fr: "Quiet Central. Une bulle d'intimité dans la mégalopole. L'échelle de l'arbre protège la lectrice, créant une chambre verte au cœur de Manhattan.", en: "Quiet Central. A bubble of intimacy in the megalopolis. The scale of the tree protects the reader, creating a green room in the heart of Manhattan." }
+                id: 9402,
+                url: '/images/winter-in-the-fruit/central-park-reading.jpg',
+                title: 'Quiet Central',
+                category: 'portrait',
+                seriesId: 'winter-in-the-fruit',
+                technical_info: 'Rollei 35 | Kodak Gold 400',
+                orientation: 'portrait',
+                alt_accessible: {
+                    fr: "Femme lisant au pied d'un arbre dans Central Park, avec des tours en arrière-plan.",
+                    en: "Woman reading at the foot of a tree in Central Park, with towers in the background."
+                },
+                caption_artistic: {
+                    fr: "Central Park, flanc Est. Dans cette composition verticale, la ville et la nature jouent leur éternel duel. Au premier plan, l'herbe d'hiver offre un refuge à une lectrice solitaire, minuscule point de quiétude à l'ombre d'un arbre dénudé. En arrière-plan, deux tours montent la garde, monolithiques sous un azur sans nuage. Une bulle d'intimité volée au pied des géants de béton.",
+                    en: "Central Park, East side. In this vertical composition, the city and nature play their eternal duel. In the foreground, winter grass offers a refuge to a solitary reader, a tiny point of quietude in the shadow of a bare tree. In the background, two towers stand guard, monolithic under a cloudless azure. A bubble of stolen intimacy at the feet of concrete giants."
+                }
             },
             {
-                id: 9403, url: '/images/ny-winter/skyline-by-night.JPG', title: 'Midnight City', category: 'urban', seriesId: 'winter-in-the-fruit', technical_info: 'Rollei 35 | Kodak Gold 400', orientation: 'landscape',
-                alt_accessible: { fr: "Vue nocturne de la skyline de Manhattan avec reflets sur l'eau.", en: "Night view of Manhattan skyline with reflections on water." },
-                caption_artistic: { fr: "L'électricité de Manhattan se reflète sur l'eau noire de Central Park. Une vibration visuelle presque sonore.", en: "Manhattan's electricity reflects on Central Park's black water. An almost audible visual vibration." }
+                id: 9403,
+                url: '/images/winter-in-the-fruit/central-park-night.jpg',
+                title: 'Midnight City',
+                category: 'urban',
+                seriesId: 'winter-in-the-fruit',
+                technical_info: 'Rollei 35 | Kodak Gold 400',
+                orientation: 'landscape',
+                alt_accessible: {
+                    fr: "Vue nocturne des gratte-ciels se reflétant dans le lac de Central Park.",
+                    en: "Night view of skyscrapers reflecting in the Central Park lake."
+                },
+                caption_artistic: {
+                    fr: "Crépuscule sur le lac. La ville qui ne dort jamais commence à s'illuminer, se reflétant dans l'eau sombre comme un égaliseur graphique. Au premier plan, des roseaux se dressent, nets et fragiles, répondant par leur verticalité naturelle aux tours d'acier qui griffent le ciel violet. Une frontière d'ombre entre le silence de l'eau et le fracas de la ville.",
+                    en: "Twilight on the lake. The city that never sleeps begins to light up, reflecting in the dark water like a graphic equalizer. In the foreground, reeds stand tall, sharp and fragile, responding with their natural verticality to the steel towers scratching the purple sky. A shadow border between the silence of the water and the city's crash."
+                }
             },
             {
-                id: 9405, url: '/images/ny-winter/central-park.JPG', title: 'Colors of December', category: 'nature', seriesId: 'winter-in-the-fruit', technical_info: 'Rollei 35 | Kodak Gold 400', orientation: 'landscape',
-                alt_accessible: { fr: "Paysage de Central Park avec des couleurs automnales tardives et des immeubles en fond.", en: "Central Park landscape with late autumn colors and buildings in background." },
-                caption_artistic: { fr: "L'été indien en sursis. Les ors et les rouilles de la végétation luttent une dernière fois contre la grisaille des gratte-ciels.", en: "Indian summer on reprieve. The golds and rusts of vegetation fight one last time against the greyness of skyscrapers." }
+                id: 9405,
+                url: '/images/winter-in-the-fruit/central-park-day.jpg',
+                title: 'Colors of December',
+                category: 'nature',
+                seriesId: 'winter-in-the-fruit',
+                technical_info: 'Rollei 35 | Kodak Gold 400',
+                orientation: 'landscape',
+                alt_accessible: {
+                    fr: "Plan d'eau de Central Park avec des canards, arbres nus et bâtiments au loin.",
+                    en: "Central Park water body with ducks, bare trees and buildings in the distance."
+                },
+                caption_artistic: {
+                    fr: "Lendemain matin. Prise en légère plongée, la composition oppose l'azur pâle du ciel d'hiver au bleu profond du lac. La surface de l'eau n'est troublée que par le sillage de deux canards. La ceinture d'arbres squelettiques retient une dernière touche d'automne, tandis que les toits de la ville émergent au loin. Une nature morte paisible où les promeneurs se fondent dans le décor.",
+                    en: "The next morning. Taken from a slight high angle, the composition opposes the pale azure of the winter sky to the deep blue of the lake. The water surface is disturbed only by the wake of two ducks. The belt of skeletal trees holds a last touch of autumn, while the city roofs emerge in the distance. A peaceful still life where walkers blend into the scenery."
+                }
             },
             {
-                id: 9406, url: '/images/ny-winter/jaguar.JPG', title: 'Fawn in town', category: 'urban', seriesId: 'winter-in-the-fruit', technical_info: 'Rollei 35 | Kodak Gold 400', orientation: 'portrait',
-                alt_accessible: { fr: "Détail d'une voiture Jaguar vintage garée dans une rue de New York.", en: "Detail of a vintage Jaguar car parked on a New York street." },
-                caption_artistic: { fr: "Fawn in town. Le luxe discret d'une carrosserie anglaise perdue dans la jungle de béton américaine. Reflets métalliques et nostalgie.", en: "Fawn in town. The discreet luxury of English bodywork lost in the American concrete jungle. Metallic reflections and nostalgia." }
+                id: 9406,
+                url: '/images/winter-in-the-fruit/jaguar-soho.jpg',
+                title: 'Fawn in Town',
+                category: 'urban',
+                seriesId: 'winter-in-the-fruit',
+                technical_info: 'Rollei 35 | Kodak Gold 400',
+                orientation: 'portrait',
+                alt_accessible: {
+                    fr: "Jaguar bleue garée dans une rue pavée de SoHo.",
+                    en: "Blue Jaguar parked on a cobbled street in SoHo."
+                },
+                caption_artistic: {
+                    fr: "SoHo. Dans un écrin de briques et de pavés, surgit une anomalie chromatique : une Jaguar d'un bleu azur éclatant. Cadrée serrée à la verticale, elle est capturée de trois-quarts arrière. Telle une bête sauvage en cage — un 'fauve' (Fawn) urbain — la machine attend patiemment, sa couleur électrique tranchant avec la patine ocre du quartier.",
+                    en: "SoHo. In a setting of bricks and cobblestones, a chromatic anomaly arises: a Jaguar of striking azure blue. Framed tightly vertically, it is captured from the rear three-quarters. Like a wild beast in a cage — an urban 'Fawn' — the machine waits patiently, its electric color slicing through the neighborhood's ochre patina."
+                }
             },
             {
-                id: 9404, url: '/images/ny-winter/brige-building.JPG', title: 'High Line View', category: 'urban', seriesId: 'winter-in-the-fruit', technical_info: 'Rollei 35 | Kodak Gold 400', orientation: 'portrait',
-                alt_accessible: { fr: "Vue architecturale d'un pont reliant deux bâtiments, style industriel.", en: "Architectural view of a bridge connecting two buildings, industrial style." },
-                caption_artistic: { fr: "High Line View. L'architecture industrielle réhabilitée. Lignes de fuite et briques rouges, la signature visuelle de Chelsea.", en: "High Line View. Rehabilitated industrial architecture. Vanishing lines and red bricks, Chelsea's visual signature." }
+                id: 9404,
+                url: '/images/winter-in-the-fruit/highline-taxi.jpg',
+                title: 'High Line View',
+                category: 'urban',
+                seriesId: 'winter-in-the-fruit',
+                technical_info: 'Rollei 35 | Kodak Gold 400',
+                orientation: 'portrait',
+                alt_accessible: {
+                    fr: "Vue en plongée depuis la High Line sur une avenue, avec un taxi jaune.",
+                    en: "High angle view from the High Line onto an avenue, with a yellow taxi."
+                },
+                caption_artistic: {
+                    fr: "Vue depuis la High Line. Une plongée vertigineuse dans les canyons de Chelsea. La composition est verrouillée par une passerelle Art Déco qui relie les deux façades. Au fond, le soleil couchant brûle l'horizon. Sur le bitume gris, un unique taxi jaune — touche de couleur saturée — remonte l'avenue vers l'objectif. Une symétrie urbaine parfaite.",
+                    en: "View from the High Line. A dizzying dive into the canyons of Chelsea. The composition is locked by an Art Deco bridge connecting the two facades. In the background, the setting sun burns the horizon. On the gray asphalt, a single yellow taxi — a touch of saturated color — drives up the avenue towards the lens. A perfect urban symmetry."
+                }
             },
             {
-                id: 9407, url: '/images/ny-winter/subway.JPG', title: 'Underground', category: 'urban', seriesId: 'winter-in-the-fruit', technical_info: 'Rollei 35 | Kodak Gold 400', orientation: 'landscape',
-                alt_accessible: { fr: "Couloir ou quai de métro new-yorkais désert, symétrie.", en: "Deserted New York subway corridor or platform, symmetry." },
-                caption_artistic: { fr: "La beauté clinique et symétrique du métro new-yorkais. Une perspective fuyante vers l'inconnu.", en: "The clinical and symmetrical beauty of the New York subway. A fleeing perspective towards the unknown." }
+                id: 9407,
+                url: '/images/winter-in-the-fruit/underground.jpg',
+                title: 'Underground',
+                category: 'urban',
+                seriesId: 'winter-in-the-fruit',
+                technical_info: 'Rollei 35 | Kodak Gold 400',
+                orientation: 'landscape',
+                alt_accessible: {
+                    fr: "Intérieur d'un wagon de métro new-yorkais vide avec éclairage au néon.",
+                    en: "Interior of an empty New York subway car with neon lighting."
+                },
+                caption_artistic: {
+                    fr: "Plongée dans les entrailles de la ville. L'objectif capture le silence électrique d'une rame de métro déserte. Baigné dans une lumière de néon crue, l'intérieur du wagon révèle une esthétique vintage : banquettes vides, sol usé et teintes bleutées. Une scène de cinéma sans acteurs, une ode à la solitude souterraine au cœur du mythe new-yorkais.",
+                    en: "Dive into the bowels of the city. The lens captures the electric silence of a deserted subway car. Bathed in harsh neon light, the wagon interior reveals a vintage aesthetic: empty benches, worn floor, and bluish hues. A movie scene without actors, an ode to subterranean solitude in the heart of the New York myth."
+                }
             }
         ]
     },
