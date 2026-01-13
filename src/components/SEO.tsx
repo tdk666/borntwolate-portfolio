@@ -4,43 +4,74 @@ interface SEOProps {
     title: string;
     description: string;
     image?: string;
-    type?: 'website' | 'article';
-    schema?: object; // To inject structured JSON-LD data
+    url?: string;
+    type?: string;
+    schema?: object; // Nouveau : Injection de données structurées
 }
 
-export const SEO = ({ title, description, image, type = 'website', schema }: SEOProps) => {
-    const siteTitle = "Théophile Dequecker — Photographe Argentique";
-    const metaTitle = title === "Home" ? siteTitle : `${title} | ${siteTitle}`;
+export const SEO = ({
+    title,
+    description,
+    image = 'https://borntwolate.com/images/cover-default.jpg', // Mets une URL absolue par défaut
+    url = 'https://borntwolate.com',
+    type = 'website',
+    schema
+}: SEOProps) => {
+    const siteTitle = 'Born Too Late';
+    const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
+    const absoluteUrl = url.startsWith('http') ? url : `https://borntwolate.com${url}`;
+    const absoluteImage = image.startsWith('http') ? image : `https://borntwolate.com${image}`;
 
-    // Default image if none provided (e.g., autoportrait or a generic share image)
-    const shareImage = image ? image : "https://borntwolate.com/images/visuals/preview.jpg"; // Placeholder URL, to be updated
+    // Schema de base (Site + Personne) toujours présent
+    const baseSchema = {
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "WebSite",
+                "name": "Born Too Late",
+                "url": "https://borntwolate.com",
+                "author": {
+                    "@type": "Person",
+                    "name": "Théophile Dequecker"
+                }
+            },
+            {
+                "@type": "Person",
+                "name": "Théophile Dequecker",
+                "jobTitle": "Photographe Argentique",
+                "url": "https://borntwolate.com",
+                "sameAs": ["https://www.instagram.com/borntwolate_/"]
+            }
+        ]
+    };
 
     return (
         <Helmet>
-            {/* Standard Metadata */}
-            <title>{metaTitle}</title>
+            {/* Balises Visibles par les Robots uniquement */}
+            <title>{fullTitle}</title>
             <meta name="description" content={description} />
-            <link rel="canonical" href={window.location.href} />
+            <meta name="author" content="Théophile Dequecker" />
+            <link rel="canonical" href={absoluteUrl} />
+            <meta name="robots" content="index, follow" />
 
-            {/* Open Graph / Facebook */}
+            {/* Open Graph (Facebook/Linkedin) */}
             <meta property="og:type" content={type} />
-            <meta property="og:title" content={metaTitle} />
+            <meta property="og:title" content={fullTitle} />
             <meta property="og:description" content={description} />
-            <meta property="og:url" content={window.location.href} />
-            {shareImage && <meta property="og:image" content={shareImage} />}
+            <meta property="og:image" content={absoluteImage} />
+            <meta property="og:url" content={absoluteUrl} />
+            <meta property="og:site_name" content="Born Too Late" />
 
-            {/* Twitter */}
+            {/* Twitter Cards */}
             <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:title" content={metaTitle} />
+            <meta name="twitter:title" content={fullTitle} />
             <meta name="twitter:description" content={description} />
-            {shareImage && <meta name="twitter:image" content={shareImage} />}
+            <meta name="twitter:image" content={absoluteImage} />
 
-            {/* GEO & Microdata Injection (JSON-LD) */}
-            {schema && (
-                <script type="application/ld+json">
-                    {JSON.stringify(schema)}
-                </script>
-            )}
+            {/* JSON-LD : Le langage des robots */}
+            <script type="application/ld+json">
+                {JSON.stringify(schema ? { "@context": "https://schema.org", "@graph": [...baseSchema["@graph"], schema] } : baseSchema)}
+            </script>
         </Helmet>
     );
 };

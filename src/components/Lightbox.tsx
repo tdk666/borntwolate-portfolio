@@ -90,7 +90,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
         >
-            <button onClick={onClose} aria-label="Fermer l'image" className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors p-2 z-50"><X size={32} strokeWidth={1} /></button>
+            <button onClick={onClose} aria-label="Fermer la vue plein écran" className="absolute top-4 right-4 text-white/50 hover:text-white transition-colors p-2 z-50"><X size={32} strokeWidth={1} /></button>
 
 
 

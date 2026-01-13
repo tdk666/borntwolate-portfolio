@@ -95,7 +95,7 @@ const Navbar = () => {
                     </button>
                 </div>
 
-                <button onClick={() => setIsOpen(!isOpen)} aria-label="Menu" className="md:hidden z-50 p-2 -mr-2 text-off-white drop-shadow-lg">
+                <button onClick={() => setIsOpen(!isOpen)} aria-label="Ouvrir le menu de navigation" className="md:hidden z-50 p-2 -mr-2 text-off-white drop-shadow-lg">
                     {isOpen ? <X size={28} /> : <Menu size={28} />}
                 </button>
             </motion.nav>

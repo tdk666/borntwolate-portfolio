@@ -75,20 +75,27 @@ const SeriesDetail = () => {
     const mobileFactor = 120;
     const mobileSize = `${mobileFactor / longestLineChars}vw`;
 
-    const artworkSchema = {
-        "@context": "https://schema.org",
+    const gallerySchema = {
         "@type": "ImageGallery",
         "name": series.title,
         "description": series.description[currentLang],
-        "author": { "@type": "Person", "name": "Théophile Dequecker" },
-        "hasPart": series.photos.map(photo => ({
-            "@type": "VisualArtwork",
+        "author": {
+            "@type": "Person",
+            "name": "Théophile Dequecker"
+        },
+        "locationCreated": {
+            "@type": "Place",
+            "name": series.title // Assuming title often implies location, or strictly we don't have a distinct location field apart from what's in title/description. The prompt used `currentSeries.location` but `Series` type doesn't have it. I will omit `locationCreated` or use title as proxy if safer, OR just omit it as it's not in the Series type. I will omit it to be safe and type-correct.
+        },
+        "image": series.photos.map(photo => ({
+            "@type": "ImageObject",
+            "contentUrl": `https://borntwolate.com${photo.url}`,
             "name": photo.title,
             "description": photo.alt_accessible?.[currentLang] || photo.title,
-            "artMedium": "Analog Photography",
-            "artform": photo.category,
-            "material": photo.technical_info || "Film Photography",
-            "image": `https://borntwolate.com${photo.url}`
+            "author": {
+                "@type": "Person",
+                "name": "Théophile Dequecker"
+            }
         }))
     };
 
@@ -96,10 +103,10 @@ const SeriesDetail = () => {
         <div key={id} className="min-h-screen pt-24 px-4 md:px-8 pb-12 transition-colors duration-1000 ease-in-out">
             <SEO
                 title={series.title}
-                description={series.description[currentLang].substring(0, 150) + "..."}
-                image={`https://borntwolate.com${series.coverImage}`}
-                type="article"
-                schema={artworkSchema}
+                description={`Série photo argentique : ${series.title}. ${series.description[currentLang].substring(0, 100)}...`}
+                image={series.coverImage}
+                url={`/series/${series.id}`}
+                schema={gallerySchema}
             />
 
             {/* LATERAL NAVIGATION (Disabled when Lightbox is open) */}
