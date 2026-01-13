@@ -100,6 +100,19 @@ const Contact = () => {
                         />
                     </div>
 
+
+                    <div className="flex items-start gap-3 pt-2 group mb-6">
+                        <input
+                            type="checkbox"
+                            id="consent"
+                            required
+                            className="mt-1 appearance-none min-w-[16px] w-4 h-4 border border-white/20 rounded-sm bg-transparent checked:bg-darkroom-red checked:border-darkroom-red cursor-pointer transition-colors relative after:content-['✓'] after:absolute after:text-white after:text-xs after:top-[-2px] after:left-[2px] after:opacity-0 checked:after:opacity-100"
+                        />
+                        <label htmlFor="consent" className="text-xs font-inter text-silver/60 cursor-pointer hover:text-silver transition-colors leading-tight text-left">
+                            En soumettant ce formulaire, j'accepte que mes informations soient utilisées pour traiter ma demande. <a href="/legals" className="underline hover:text-darkroom-red text-silver">Voir Politique de Confidentialité</a>.
+                        </label>
+                    </div>
+
                     <div className="text-center pt-8">
                         <button
                             type="submit"

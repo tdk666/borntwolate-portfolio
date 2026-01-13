@@ -168,11 +168,16 @@ export const Chatbot = () => {
                         {/* Messages Area */}
                         <div className="flex-1 p-4 overflow-y-auto space-y-4 scrollbar-thin scrollbar-thumb-darkroom-red/50 scrollbar-track-transparent">
                             {messages.length === 0 && (
-                                <div className="text-center mt-10 opacity-60">
-                                    <FlaskConical size={48} className="mx-auto mb-4 text-silver/20" />
-                                    <p className="font-space-mono text-xs text-silver">
-                                        Initialisation du bain révélateur...<br />
-                                        Posez une question à l'assistant.
+                                <div className="text-center mt-8 opacity-80 px-4">
+                                    {/* Assure-toi que l'icône FlaskConical est bien importée de lucide-react */}
+                                    <FlaskConical size={32} className="mx-auto mb-4 text-darkroom-red/80" />
+                                    <p className="font-space-mono text-xs text-silver mb-4">
+                                        Bienvenue dans le Labo.
+                                    </p>
+                                    <p className="font-inter text-[10px] text-silver/50 leading-tight border border-white/5 p-3 rounded bg-white/5 text-justify">
+                                        Ce chatbot utilise une Intelligence Artificielle (Google Gemini).
+                                        Vos échanges sont traités informatiquement. Ne partagez pas de données sensibles.
+                                        En continuant, vous acceptez notre politique de confidentialité.
                                     </p>
                                 </div>
                             )}
