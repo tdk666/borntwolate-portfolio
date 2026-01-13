@@ -11,6 +11,7 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import { useDarkroom } from './context/DarkroomContext';
 import { Chatbot } from './components/chatbot/Chatbot';
+import Prints from './pages/Prints';
 
 import Footer from './components/Footer';
 import NotFound from './pages/NotFound';
@@ -29,6 +30,7 @@ function AnimatedRoutes() {
         <Route path="/series/:id" element={<SeriesDetail />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/prints" element={<Prints />} />
         <Route path="/legals" element={<Legals />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

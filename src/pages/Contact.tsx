@@ -1,12 +1,22 @@
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { SEO } from '../components/SEO';
+import { useLocation } from 'react-router-dom';
 
 
 const Contact = () => {
     const { t } = useTranslation();
     const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+    const [message, setMessage] = useState('');
+    const location = useLocation();
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        if (params.get('subject') === 'acquisition') {
+            setMessage("Bonjour Théophile,\n\nJe souhaite acquérir un tirage de la photo : [Insérer le nom ou décrire la photo].\n\nJ'aimerais en savoir plus sur les formats et les tarifs.\n\nCordialement,");
+        }
+    }, [location]);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -22,6 +32,7 @@ const Contact = () => {
             });
             setStatus('success');
             (e.target as HTMLFormElement).reset();
+            setMessage('');
         } catch {
             setStatus('error');
         }
@@ -95,6 +106,8 @@ const Contact = () => {
                             name="message"
                             required
                             rows={4}
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
                             className="w-full bg-transparent border-b border-white/20 py-2 text-off-white font-inter focus:outline-none focus:border-darkroom-red transition-colors resize-none"
                             placeholder={t('contact.placeholderMessage')}
                         />
