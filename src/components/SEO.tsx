@@ -6,83 +6,92 @@ interface SEOProps {
     image?: string;
     url?: string;
     type?: string;
+    schema?: object;
     robots?: string;
-    schema?: object; // Nouveau : Pour les données structurées JSON-LD
 }
 
 export const SEO = ({
     title,
     description,
-    image = 'https://borntwolate.com/images/canadian-evasion/infinity.JPG', // Image par défaut forte
-    url = 'https://borntwolate.com',
+    image,
+    url = '/',
     type = 'website',
-    robots = 'index, follow',
-    schema
+    schema,
+    robots = 'index, follow'
 }: SEOProps) => {
     const siteTitle = 'Born Too Late';
-    const docTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
+    const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
+    const baseUrl = 'https://borntwolate.com';
 
-    // URL canonique absolue obligatoire pour le SEO
-    const absoluteUrl = url.startsWith('http') ? url : `https://borntwolate.com${url}`;
-    const absoluteImage = image.startsWith('http') ? image : `https://borntwolate.com${image}`;
+    // URL Canonique propre
+    const absoluteUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
 
-    // Schéma de base : Identité de l'Artiste (sur toutes les pages)
+    // Gestion Intelligente de l'Image
+    // 1. Si une image spécifique est fournie, on l'utilise.
+    // 2. Sinon, on utilise la "Social Card" par défaut (1200x630px).
+    // Note pour l'user: Il faudra créer une image 'public/social-card.jpg' (1200x630px)
+    let imageUrl = image;
+    if (!imageUrl) {
+        imageUrl = '/social-card.jpg';
+    }
+    // Assure l'URL absolue
+    const absoluteImage = imageUrl.startsWith('http') ? imageUrl : `${baseUrl}${imageUrl}`;
+
+    // Schéma JSON-LD de base (Identité)
     const baseSchema = {
         "@context": "https://schema.org",
         "@graph": [
             {
                 "@type": "WebSite",
                 "name": "Born Too Late",
-                "url": "https://borntwolate.com",
-                "author": {
-                    "@type": "Person",
-                    "name": "Théophile Dequecker",
-                    "jobTitle": "Photographe Argentique"
-                }
+                "url": baseUrl,
+                "author": { "@type": "Person", "name": "Théophile Dequecker" }
             },
             {
                 "@type": "Person",
                 "name": "Théophile Dequecker",
-                "url": "https://borntwolate.com",
-                "sameAs": ["https://www.instagram.com/borntwolate_/"],
                 "jobTitle": "Photographe Argentique",
-                "description": "Photographe argentique basé à Paris, spécialisé dans le voyage et l'esthétique du grain 35mm."
+                "url": baseUrl,
+                "sameAs": ["https://www.instagram.com/borntwolate_/"]
             }
         ]
     };
 
-    // Fusion du schéma de base avec le schéma spécifique de la page (si fourni)
     const finalSchema = schema
         ? { "@context": "https://schema.org", "@graph": [...baseSchema["@graph"], schema] }
         : baseSchema;
 
     return (
         <Helmet>
-            {/* Standard Metrics */}
-            <title>{docTitle}</title>
+            {/* --- STANDARD --- */}
+            <title>{fullTitle}</title>
             <meta name="description" content={description} />
             <meta name="author" content="Théophile Dequecker" />
-            <meta name="keywords" content="photographe argentique, born too late, film photography, 35mm, portfolio photo, paris, argentique couleur" />
             <link rel="canonical" href={absoluteUrl} />
             <meta name="robots" content={robots} />
 
-            {/* Open Graph / Facebook */}
+            {/* --- FACEBOOK / OPEN GRAPH --- */}
+            <meta property="og:site_name" content="Born Too Late" />
+            <meta property="og:locale" content="fr_FR" />
             <meta property="og:type" content={type} />
-            <meta property="og:title" content={title || siteTitle} />
+            <meta property="og:title" content={fullTitle} />
             <meta property="og:description" content={description} />
+            <meta property="og:url" content={absoluteUrl} />
             <meta property="og:image" content={absoluteImage} />
+            <meta property="og:image:alt" content={title} />
+
+            {/* Taille idéale pour les réseaux (Indicatif, aide l'affichage) */}
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />
-            <meta property="og:url" content={absoluteUrl} />
-            <meta property="og:site_name" content="Born Too Late - Photographie Argentique" />
 
-            {/* Twitter */}
+            {/* --- TWITTER --- */}
             <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:title" content={docTitle} />
+            <meta name="twitter:title" content={fullTitle} />
             <meta name="twitter:description" content={description} />
             <meta name="twitter:image" content={absoluteImage} />
+            <meta name="twitter:creator" content="@borntwolate_" />
 
-            {/* Injection des Données Structurées JSON-LD */}
+            {/* --- DONNÉES STRUCTURÉES (JSON-LD) --- */}
             <script type="application/ld+json">
                 {JSON.stringify(finalSchema)}
             </script>
