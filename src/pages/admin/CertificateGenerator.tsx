@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { ShieldCheck, Printer, AlertCircle } from 'lucide-react';
 import { SEO } from '../../components/SEO';
 
@@ -13,69 +13,57 @@ const CertificateGenerator = () => {
         date: new Date().toLocaleDateString('fr-FR'),
     });
 
-    const componentRef = useRef<HTMLDivElement>(null);
-
     const handlePrint = () => {
         window.print();
     };
 
     return (
-        <div className="min-h-screen bg-neutral-900 text-white p-4 md:p-8 print:bg-white print:p-0">
+        <div className="min-h-screen bg-neutral-900 text-white p-4 md:p-8">
             <SEO title="Générateur Certificat" description="Admin only" robots="noindex" />
 
-            {/* STYLE SPÉCIFIQUE POUR L'IMPRESSION */}
+            {/* --- CSS MAGIQUE D'IMPRESSION --- */}
             <style>{`
         @media print {
-            @page { 
-                margin: 0;
-                size: A4 portrait;
-            }
-            
-            html, body {
-                width: 210mm;
-                height: 297mm;
-                margin: 0 !important;
-                padding: 0 !important;
-                overflow: hidden !important;
-                background: white;
-            }
-
-            /* On cache TOUT par défaut */
+            /* 1. On cache TOUT visuellement (but sans casser la structure DOM) */
             body * {
                 visibility: hidden;
             }
 
-            /* On reset le root et les parents pour qu'ils ne prennent pas de place mais laissent passer le certificat */
-            #root, #root > div {
-                margin: 0 !important;
-                padding: 0 !important;
-                height: 0 !important;
-                overflow: hidden !important;
+            /* 2. On configure la page (A4, sans marges navigateur) */
+            @page {
+                size: A4 portrait;
+                margin: 0;
             }
 
-            /* Le Certificat doit être visible */
+            /* 3. On rend visible UNIQUEMENT le certificat et ses enfants */
             #certificate-root, #certificate-root * {
                 visibility: visible;
             }
 
-            /* Positionnement absolu ultra-prioritaire */
+            /* 4. On sort le certificat du flux pour le plaquer en plein écran */
             #certificate-root {
                 position: fixed !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 210mm !important;
-                height: 296mm !important; /* 1mm de moins pour éviter le spillover sur page 2 */
+                left: 0;
+                top: 0;
+                width: 210mm;
+                height: 297mm;
+                z-index: 99999;
+                background: white;
+                /* Reset absolu des marges/paddings */
                 margin: 0 !important;
-                padding: 20mm !important;
-                background: white !important;
-                z-index: 2147483647 !important; /* Max z-index */
-                overflow: hidden !important;
+                padding: 20mm !important; /* Marge interne esthétique */
+                box-shadow: none !important;
+            }
+            
+            /* Cache les éléments parasites de l'interface admin s'ils persistent */
+            .no-print {
+                display: none !important;
             }
         }
       `}</style>
 
-            {/* Interface Admin (Masquée à l'impression) */}
-            <div className="max-w-[1600px] mx-auto mb-12 print:hidden grid lg:grid-cols-[400px_1fr] gap-8 items-start">
+            {/* Interface Admin (Cachée par visibility: hidden à l'impression) */}
+            <div className="max-w-[1600px] mx-auto mb-12 grid lg:grid-cols-[400px_1fr] gap-8 items-start">
 
                 {/* COLONNE GAUCHE : FORMULAIRE */}
                 <div className="bg-white/5 p-6 rounded-lg border border-white/10 sticky top-8">
@@ -124,7 +112,7 @@ const CertificateGenerator = () => {
                     <div className="mt-8 pt-6 border-t border-white/10 space-y-4">
                         <div className="flex items-start gap-2 text-xs text-silver/60 bg-darkroom-red/10 p-3 rounded">
                             <AlertCircle size={14} className="mt-0.5 shrink-0 text-darkroom-red" />
-                            <p>À l'impression, décochez "En-têtes et pieds de page" si le navigateur les ajoute encore.</p>
+                            <p>Dans la fenêtre d'impression, allez dans "Plus de paramètres" et décochez "En-têtes et pieds de page".</p>
                         </div>
 
                         <button
@@ -136,18 +124,17 @@ const CertificateGenerator = () => {
                     </div>
                 </div>
 
-                {/* COLONNE DROITE : APERÇU (Avec Zoom Out pour le confort visuel) */}
+                {/* COLONNE DROITE : APERÇU (Zoom Out) */}
                 <div className="flex flex-col items-center justify-start min-h-[600px] bg-black/20 rounded-xl border border-white/5 p-8 overflow-hidden relative">
-                    <p className="absolute top-4 text-silver/30 text-xs font-space-mono uppercase tracking-widest mb-4">Aperçu A4 (Échelle réduite)</p>
+                    <p className="absolute top-4 text-silver/30 text-xs font-space-mono uppercase tracking-widest mb-4">Aperçu A4</p>
 
-                    {/* Conteneur de mise à l'échelle CSS */}
-                    <div className="transform scale-[0.6] lg:scale-[0.75] origin-top mt-8 shadow-2xl">
+                    <div className="transform scale-[0.6] lg:scale-[0.7] origin-top mt-8 shadow-2xl">
 
-                        {/* ID Cible pour l'impression */}
-                        <div id="certificate-root" ref={componentRef} className="bg-white text-black w-[210mm] h-[297mm] p-[20mm] relative">
+                        {/* --- LE CERTIFICAT (CIBLE D'IMPRESSION) --- */}
+                        <div id="certificate-root" className="bg-white text-black w-[210mm] h-[297mm] p-[20mm] relative box-border">
 
                             {/* Bordure de sécurité */}
-                            <div className="h-full w-full border border-black/10 p-12 flex flex-col justify-between relative">
+                            <div className="h-full w-full border border-black/10 p-12 flex flex-col justify-between relative box-border">
 
                                 {/* Filigrane */}
                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.02] text-9xl font-bold uppercase pointer-events-none select-none rotate-45 whitespace-nowrap">
