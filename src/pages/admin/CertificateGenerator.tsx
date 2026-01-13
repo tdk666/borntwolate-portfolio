@@ -36,10 +36,9 @@ const CertificateGenerator = () => {
 
                 {/* Corps */}
                 <div className="space-y-16 my-auto">
-                    <p className="text-center font-serif text-xl leading-relaxed px-16 text-black/80">
-                        Je soussigné, <strong>Théophile Dequecker</strong>, certifie que l'œuvre décrite ci-dessous est un tirage original, réalisé sous mon contrôle, signé et numéroté de ma main.
+                    <p className="text-center font-serif text-xl leading-relaxed px-8 text-black/80">
+                        Je soussigné, <strong>Théophile Dequecker</strong>, certifie que l'œuvre décrite ci-dessous est un tirage original, réalisé sous mon contrôle, signé et numéroté de ma&nbsp;main.
                     </p>
-
                     <div className="grid grid-cols-[120px_1fr] gap-y-8 gap-x-8 px-12 border-l-4 border-black/80 py-4">
                         <span className="font-space-mono text-xs uppercase tracking-widest text-black/40 pt-2 text-right">Titre</span>
                         <span className="font-serif text-3xl font-bold italic text-black">{data.title}</span>
