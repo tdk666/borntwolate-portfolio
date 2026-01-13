@@ -131,6 +131,32 @@ export const Chatbot = () => {
         }
     };
 
+    const renderMessageContent = (text: string) => {
+        // Regex pour détecter les URLs commençant par http/https
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+
+        // Découpe le texte
+        const parts = text.split(urlRegex);
+
+        return parts.map((part, index) => {
+            if (part.match(urlRegex)) {
+                return (
+                    <a
+                        key={index}
+                        href={part}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-darkroom-red underline hover:text-white transition-colors"
+                        onClick={(e) => e.stopPropagation()} // Empêche les conflits de clic
+                    >
+                        {part}
+                    </a>
+                );
+            }
+            return part;
+        });
+    };
+
     return (
         <>
             {!isOpen && (
@@ -198,7 +224,7 @@ export const Chatbot = () => {
                                         ? 'bg-off-white text-deep-black rounded-tr-none'
                                         : 'bg-white/5 text-silver border border-white/5 rounded-tl-none'
                                         }`}>
-                                        {msg.text}
+                                        {renderMessageContent(msg.text)}
                                     </div>
                                 </div>
                             ))}
