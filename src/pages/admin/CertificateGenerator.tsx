@@ -17,15 +17,15 @@ const CertificateGenerator = () => {
         window.print();
     };
 
-    // --- LE TEMPLATE DU CERTIFICAT (Composant pur) ---
-    const CertificateTemplate = () => (
-        <div className="bg-white text-black w-[210mm] h-[296mm] p-[20mm] relative box-border overflow-hidden mx-auto">
-            {/* Bordure de sécurité */}
+    // --- LE COMPOSANT CERTIFICAT (Réutilisable) ---
+    // On le définit ici pour l'utiliser deux fois (Aperçu + Print)
+    const CertificateContent = () => (
+        <div className="w-[210mm] h-[297mm] bg-white text-black p-[20mm] relative box-border mx-auto shadow-none">
+            {/* Bordure */}
             <div className="h-full w-full border border-black/10 p-12 flex flex-col justify-between relative box-border">
-
                 {/* Filigrane */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.02] text-9xl font-bold uppercase pointer-events-none select-none rotate-45 whitespace-nowrap">
-                    Born Too Late
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03] text-9xl font-bold uppercase pointer-events-none select-none rotate-45 whitespace-nowrap">
+                    Original
                 </div>
 
                 {/* Header */}
@@ -58,7 +58,7 @@ const CertificateGenerator = () => {
                     </div>
                 </div>
 
-                {/* Footer / Signature */}
+                {/* Footer */}
                 <div className="grid grid-cols-2 mt-12 pt-12 border-t border-black/10 pb-8">
                     <div>
                         <p className="font-space-mono text-[10px] uppercase tracking-widest text-black/40 mb-3">Fait à Paris, le</p>
@@ -66,12 +66,11 @@ const CertificateGenerator = () => {
                     </div>
                     <div className="text-right">
                         <p className="font-space-mono text-[10px] uppercase tracking-widest text-black/40 mb-12">Signature de l'Artiste</p>
-                        {/* Ligne de signature */}
                         <div className="h-px bg-black/20 w-3/4 ml-auto"></div>
                     </div>
                 </div>
 
-                {/* ID Unique bas de page */}
+                {/* ID */}
                 <div className="absolute bottom-4 right-12 text-[8px] font-mono text-black/20">
                     ID: {Math.random().toString(36).substr(2, 9).toUpperCase()}
                 </div>
@@ -83,69 +82,55 @@ const CertificateGenerator = () => {
         <div className="min-h-screen bg-neutral-900 text-white p-4 md:p-8">
             <SEO title="Générateur Certificat" description="Admin only" robots="noindex" />
 
-            {/* --- CSS BLINDÉ POUR L'IMPRESSION --- */}
+            {/* STYLE CSS POUR L'IMPRESSION */}
             <style>{`
         @media print {
-            /* 1. On rend TOUT invisible par défaut */
-            body * {
-                visibility: hidden;
+            /* 1. Cacher l'interface normale (Navbar, Formulaire, Footer du site) */
+            nav, footer, .no-print-ui {
+                display: none !important;
             }
-
-            /* 2. On configure la page A4 sans marges */
-            @page {
-                size: A4 portrait;
+            
+            /* 2. Afficher la zone d'impression */
+            .print-only-zone {
+                display: block !important;
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
                 margin: 0;
+                padding: 0;
             }
-
-            /* 3. C'est ici la magie : On cible le conteneur d'impression */
-            #print-layer, #print-layer * {
-                visibility: visible !important;
-            }
-
-            /* 4. On sort le calque du flux et on le colle sur la vitre */
-            #print-layer {
-                position: fixed !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 210mm !important;
-                height: 297mm !important;
-                z-index: 999999 !important;
-                background: white !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                overflow: hidden !important;
-            }
+            
+            /* 3. Forcer le fond blanc et les marges */
+            @page { margin: 0; size: A4; }
+            body { background: white; margin: 0; }
         }
       `}</style>
 
-            {/* --- ZONE D'IMPRESSION (Cachée à l'écran par 'hidden', gérée par CSS @print) --- */}
-            <div id="print-layer" className="hidden">
-                {/* On monte le composant ici sans AUCUN zoom ni transformation */}
-                <div className="w-full h-full flex items-center justify-center">
-                    <CertificateTemplate />
-                </div>
+            {/* --- ZONE D'IMPRESSION (Invisible à l'écran) --- */}
+            <div className="print-only-zone hidden">
+                <CertificateContent />
             </div>
 
-            {/* --- INTERFACE ADMIN (Visible écran) --- */}
-            <div className="max-w-[1600px] mx-auto mb-12 grid lg:grid-cols-[400px_1fr] gap-8 items-start">
+            {/* --- INTERFACE ADMIN (Visible écran, Cachée au print) --- */}
+            <div className="no-print-ui max-w-[1600px] mx-auto mb-12 grid lg:grid-cols-[400px_1fr] gap-8 items-start">
 
-                {/* COLONNE GAUCHE : FORMULAIRE */}
+                {/* FORMULAIRE */}
                 <div className="bg-white/5 p-6 rounded-lg border border-white/10 sticky top-8">
                     <h2 className="text-xl font-space-mono mb-6 flex items-center gap-2 text-off-white">
                         <ShieldCheck className="text-darkroom-red" /> Configuration
                     </h2>
 
                     <div className="grid gap-4">
+                        {/* ... Inputs inchangés ... */}
                         <div>
-                            <label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Titre de l'œuvre</label>
-                            <input type="text" value={data.title} onChange={e => setData({ ...data, title: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-darkroom-red outline-none text-white placeholder-white/20" />
+                            <label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Titre</label>
+                            <input type="text" value={data.title} onChange={e => setData({ ...data, title: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-darkroom-red outline-none text-white" />
                         </div>
-
                         <div>
                             <label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Série</label>
                             <input type="text" value={data.series} onChange={e => setData({ ...data, series: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-darkroom-red outline-none text-white" />
                         </div>
-
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Format</label>
@@ -156,47 +141,32 @@ const CertificateGenerator = () => {
                                 <input type="text" value={data.paper} onChange={e => setData({ ...data, paper: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-darkroom-red outline-none text-white" />
                             </div>
                         </div>
-
                         <div className="grid grid-cols-3 gap-4">
-                            <div>
-                                <label className="block text-[10px] uppercase tracking-widest text-silver mb-1">N°</label>
-                                <input type="text" value={data.number} onChange={e => setData({ ...data, number: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-darkroom-red outline-none text-center text-white" />
-                            </div>
-                            <div>
-                                <label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Total</label>
-                                <input type="text" value={data.total} onChange={e => setData({ ...data, total: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-darkroom-red outline-none text-center text-white" />
-                            </div>
-                            <div>
-                                <label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Date</label>
-                                <input type="text" value={data.date} onChange={e => setData({ ...data, date: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-darkroom-red outline-none text-white" />
-                            </div>
+                            <div><label className="block text-[10px] text-silver mb-1">N°</label><input type="text" value={data.number} onChange={e => setData({ ...data, number: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-center text-white" /></div>
+                            <div><label className="block text-[10px] text-silver mb-1">Total</label><input type="text" value={data.total} onChange={e => setData({ ...data, total: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-center text-white" /></div>
+                            <div><label className="block text-[10px] text-silver mb-1">Date</label><input type="text" value={data.date} onChange={e => setData({ ...data, date: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-white" /></div>
                         </div>
                     </div>
 
                     <div className="mt-8 pt-6 border-t border-white/10 space-y-4">
                         <div className="flex items-start gap-2 text-xs text-silver/60 bg-darkroom-red/10 p-3 rounded">
                             <AlertCircle size={14} className="mt-0.5 shrink-0 text-darkroom-red" />
-                            <p>N'oubliez pas de décocher "En-têtes et pieds de page" dans les options d'impression.</p>
+                            <p>Important : Décochez "En-têtes et pieds de page" dans la fenêtre d'impression.</p>
                         </div>
-
-                        <button
-                            onClick={handlePrint}
-                            className="w-full bg-off-white text-darkroom-black py-4 font-space-mono uppercase tracking-widest hover:bg-darkroom-red hover:text-white transition-colors flex items-center justify-center gap-2 font-bold"
-                        >
+                        <button onClick={handlePrint} className="w-full bg-off-white text-darkroom-black py-4 font-space-mono uppercase font-bold hover:bg-darkroom-red hover:text-white transition-colors flex items-center justify-center gap-2">
                             <Printer size={18} /> Imprimer PDF
                         </button>
                     </div>
                 </div>
 
-                {/* COLONNE DROITE : APERÇU ÉCRAN (Avec Zoom pour le confort, indépendant de l'impression) */}
-                <div className="flex flex-col items-center justify-start min-h-[600px] bg-black/20 rounded-xl border border-white/5 p-8 overflow-hidden relative">
-                    <p className="absolute top-4 text-silver/30 text-xs font-space-mono uppercase tracking-widest mb-4">Aperçu Écran</p>
-
-                    <div className="transform scale-[0.6] lg:scale-[0.75] origin-top mt-8 shadow-2xl">
-                        <CertificateTemplate />
+                {/* APERÇU ÉCRAN (Avec Zoom, séparé de l'impression) */}
+                <div className="flex flex-col items-center min-h-[600px] bg-black/20 rounded-xl border border-white/5 p-4 overflow-hidden relative">
+                    <p className="absolute top-4 text-silver/30 text-xs font-space-mono uppercase tracking-widest">Aperçu</p>
+                    {/* Le scale réduit l'aperçu visuellement, mais n'affecte pas le clone d'impression */}
+                    <div className="origin-top mt-12 shadow-2xl scale-[0.55] lg:scale-[0.7]">
+                        <CertificateContent />
                     </div>
                 </div>
-
             </div>
         </div>
     );
