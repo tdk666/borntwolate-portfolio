@@ -27,40 +27,49 @@ const CertificateGenerator = () => {
             <style>{`
         @media print {
             @page { 
-                margin: 0; 
-                size: 210mm 297mm; /* Force A4 */
-            }
-            html, body {
-                height: 100vh; /* Va "couper" le contenu fantôme */
-                overflow: hidden;
                 margin: 0;
-                padding: 0;
-                background: white;
+                size: A4 portrait;
             }
             
-            /* Cacher tout le reste */
-            body * {
-                visibility: hidden;
-                height: 0; /* Réduit l'impact sur le flux */
-            }
-
-            /* Le Certificat */
-            #certificate-root, #certificate-root * {
-                visibility: visible;
-                height: auto; /* Rétablit la hauteur pour le contenu */
-            }
-
-            #certificate-root {
-                position: fixed; /* Sort du flux */
-                left: 0;
-                top: 0;
+            html, body {
                 width: 210mm;
                 height: 297mm;
-                margin: 0;
-                padding: 20mm; /* Marge interne du papier */
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
                 background: white;
-                z-index: 9999;
-                /* Centrage éventuel si nécessaire, mais ici on veut plein fer */
+            }
+
+            /* On cache TOUT par défaut */
+            body * {
+                visibility: hidden;
+            }
+
+            /* On reset le root et les parents pour qu'ils ne prennent pas de place mais laissent passer le certificat */
+            #root, #root > div {
+                margin: 0 !important;
+                padding: 0 !important;
+                height: 0 !important;
+                overflow: hidden !important;
+            }
+
+            /* Le Certificat doit être visible */
+            #certificate-root, #certificate-root * {
+                visibility: visible;
+            }
+
+            /* Positionnement absolu ultra-prioritaire */
+            #certificate-root {
+                position: fixed !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 210mm !important;
+                height: 296mm !important; /* 1mm de moins pour éviter le spillover sur page 2 */
+                margin: 0 !important;
+                padding: 20mm !important;
+                background: white !important;
+                z-index: 2147483647 !important; /* Max z-index */
+                overflow: hidden !important;
             }
         }
       `}</style>
