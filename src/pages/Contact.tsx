@@ -1,8 +1,11 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { SEO } from '../components/SEO';
 import { useLocation } from 'react-router-dom';
+import { seriesData } from '../data/photos';
+import VisualSelector from '../components/VisualSelector';
+import { X } from 'lucide-react';
 
 
 const Contact = () => {
@@ -10,19 +13,76 @@ const Contact = () => {
     const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
     const [message, setMessage] = useState('');
     const location = useLocation();
+    const [subject, setSubject] = useState('');
+
+    // Store selected photos as full objects including necessary details
+    interface SelectedPhoto {
+        id: number | string;
+        title: string;
+        seriesTitle: string;
+        url: string;
+    }
+    const [selectedPhotos, setSelectedPhotos] = useState<SelectedPhoto[]>([]);
+
+    // Helper to get all photos for the selector
+    const allPhotosOptions = seriesData.flatMap(series =>
+        series.photos.map(photo => ({
+            id: photo.id,
+            url: photo.url,
+            title: photo.title,
+            seriesTitle: series.title,
+            value: photo.title // keeping value if needed compatibility
+        }))
+    );
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
-        if (params.get('subject') === 'acquisition') {
-            setMessage("Bonjour Théophile,\n\nJe souhaite acquérir un tirage de la photo : [Insérer le nom ou décrire la photo].\n\nJ'aimerais en savoir plus sur les formats et les tarifs.\n\nCordialement,");
+        const subj = params.get('subject');
+
+        if (subj === 'acquisition') {
+            setSubject('acquisition');
+            const photoTitleParam = params.get('photo');
+
+            if (photoTitleParam) {
+                // Find the photo in our flattened list
+                const foundPhoto = allPhotosOptions.find(p => p.title === photoTitleParam);
+                if (foundPhoto) {
+                    // Check if not already added to avoid duplicates on strict mode re-renders
+                    setSelectedPhotos(prev => {
+                        if (prev.some(p => p.id === foundPhoto.id)) return prev;
+                        return [...prev, foundPhoto];
+                    });
+                }
+                setMessage(`Bonjour Théophile,\n\nJe souhaite acquérir les tirages sélectionnés ci-dessus.\n\nJ'aimerais en savoir plus sur les formats et les tarifs.\n\nCordialement,`);
+            } else {
+                setMessage("Bonjour Théophile,\n\nJe souhaite acquérir un tirage photo.\n\nJ'aimerais en savoir plus sur les formats et les tarifs.\n\nCordialement,");
+            }
         }
     }, [location]);
+
+    const handleSelectPhoto = (option: any) => {
+        if (!selectedPhotos.some(p => p.id === option.id)) {
+            setSelectedPhotos([...selectedPhotos, option]);
+        }
+    };
+
+    const handleRemovePhoto = (id: number | string) => {
+        setSelectedPhotos(selectedPhotos.filter(p => p.id !== id));
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setStatus('submitting');
 
         const formData = new FormData(e.currentTarget);
+
+        // Concatenate selected photos into the message
+        if (subject === 'acquisition' && selectedPhotos.length > 0) {
+            const photoListString = selectedPhotos.map(p => `- ${p.title} (${p.seriesTitle})`).join('\n');
+            const currentMsg = formData.get('message') as string;
+            // Inject the list at the TOP of the message for clarity
+            formData.set('message', `[DEMANDE D'ACQUISITION POUR ${selectedPhotos.length} ŒUVRES] :\n${photoListString}\n\n--------------------------------\n\n${currentMsg}`);
+        }
 
         try {
             await fetch('/', {
@@ -33,6 +93,8 @@ const Contact = () => {
             setStatus('success');
             (e.target as HTMLFormElement).reset();
             setMessage('');
+            setSubject('');
+            setSelectedPhotos([]);
         } catch {
             setStatus('error');
         }
@@ -96,6 +158,61 @@ const Contact = () => {
                             placeholder={t('contact.placeholderEmail')}
                         />
                     </div>
+
+                    {/* Acquisition Logic */}
+                    {(subject === 'acquisition' || selectedPhotos.length > 0) && (
+                        <div className="space-y-6 bg-white/5 p-6 border border-white/10 rounded-sm">
+
+                            {/* Visual Selector */}
+                            <VisualSelector
+                                options={allPhotosOptions}
+                                onSelect={handleSelectPhoto}
+                                label="Ajouter une œuvre à votre sélection"
+                            />
+
+                            {/* "Cart" / Selected Items */}
+                            <div className="space-y-3">
+                                <label className="block text-xs font-space-mono text-silver uppercase tracking-widest">
+                                    Votre sélection ({selectedPhotos.length})
+                                </label>
+
+                                {selectedPhotos.length === 0 ? (
+                                    <p className="text-silver/40 text-sm italic font-inter px-2">Aucune œuvre sélectionnée pour le moment.</p>
+                                ) : (
+                                    <div className="grid gap-3">
+                                        <AnimatePresence>
+                                            {selectedPhotos.map(photo => (
+                                                <motion.div
+                                                    key={photo.id}
+                                                    initial={{ opacity: 0, height: 0 }}
+                                                    animate={{ opacity: 1, height: 'auto' }}
+                                                    exit={{ opacity: 0, height: 0 }}
+                                                    className="flex items-center justify-between bg-black/40 border border-white/10 p-2 pr-4 group/item"
+                                                >
+                                                    <div className="flex items-center gap-4">
+                                                        <img src={photo.url} alt={photo.title} className="w-10 h-10 object-cover" />
+                                                        <div>
+                                                            <p className="text-off-white font-bold text-sm">{photo.title}</p>
+                                                            <p className="text-silver/50 text-[10px] font-space-mono uppercase">{photo.seriesTitle}</p>
+                                                        </div>
+                                                    </div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleRemovePhoto(photo.id)}
+                                                        className="text-silver/40 hover:text-darkroom-red transition-colors p-1"
+                                                        title="Retirer de la sélection"
+                                                    >
+                                                        <X className="w-4 h-4" />
+                                                    </button>
+                                                </motion.div>
+                                            ))}
+                                        </AnimatePresence>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
 
                     <div className="group">
                         <label htmlFor="message" className="block text-xs font-space-mono text-silver uppercase tracking-widest mb-2 group-focus-within:text-darkroom-red transition-colors">

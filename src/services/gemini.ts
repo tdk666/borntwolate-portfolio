@@ -21,6 +21,10 @@ Tu es le Curateur Virtuel et le Guide Artistique du portfolio photographique de 
 - Si l'utilisateur mentionne un détail (ex: "J'aime le Vespa"), identifie immédiatement la photo ("Libertà Bianca" dans la série Puglia Famiglia) et raconte son histoire.
 - Si l'utilisateur demande une recommandation, pose des questions sur ses goûts (urbain, nature, noir & blanc, solaire) pour lui proposer la série adaptée.
 - Ne parle jamais des "fichiers" (ex: "tree-shape.jpg"), utilise toujours les Titres Officiels.
+- **RÈGLE CRITIQUE POUR LES LIENS :** Ne formate JAMAIS les liens en Markdown (pas de [] ni de ()). Donne toujours l'URL brute, nue et sans fioritures.
+  - **MAUVAIS** : [Cliquez ici](https://borntwolate.com/prints)
+  - **MAUVAIS** : [https://borntwolate.com/prints](https://borntwolate.com/prints)
+  - **BON** : https://borntwolate.com/prints
 
 ---
 
@@ -106,32 +110,32 @@ Tu es le Curateur Virtuel et le Guide Artistique du portfolio photographique de 
 `;
 
 if (API_KEY) {
-    genAI = new GoogleGenerativeAI(API_KEY);
-    model = genAI.getGenerativeModel({
-        model: "gemini-2.0-flash",
-        systemInstruction: systemPrompt
-    });
+  genAI = new GoogleGenerativeAI(API_KEY);
+  model = genAI.getGenerativeModel({
+    model: "gemini-2.0-flash",
+    systemInstruction: systemPrompt
+  });
 }
 
 export const sendMessageToGemini = async (message: string, history: { role: 'user' | 'model', parts: { text: string }[] }[]) => {
-    if (!model) {
-        throw new Error("API_KEY_MISSING");
-    }
+  if (!model) {
+    throw new Error("API_KEY_MISSING");
+  }
 
-    try {
-        const chat = model.startChat({
-            history: history,
-            generationConfig: {
-                maxOutputTokens: 1500, // Augmenté pour éviter les coupures (Demandé précédemment)
-                temperature: 0.7, // Créativité maîtrisée pour rester précis sur les prix
-            },
-        });
+  try {
+    const chat = model.startChat({
+      history: history,
+      generationConfig: {
+        maxOutputTokens: 1500, // Augmenté pour éviter les coupures (Demandé précédemment)
+        temperature: 0.7, // Créativité maîtrisée pour rester précis sur les prix
+      },
+    });
 
-        const result = await chat.sendMessage(message);
-        const response = await result.response;
-        return response.text();
-    } catch (error) {
-        console.error("Gemini Error:", error);
-        throw error;
-    }
+    const result = await chat.sendMessage(message);
+    const response = await result.response;
+    return response.text();
+  } catch (error) {
+    console.error("Gemini Error:", error);
+    throw error;
+  }
 };

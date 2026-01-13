@@ -1,11 +1,14 @@
 import { motion } from 'framer-motion';
 import { SEO } from '../components/SEO';
+import { useTranslation } from 'react-i18next';
 
 const Legals = () => {
+    const { t } = useTranslation();
+
     return (
         <div className="min-h-screen pt-32 px-6 md:px-12 pb-20 max-w-4xl mx-auto">
             <SEO
-                title="Mentions Légales & CGV"
+                title={t('legals.title')}
                 description="Mentions légales, Politique de Confidentialité et Conditions Générales de Vente du site Born Too Late."
             />
 
@@ -17,28 +20,28 @@ const Legals = () => {
             >
                 <header className="mb-16 border-b border-white/10 pb-8">
                     <h1 className="text-3xl md:text-5xl font-space-mono font-bold text-off-white uppercase tracking-tighter mb-4">
-                        Mentions Légales & CGV
+                        {t('legals.title')}
                     </h1>
-                    <p className="text-xs font-space-mono text-darkroom-red uppercase">Dernière mise à jour : Janvier 2026</p>
+                    <p className="text-xs font-space-mono text-darkroom-red uppercase">{t('legals.update')}</p>
                 </header>
 
                 {/* --- 1. MENTIONS LÉGALES (LCEN) --- */}
                 <section className="space-y-4">
-                    <h2 className="text-xl font-space-mono text-off-white uppercase tracking-widest border-l-2 border-darkroom-red pl-4">1. Mentions Légales</h2>
+                    <h2 className="text-xl font-space-mono text-off-white uppercase tracking-widest border-l-2 border-darkroom-red pl-4">{t('legals.section1.title')}</h2>
 
                     <div className="grid md:grid-cols-2 gap-8">
                         <div>
-                            <h3 className="font-bold text-off-white mb-2">Éditeur du Site</h3>
+                            <h3 className="font-bold text-off-white mb-2">{t('legals.section1.editor')}</h3>
                             <p>
                                 <strong>Théophile Dequecker</strong> (Born Two Late)<br />
                                 16 rue de la Grande Chaumière<br />
                                 75006 Paris, France<br />
                                 Email : <a href="mailto:theophile.dequecker@gmail.com" className="hover:text-darkroom-red transition-colors underline">theophile.dequecker@gmail.com</a><br />
-                                <span className="text-xs opacity-50 italic">Statut : Artiste-Auteur / Particulier (SIRET en cours d'attribution)</span>
+                                <span className="text-xs opacity-50 italic">{t('legals.section1.status')}</span>
                             </p>
                         </div>
                         <div>
-                            <h3 className="font-bold text-off-white mb-2">Hébergeur</h3>
+                            <h3 className="font-bold text-off-white mb-2">{t('legals.section1.host')}</h3>
                             <p>
                                 <strong>Netlify, Inc.</strong><br />
                                 44 Montgomery Street, Suite 300<br />
@@ -51,49 +54,45 @@ const Legals = () => {
 
                 {/* --- 2. PROPRIÉTÉ INTELLECTUELLE --- */}
                 <section className="space-y-4">
-                    <h2 className="text-xl font-space-mono text-off-white uppercase tracking-widest border-l-2 border-darkroom-red pl-4">2. Propriété Intellectuelle</h2>
-                    <p className="text-justify leading-relaxed">
-                        L'ensemble des contenus de ce site (structure, design, textes, et particulièrement les <strong>photographies</strong>) est protégé par le Code de la Propriété Intellectuelle.
-                        Les œuvres photographiques présentées sont la propriété exclusive de Théophile Dequecker.
-                        <br /><br />
-                        Toute reproduction, représentation, modification, publication, adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est <strong>strictement interdite</strong> sans l'autorisation écrite préalable de l'auteur.
-                    </p>
+                    <h2 className="text-xl font-space-mono text-off-white uppercase tracking-widest border-l-2 border-darkroom-red pl-4">{t('legals.section2.title')}</h2>
+                    <p className="text-justify leading-relaxed" dangerouslySetInnerHTML={{ __html: t('legals.section2.text') }}></p>
                 </section>
 
                 {/* --- 3. POLITIQUE DE CONFIDENTIALITÉ (RGPD) --- */}
                 <section className="space-y-4">
-                    <h2 className="text-xl font-space-mono text-off-white uppercase tracking-widest border-l-2 border-darkroom-red pl-4">3. Politique de Confidentialité (RGPD)</h2>
+                    <h2 className="text-xl font-space-mono text-off-white uppercase tracking-widest border-l-2 border-darkroom-red pl-4">{t('legals.section3.title')}</h2>
                     <p className="text-justify leading-relaxed">
-                        Conformément au Règlement Général sur la Protection des Données (RGPD), nous vous informons sur l'usage de vos données :
+                        {t('legals.section3.intro')}
                     </p>
                     <ul className="list-disc pl-5 space-y-2">
-                        <li><strong>Responsable du traitement :</strong> Théophile Dequecker.</li>
-                        <li><strong>Données collectées :</strong> Nom, email, adresse (si commande), contenu des messages.</li>
-                        <li><strong>Finalité :</strong> Gestion des demandes de contact, expédition des commandes, discussion via le Chatbot.</li>
-                        <li><strong>Sous-traitants :</strong>
+                        <li dangerouslySetInnerHTML={{ __html: t('legals.section3.responsible') }}></li>
+                        <li dangerouslySetInnerHTML={{ __html: t('legals.section3.data') }}></li>
+                        <li dangerouslySetInnerHTML={{ __html: t('legals.section3.purpose') }}></li>
+                        <li>
+                            <span dangerouslySetInnerHTML={{ __html: t('legals.section3.subcontractors.title') }}></span>
                             <ul className="list-circle pl-5 mt-1 text-silver/80 text-xs">
-                                <li><em>Netlify</em> (Hébergement)</li>
-                                <li><em>EmailJS</em> (Envoi d'emails transactionnels)</li>
-                                <li><em>Google Gemini AI</em> (Traitement du Chatbot). <strong>Attention :</strong> Les échanges avec le "Labo AI" sont traités par Google. Ne partagez pas de données sensibles.</li>
+                                <li dangerouslySetInnerHTML={{ __html: t('legals.section3.subcontractors.netlify') }}></li>
+                                <li dangerouslySetInnerHTML={{ __html: t('legals.section3.subcontractors.emailjs') }}></li>
+                                <li dangerouslySetInnerHTML={{ __html: t('legals.section3.subcontractors.gemini') }}></li>
                             </ul>
                         </li>
-                        <li><strong>Vos droits :</strong> Droit d'accès, rectification, effacement. Contact : via l'email de l'éditeur.</li>
+                        <li dangerouslySetInnerHTML={{ __html: t('legals.section3.rights') }}></li>
                     </ul>
                 </section>
 
                 {/* --- 4. CGV --- */}
                 <section className="space-y-4">
-                    <h2 className="text-xl font-space-mono text-off-white uppercase tracking-widest border-l-2 border-darkroom-red pl-4">4. Conditions Générales de Vente (CGV)</h2>
-                    <p className="italic text-xs text-silver/60">Applicables aux ventes de tirages d'art.</p>
+                    <h2 className="text-xl font-space-mono text-off-white uppercase tracking-widest border-l-2 border-darkroom-red pl-4">{t('legals.section4.title')}</h2>
+                    <p className="italic text-xs text-silver/60">{t('legals.section4.subtitle')}</p>
 
                     <div className="space-y-6">
                         <article>
-                            <h3 className="font-bold text-off-white">4.1 Commande</h3>
-                            <p>Les produits sont des œuvres photographiques originales. La vente se fait "sur devis". Le contrat est conclu à l'acceptation du devis et réception du paiement.</p>
+                            <h3 className="font-bold text-off-white">{t('legals.section4.article1.title')}</h3>
+                            <p dangerouslySetInnerHTML={{ __html: t('legals.section4.article1.text') }}></p>
                         </article>
                         <article>
-                            <h3 className="font-bold text-off-white">4.2 Droit de Rétractation</h3>
-                            <p>Conformément à l'article L221-18 du Code de la consommation, vous disposez de <strong>14 jours</strong> à réception pour exercer votre droit de rétractation (frais de retour à votre charge), sauf pour les œuvres nettement personnalisées.</p>
+                            <h3 className="font-bold text-off-white">{t('legals.section4.article2.title')}</h3>
+                            <p dangerouslySetInnerHTML={{ __html: t('legals.section4.article2.text') }}></p>
                         </article>
                     </div>
                 </section>

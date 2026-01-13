@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useState, useRef } from 'react';
 import { motion, useAnimation, type PanInfo } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import type { Photo } from '../data/photos';
 import { useTranslation } from 'react-i18next';
 
@@ -13,6 +14,7 @@ interface LightboxProps {
 
 const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
     const { i18n } = useTranslation();
+    const navigate = useNavigate();
     const currentLang = i18n.language.split('-')[0] as 'fr' | 'en';
     const controls = useAnimation();
 
@@ -143,6 +145,20 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                             </p>
                         </div>
                     )}
+
+                    {/* Acquisition Link */}
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onClose();
+                            // Utilisation de window.location pour forcer la navigation si besoin, ou useNavigate si disponible.
+                            // Ici on navigue via window.location pour simplicité immédiate ou via un callback si on avait useNavigate.
+                            navigate(`/contact?subject=acquisition&photo=${encodeURIComponent(photo.title)}`);
+                        }}
+                        className="mt-8 text-xs font-space-mono text-silver/50 hover:text-darkroom-red transition-colors uppercase tracking-widest underline decoration-1 underline-offset-4"
+                    >
+                        Acquérir ce tirage
+                    </button>
                 </div>
 
                 <div className="md:hidden absolute bottom-0 left-0 w-full z-40 pointer-events-none">
@@ -184,7 +200,17 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                             <div className="py-8 space-y-6">
                                 {photo.technical_info && <p className="font-mono text-xs text-darkroom-red uppercase tracking-widest">{photo.technical_info}</p>}
                                 {photo.caption_artistic && <p className="font-inter font-light text-sm text-silver leading-relaxed text-justify whitespace-pre-line">{getLocalizedText(photo.caption_artistic)}</p>}
-                                <div className="pt-8 flex justify-center">
+                                <div className="pt-4 flex flex-col items-center gap-4">
+                                    <button
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onClose();
+                                            navigate(`/contact?subject=acquisition&photo=${encodeURIComponent(photo.title)}`);
+                                        }}
+                                        className="text-xs font-space-mono text-silver/50 hover:text-darkroom-red transition-colors uppercase tracking-widest underline decoration-1 underline-offset-4"
+                                    >
+                                        Acquérir ce tirage
+                                    </button>
                                     <button onClick={() => setShowInfo(false)} className="text-xs text-white/30 uppercase tracking-widest hover:text-white">Close</button>
                                 </div>
                             </div>
