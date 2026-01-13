@@ -94,8 +94,8 @@ const SeriesDetail = () => {
     return (
         <div key={id} className="min-h-screen pt-24 px-4 md:px-8 pb-12 transition-colors duration-1000 ease-in-out">
             <SEO
-                title={`${series.title} | Série Argentique`}
-                description={`Série photo : ${series.title}. ${series.description[currentLang].substring(0, 120)}...`}
+                title={series.seo_title?.[currentLang] || `${series.title} | Photographie Argentique`}
+                description={series.description[currentLang].substring(0, 160)}
                 image={series.coverImage}
                 url={`/series/${series.id}`}
                 type="article"

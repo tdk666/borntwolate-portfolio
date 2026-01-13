@@ -15,25 +15,23 @@ const Portfolio = () => {
     const [columns, setColumns] = useState(1);
 
     // Filter & Shuffle
-    const filteredPhotos = useMemo(() => {
-        const result = filter === 'all'
+    const [filteredPhotos, setFilteredPhotos] = useState<Photo[]>(photos);
+
+    useEffect(() => {
+        let result = filter === 'all'
             ? [...photos]
             : photos.filter((photo) => photo.category === filter);
 
-        const seed = 12345;
-        const m = 0x80000000;
-        const a = 1103515245;
-        const c = 12345;
-        let state = seed;
-        const random = () => {
-            state = (a * state + c) % m;
-            return state / (m - 1);
+        // Fisher-Yates Shuffle for 'all' category
+        // Done in useEffect to keep the render pure (Math.random is impure)
+        if (filter === 'all') {
+            for (let i = result.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [result[i], result[j]] = [result[j], result[i]];
+            }
         }
-        for (let i = result.length - 1; i > 0; i--) {
-            const j = Math.floor(random() * (i + 1));
-            [result[i], result[j]] = [result[j], result[i]];
-        }
-        return result;
+        // eslint-disable-next-line
+        setFilteredPhotos(result);
     }, [filter]);
 
     // Responsive Columns

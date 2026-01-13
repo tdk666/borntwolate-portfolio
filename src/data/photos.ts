@@ -20,6 +20,7 @@ export interface Series {
     coverImage: string;
     photos: Photo[];
     theme?: { background: string; text: string; };
+    seo_title?: LocalizedText;
 }
 
 export const seriesData: Series[] = [
@@ -33,6 +34,7 @@ export const seriesData: Series[] = [
         },
         coverImage: '/images/polish-hike/the-hills.jpg',
         theme: { background: '#D6DBDF', text: '#2E4053' },
+        seo_title: { fr: "Polish Hike - Randonnée Photo Argentique dans les Tatras (Pologne)", en: "Polish Hike - Analog Photo Hiking in the Tatras (Poland)" },
         photos: [
             {
                 id: 9701, url: '/images/polish-hike/the-hills.jpg', title: 'Crête Verte', category: 'nature', seriesId: 'polish-hike', technical_info: 'Rollei 35 | Kodak Gold', orientation: 'landscape',
@@ -76,6 +78,7 @@ export const seriesData: Series[] = [
         },
         coverImage: '/images/white-mounts/like-sugar.jpg',
         theme: { background: '#F0F8FF', text: '#003366' },
+        seo_title: { fr: "White Mounts - Photo Argentique Ski Vintage Alpes (Portra 400)", en: "White Mounts - Vintage Analog Ski Photography Alps (Portra 400)" },
         photos: [
             {
                 id: 9502, url: '/images/white-mounts/like-sugar.jpg', title: 'Sucre Glace', category: 'nature', seriesId: 'white-mounts', technical_info: 'Rollei 35 | Portra 400', orientation: 'landscape',
@@ -124,6 +127,7 @@ export const seriesData: Series[] = [
         },
         coverImage: '/images/puglia/vespa.jpg',
         theme: { background: '#CFE9F7', text: '#C0392B' },
+        seo_title: { fr: "Puglia Famiglia - Voyage Photo Argentique dans les Pouilles (Italie)", en: "Puglia Famiglia - Analog Photo Trip in Puglia (Italy)" },
         photos: [
             {
                 id: 9301, url: '/images/puglia/vespa.jpg', title: 'Libertà Bianca', category: 'urban', seriesId: 'puglia-famiglia', technical_info: 'Rollei 35 | CineStill 400D', orientation: 'landscape',
@@ -167,6 +171,7 @@ export const seriesData: Series[] = [
         },
         coverImage: '/images/retro-mountain/mountain-retro.jpg',
         theme: { background: '#F0F0F0', text: '#000000' },
+        seo_title: { fr: "Retro Mountain - Ski Vintage Noir & Blanc (Rollei Retro 400S)", en: "Retro Mountain - Vintage B&W Skiing (Rollei Retro 400S)" },
         photos: [
             {
                 id: 9101, url: '/images/retro-mountain/mountain-retro.jpg', title: 'Le Gardien des Cimes', category: 'portrait', seriesId: 'retro-mountain', technical_info: 'Rollei 35 | Rollei Retro 400S', orientation: 'portrait',
@@ -174,17 +179,17 @@ export const seriesData: Series[] = [
                 caption_artistic: { fr: "Le Gardien des Cimes. Dans cette composition verticale d'une netteté absolue, le sujet s'impose au centre de l'image tel une sentinelle des hauteurs. De trois-quarts, le regard fixé vers l'horizon hors-champ, il adopte une posture statuaire, un genou fléchi ancrant sa présence dans la poudreuse. L'image est construite sur une géométrie rigoureuse : les lignes verticales des skis s'élancent vers un ciel qui se confond avec la neige. Le noir profond du pantalon et la texture du gilet en laine se détachent violemment sur le blanc immaculé, transformant une simple halte sur les pistes en une scène mythologique.", en: "The Guardian of the Peaks. In this vertical composition of absolute sharpness, the subject imposes himself in the center of the image like a sentinel of the heights. Three-quarters, gaze fixed towards the off-screen horizon, he adopts a statuesque posture, one knee bent anchoring his presence in the powder. The image is built on rigorous geometry: the vertical lines of skis soar towards a sky that merges with the snow. The deep black of the trousers and the texture of the wool vest stand out violently against the pristine white, transforming a simple stop on the slopes into a mythological scene." }
             },
             {
-                id: 9104, url: '/images/retro-mountain/lawrence.jpg', title: "Lawrence d'Hiver", category: 'bnw', seriesId: 'retro-mountain', technical_info: 'Rollei 35 | Rollei Retro 400S', orientation: 'landscape',
+                id: 9104, url: '/images/retro-mountain/lawrence.jpg', title: "Lawrence d'Hiver", category: 'portrait', seriesId: 'retro-mountain', technical_info: 'Rollei 35 | Rollei Retro 400S', orientation: 'landscape',
                 alt_accessible: { fr: "Silhouette sombre de profil avec turban sur un balcon surplombant un paysage brumeux.", en: "Dark profile silhouette with turban on a balcony overlooking a misty landscape." },
                 caption_artistic: { fr: "Lawrence d'Hiver. Capturée depuis un balcon surplombant le Lac Léman, cette photographie horizontale bascule dans l'onirisme. Le sujet, relégué sur le flanc gauche, est réduit à l'état de silhouette d'encre par un contre-jour radical. De cette ombre chinoise ne subsistent que les contours d'un profil barbu et d'un turban inattendu, convoquant l'imaginaire de Lawrence d'Arabie au cœur des Alpes. Le reste de l'image est une étude de textures où la cime noire des sapins semble flotter sur une mer de brume et de dégradés de gris.", en: "Winter Lawrence. Captured from a balcony overlooking Lake Geneva, this horizontal photograph tips into dreamlike quality. The subject, relegated to the left flank, is reduced to an ink silhouette by radical backlighting. From this shadow puppet show remain only the contours of a bearded profile and an unexpected turban, summoning the imagery of Lawrence of Arabia in the heart of the Alps. The rest of the image is a study of textures where the black tops of fir trees seem to float on a sea of mist and shades of gray." }
             },
             {
-                id: 9102, url: '/images/retro-mountain/contre-plongée.jpg', title: "L'Observatoire", category: 'bnw', seriesId: 'retro-mountain', technical_info: 'Rollei 35 | Rollei Retro 400S', orientation: 'landscape',
+                id: 9102, url: '/images/retro-mountain/contre-plongée.jpg', title: "L'Observatoire", category: 'portrait', seriesId: 'retro-mountain', technical_info: 'Rollei 35 | Rollei Retro 400S', orientation: 'landscape',
                 alt_accessible: { fr: "Homme assis les jambes dans le vide sur un toit en béton, vu en contre-plongée avec montagnes en fond.", en: "Man sitting legs dangling on a concrete roof, low angle view with mountains in background." },
                 caption_artistic: { fr: "L'Observatoire. Cette photographie horizontale est une leçon de géométrie. Le sujet trône au bord d'une structure cubique, un toit de garage transformé en piédestal brut. La prise de vue en contre-plongée inverse les rapports de force : assis les pieds dans le vide, il domine l'objectif d'un regard insondable. L'arrière-plan construit une scène théâtrale où les courbes organiques des montagnes sont brutalement tranchées par la ligne rigide du béton, isolant cette figure solitaire entre la banalité humaine et l'immensité des cimes.", en: "The Observatory. This horizontal photograph is a geometry lesson. The subject sits on the edge of a cubic structure, a garage roof transformed into a raw pedestal. The low-angle shot reverses power dynamics: sitting with feet in the void, he dominates the lens with an inscrutable gaze. The background builds a theatrical scene where organic mountain curves are brutally sliced by the rigid concrete line, isolating this solitary figure between human banality and the vastness of the peaks." }
             },
             {
-                id: 9103, url: '/images/retro-mountain/la-raclette.jpg', title: "Le Rituel", category: 'bnw', seriesId: 'retro-mountain', technical_info: 'Rollei 35 | Rollei Retro 400S', orientation: 'landscape',
+                id: 9103, url: '/images/retro-mountain/la-raclette.jpg', title: "Le Rituel", category: 'portrait', seriesId: 'retro-mountain', technical_info: 'Rollei 35 | Rollei Retro 400S', orientation: 'landscape',
                 alt_accessible: { fr: "Plan rapproché d'un repas de raclette avec appareil photo vintage au premier plan.", en: "Close-up of a raclette meal with vintage camera in foreground." },
                 caption_artistic: { fr: "Le Rituel. Rompant avec la majesté froide des extérieurs, cette scène d'intérieur plonge le spectateur dans l'intimité du vieux chalet. L'utilisation du flash direct sculpte l'image avec une brutalité esthétique assumée : au premier plan, la demi-meule de fromage devient un bloc de matière minérale. La composition est dictée par l'appareil vintage qui barre la diagonale, laissant surgir Amaury dans l'interstice. Une célébration sans filtre de la convivialité alpine, transformant un repas traditionnel en une nature morte vivante.", en: "The Ritual. Breaking with the cold majesty of exteriors, this interior scene plunges the viewer into the intimacy of the old chalet. The use of direct flash sculpts the image with assumed aesthetic brutality: in the foreground, the half-wheel of cheese becomes a block of mineral matter. The composition is dictated by the vintage camera barring the diagonal, letting Amaury emerge in the gap. An unfiltered celebration of Alpine conviviality, transforming a traditional meal into a living still life." }
             },
@@ -210,6 +215,7 @@ export const seriesData: Series[] = [
         },
         coverImage: '/images/winter-in-the-fruit/empire-state.jpg',
         theme: { background: '#D1D5DB', text: '#8B0000' },
+        seo_title: { fr: "A Winter in the Fruit - New York Photo Argentique de Rue", en: "A Winter in the Fruit - New York Analog Street Photography" },
         photos: [
             {
                 id: 9401,
@@ -342,6 +348,7 @@ export const seriesData: Series[] = [
         },
         coverImage: '/images/psychadelic-mtl/montreal-vis-versa.JPG',
         theme: { background: '#C87533', text: '#003B46' },
+        seo_title: { fr: "Psychadelic MTL - Montréal Insolite & Photo Infrarouge (LomoChrome)", en: "Psychadelic MTL - Unusual Montreal & Infrared Photo (LomoChrome)" },
         photos: [
             {
                 id: 9201, url: '/images/psychadelic-mtl/montreal-vis-versa.JPG', title: 'Monde Inversé', category: 'urban', seriesId: 'psychadelic-mtl', technical_info: 'Rollei 35 | LomoChrome Turquoise', orientation: 'landscape',
@@ -364,12 +371,12 @@ export const seriesData: Series[] = [
                 caption_artistic: { fr: "Géométrie brutale. Un immeuble en rénovation devient le théâtre d'une transmutation chimique. La brique rouge traditionnelle est convertie en un monolithe bleu-vert, découpé au scalpel par une contre-plongée vertigineuse. Le ciel, saturé d'un orange incendiaire, vient heurter les arêtes nettes du toit. En bas, les ombres du chantier sculptent la façade en gradins, créant un effet 'Lego' presque artificiel.", en: "Brutal geometry. A building under renovation becomes the theater of a chemical transmutation. Traditional red brick is converted into a blue-green monolith, cut by a scalpel in a dizzying low angle. The sky, saturated with incendiary orange, strikes the sharp edges of the roof. Below, construction shadows sculpt the facade into tiers, creating an almost artificial 'Lego' effect." }
             },
             {
-                id: 9206, url: '/images/psychadelic-mtl/frvr-in-d-r.JPG', title: 'Forever in the Air', category: 'urban', seriesId: 'psychadelic-mtl', technical_info: 'Rollei 35 | LomoChrome Turquoise', orientation: 'landscape',
+                id: 9206, url: '/images/psychadelic-mtl/frvr-in-d-r.JPG', title: 'Forever in the Air', category: 'portrait', seriesId: 'psychadelic-mtl', technical_info: 'Rollei 35 | LomoChrome Turquoise', orientation: 'landscape',
                 alt_accessible: { fr: "Forever in the Air", en: "Forever in the Air" },
                 caption_artistic: { fr: "Gravité suspendue. L'obturateur capture l'instant précis de l'apogée. Le skateur, accroupi en plein vol, flotte à un mètre cinquante du sol, détaché de son ombre. La chimie de la pellicule opère une mutation radicale : son manteau orange vire au bleu électrique, tandis que le ciel devient une fournaise pâle. Figé pour l'éternité, il est le seul élément dynamique d'une nature morte aux couleurs inversées.", en: "Suspended gravity. The shutter captures the precise moment of the apex. The skater, crouched in mid-flight, floats one and a half meters off the ground, detached from his shadow. The film's chemistry operates a radical mutation: his orange coat turns electric blue, while the sky becomes a pale furnace. Frozen for eternity, he is the only dynamic element of a still life with inverted colors." }
             },
             {
-                id: 9204, url: '/images/psychadelic-mtl/duo-on-cliff.JPG', title: 'Duo on Cliff', category: 'urban', seriesId: 'psychadelic-mtl', technical_info: 'Rollei 35 | LomoChrome Turquoise', orientation: 'landscape',
+                id: 9204, url: '/images/psychadelic-mtl/duo-on-cliff.JPG', title: 'Duo on Cliff', category: 'portrait', seriesId: 'psychadelic-mtl', technical_info: 'Rollei 35 | LomoChrome Turquoise', orientation: 'landscape',
                 alt_accessible: { fr: "Duo on Cliff", en: "Duo on Cliff" },
                 caption_artistic: { fr: "Trompe-l'œil urbain. Une simple esplanade se métamorphose en falaise vertigineuse par la grâce d'une perspective en contre-plongée. Au bord de ce vide illusoire, deux silhouettes échangent des mots secrets, se découpant sur l'incendie orange du ciel. Au-dessus d'eux, une mouette figée en plein vol scelle l'instant. Est-ce une romance volée au bord de la fin du monde ? L'image crée un vertige purement optique.", en: "Urban trompe-l'œil. A simple esplanade transforms into a dizzying cliff by the grace of a low-angle perspective. On the edge of this illusory void, two silhouettes exchange secret words, silhouetted against the orange fire of the sky. Above them, a seagull frozen in flight seals the moment. Is it a stolen romance at the edge of the end of the world? The image creates a purely optical vertigo." }
             }
@@ -385,6 +392,7 @@ export const seriesData: Series[] = [
         },
         coverImage: '/images/canadian-evasion/infinity.JPG',
         theme: { background: '#3C4A57', text: '#F0F4F8' },
+        seo_title: { fr: "Canadian Evasion - Road Trip Québec Photo Argentique", en: "Canadian Evasion - Quebec Road Trip Analog Photography" },
         photos: [
             {
                 id: 9704, url: '/images/canadian-evasion/intrus.JPG', title: 'Bivouac', category: 'nature', seriesId: 'canadian-evasion', technical_info: 'Rollei 35 | Portra 400', orientation: 'landscape',
@@ -431,6 +439,7 @@ export const seriesData: Series[] = [
             background: '#F5F5DC',
             text: '#1A1A1A'
         },
+        seo_title: { fr: "Rue des Mauvais Garçons - Paris Vintage & Moto Classique", en: "Rue des Mauvais Garçons - Vintage Paris & Classic Motorcycles" },
         photos: [
             {
                 id: 9001, url: '/images/mauvais-garcons/gab-moto-debout.jpg', title: "L'Attente", category: 'portrait', seriesId: 'mauvais-garcons', technical_info: 'Nikon F-301 | Portra 400', orientation: 'landscape',

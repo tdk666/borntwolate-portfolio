@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { ShieldCheck, Printer, AlertCircle, Lock } from 'lucide-react';
 import { SEO } from '../../components/SEO';
 
@@ -75,7 +75,7 @@ const CertificateGenerator = () => {
                     </div>
                 </div>
                 <div className="absolute bottom-4 right-12 text-[8px] font-mono text-black/20">
-                    ID: {Math.random().toString(36).substr(2, 9).toUpperCase()}
+                    ID: {useMemo(() => Math.random().toString(36).substr(2, 9).toUpperCase(), [])}
                 </div>
             </div>
         </div>
