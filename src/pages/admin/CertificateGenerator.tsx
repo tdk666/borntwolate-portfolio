@@ -27,19 +27,31 @@ const CertificateGenerator = () => {
             <style>{`
         @media print {
             @page { margin: 0; size: auto; }
-            body { margin: 0; -webkit-print-color-adjust: exact; }
-            /* Cache tout ce qui n'est pas le certificat */
-            body > *:not(#certificate-root), nav, footer, header {
-                display: none !important;
+            body { 
+                margin: 0; 
+                -webkit-print-color-adjust: exact; 
+                background-color: white;
             }
-            /* Affiche le certificat en plein écran */
+            
+            /* Cacher tout le contenu par défaut via visibility */
+            body * {
+                visibility: hidden;
+            }
+
+            /* Rendre visible UNIQUEMENT le certificat et ses enfants */
+            #certificate-root, #certificate-root * {
+                visibility: visible;
+            }
+
+            /* Positionner le certificat en haut à gauche de la page */
             #certificate-root {
-                display: block !important;
                 position: absolute !important;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                height: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
                 background: white;
                 z-index: 9999;
             }
