@@ -26,34 +26,41 @@ const CertificateGenerator = () => {
             {/* STYLE SPÉCIFIQUE POUR L'IMPRESSION */}
             <style>{`
         @media print {
-            @page { margin: 0; size: auto; }
-            body { 
+            @page { 
                 margin: 0; 
-                -webkit-print-color-adjust: exact; 
-                background-color: white;
+                size: 210mm 297mm; /* Force A4 */
+            }
+            html, body {
+                height: 100vh; /* Va "couper" le contenu fantôme */
+                overflow: hidden;
+                margin: 0;
+                padding: 0;
+                background: white;
             }
             
-            /* Cacher tout le contenu par défaut via visibility */
+            /* Cacher tout le reste */
             body * {
                 visibility: hidden;
+                height: 0; /* Réduit l'impact sur le flux */
             }
 
-            /* Rendre visible UNIQUEMENT le certificat et ses enfants */
+            /* Le Certificat */
             #certificate-root, #certificate-root * {
                 visibility: visible;
+                height: auto; /* Rétablit la hauteur pour le contenu */
             }
 
-            /* Positionner le certificat en haut à gauche de la page */
             #certificate-root {
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 100% !important;
-                height: 100% !important;
-                margin: 0 !important;
-                padding: 0 !important;
+                position: fixed; /* Sort du flux */
+                left: 0;
+                top: 0;
+                width: 210mm;
+                height: 297mm;
+                margin: 0;
+                padding: 20mm; /* Marge interne du papier */
                 background: white;
                 z-index: 9999;
+                /* Centrage éventuel si nécessaire, mais ici on veut plein fer */
             }
         }
       `}</style>
