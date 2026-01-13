@@ -132,8 +132,8 @@ export const Chatbot = () => {
     };
 
     const renderMessageContent = (text: string) => {
-        // Regex pour détecter les URLs commençant par http/https
-        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        // Regex pour détecter les URLs commençant par http/https (excludes trailing punctuation)
+        const urlRegex = /(https?:\/\/[^\s]+?)(?=[.,;!?]?(\s|$))/g;
 
         // Découpe le texte
         const parts = text.split(urlRegex);
