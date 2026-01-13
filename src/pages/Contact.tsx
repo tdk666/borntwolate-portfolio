@@ -252,17 +252,35 @@ const Contact = () => {
                             className="text-off-white font-space-mono uppercase tracking-widest text-sm border border-white/20 px-8 py-3 hover:bg-white/5 hover:border-off-white transition-all duration-300 disabled:opacity-50 w-full md:w-auto"
                         >
                             {status === 'submitting' ? 'Développement en cours...' :
-                                status === 'success' ? 'Fixé dans le bain.' :
+                                status === 'success' ?
+                                    (subject === 'acquisition' ? 'Demande transmise à l\'atelier.' : 'Fixé dans le bain.') :
                                     (subject === 'acquisition' && selectedPhotos.length > 0) ? "Valider ma demande (Sans engagement)" : t('contact.send')}
                         </button>
 
-                        {(subject === 'acquisition' && selectedPhotos.length > 0) && (
+                        {(status === 'success' && subject === 'acquisition') && (
+                            <motion.p
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="text-sm text-off-white font-inter mt-4 max-w-md mx-auto"
+                            >
+                                Merci ! Votre sélection pour <span className="text-darkroom-red">{selectedPhotos.map(p => p.title).join(', ')}</span> a été transmise. Je reviens vers vous sous 24h pour finaliser les détails.
+                            </motion.p>
+                        )}
+
+                        {status !== 'success' && (subject === 'acquisition' && selectedPhotos.length > 0) && (
                             <p className="text-[10px] text-silver/50 font-inter mt-3">
                                 Paiement et expédition finalisés par retour de mail.
                             </p>
                         )}
 
                         {status === 'error' && <p className="text-red-500 font-space-mono text-xs mt-4">Erreur de chimie. Réessayez.</p>}
+                    </div>
+
+                    {/* Back to Gallery Link - "Cerise sur le gâteau" */}
+                    <div className="text-center mt-12">
+                        <a href="/" className="text-xs font-space-mono text-silver/40 hover:text-off-white transition-colors uppercase tracking-widest">
+                            ← Retourner à la galerie
+                        </a>
                     </div>
                 </form>
 
