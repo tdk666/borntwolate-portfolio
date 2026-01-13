@@ -155,7 +155,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                             // Ici on navigue via window.location pour simplicité immédiate ou via un callback si on avait useNavigate.
                             navigate(`/contact?subject=acquisition&photo=${encodeURIComponent(photo.title)}`);
                         }}
-                        className="mt-8 text-xs font-space-mono text-silver/50 hover:text-darkroom-red transition-colors uppercase tracking-widest underline decoration-1 underline-offset-4"
+                        className="mt-8 text-xs font-space-mono text-silver/50 hover:text-darkroom-red transition-colors uppercase tracking-widest underline decoration-1 underline-offset-4 py-2"
                     >
                         Acquérir ce tirage
                     </button>
@@ -207,11 +207,11 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                                             onClose();
                                             navigate(`/contact?subject=acquisition&photo=${encodeURIComponent(photo.title)}`);
                                         }}
-                                        className="text-xs font-space-mono text-silver/50 hover:text-darkroom-red transition-colors uppercase tracking-widest underline decoration-1 underline-offset-4"
+                                        className="text-xs font-space-mono text-silver/50 hover:text-darkroom-red transition-colors uppercase tracking-widest underline decoration-1 underline-offset-4 py-3 px-4"
                                     >
                                         Acquérir ce tirage
                                     </button>
-                                    <button onClick={() => setShowInfo(false)} className="text-xs text-white/30 uppercase tracking-widest hover:text-white">Close</button>
+                                    <button onClick={() => setShowInfo(false)} className="text-xs text-white/30 uppercase tracking-widest hover:text-white py-2 px-4">Close</button>
                                 </div>
                             </div>
                         </motion.div>

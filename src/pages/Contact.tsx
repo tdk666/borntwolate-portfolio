@@ -161,13 +161,14 @@ const Contact = () => {
 
                     {/* Acquisition Logic */}
                     {(subject === 'acquisition' || selectedPhotos.length > 0) && (
-                        <div className="space-y-6 bg-white/5 p-6 border border-white/10 rounded-sm">
+                        <div className="space-y-6 bg-white/5 p-4 md:p-6 border border-white/10 rounded-sm">
 
                             {/* Visual Selector */}
                             <VisualSelector
                                 options={allPhotosOptions}
                                 onSelect={handleSelectPhoto}
                                 label="Ajouter une œuvre à votre sélection"
+                                placeholder={selectedPhotos.length === 0 ? "Sélectionner une œuvre" : "Ajouter une autre œuvre..."}
                             />
 
                             {/* "Cart" / Selected Items */}
@@ -187,20 +188,21 @@ const Contact = () => {
                                                     initial={{ opacity: 0, height: 0 }}
                                                     animate={{ opacity: 1, height: 'auto' }}
                                                     exit={{ opacity: 0, height: 0 }}
-                                                    className="flex items-center justify-between bg-black/40 border border-white/10 p-2 pr-4 group/item"
+                                                    className="flex flex-col sm:flex-row items-start sm:items-center justify-between bg-black/40 border border-white/10 p-2 pr-2 sm:pr-4 group/item gap-3 sm:gap-0"
                                                 >
-                                                    <div className="flex items-center gap-4">
-                                                        <img src={photo.url} alt={photo.title} className="w-10 h-10 object-cover" />
-                                                        <div>
-                                                            <p className="text-off-white font-bold text-sm">{photo.title}</p>
+                                                    <div className="flex items-center gap-4 w-full sm:w-auto">
+                                                        <img src={photo.url} alt={photo.title} className="w-12 h-12 object-cover shrink-0" />
+                                                        <div className="min-w-0">
+                                                            <p className="text-off-white font-bold text-sm truncate">{photo.title}</p>
                                                             <p className="text-silver/50 text-[10px] font-space-mono uppercase">{photo.seriesTitle}</p>
                                                         </div>
                                                     </div>
                                                     <button
                                                         type="button"
                                                         onClick={() => handleRemovePhoto(photo.id)}
-                                                        className="text-silver/40 hover:text-darkroom-red transition-colors p-1"
+                                                        className="text-silver/40 hover:text-darkroom-red transition-colors p-2 self-end sm:self-auto"
                                                         title="Retirer de la sélection"
+                                                        aria-label="Retirer"
                                                     >
                                                         <X className="w-4 h-4" />
                                                     </button>
@@ -247,10 +249,19 @@ const Contact = () => {
                         <button
                             type="submit"
                             disabled={status === 'submitting'}
-                            className="text-off-white font-space-mono uppercase tracking-widest text-sm border border-white/20 px-8 py-3 hover:bg-white/5 hover:border-off-white transition-all duration-300 disabled:opacity-50"
+                            className="text-off-white font-space-mono uppercase tracking-widest text-sm border border-white/20 px-8 py-3 hover:bg-white/5 hover:border-off-white transition-all duration-300 disabled:opacity-50 w-full md:w-auto"
                         >
-                            {status === 'submitting' ? 'Développement en cours...' : status === 'success' ? 'Fixé dans le bain.' : t('contact.send')}
+                            {status === 'submitting' ? 'Développement en cours...' :
+                                status === 'success' ? 'Fixé dans le bain.' :
+                                    (subject === 'acquisition' && selectedPhotos.length > 0) ? "Valider ma demande (Sans engagement)" : t('contact.send')}
                         </button>
+
+                        {(subject === 'acquisition' && selectedPhotos.length > 0) && (
+                            <p className="text-[10px] text-silver/50 font-inter mt-3">
+                                Paiement et expédition finalisés par retour de mail.
+                            </p>
+                        )}
+
                         {status === 'error' && <p className="text-red-500 font-space-mono text-xs mt-4">Erreur de chimie. Réessayez.</p>}
                     </div>
                 </form>
