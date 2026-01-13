@@ -1,7 +1,6 @@
 User-agent: *
 Allow: /
-Sitemap: https://borntwolate.com/sitemap.xml
-
-# Interdire l'indexation des fichiers techniques inutiles
 Disallow: /assets/
 Disallow: /*.json
+
+Sitemap: https://borntwolate.com/sitemap.xml
