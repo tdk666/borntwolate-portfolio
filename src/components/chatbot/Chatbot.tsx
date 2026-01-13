@@ -152,7 +152,17 @@ export const Chatbot = () => {
                         initial={{ opacity: 0, y: 20, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
-                        className="fixed bottom-6 right-6 w-80 sm:w-96 h-[500px] bg-deep-black/95 backdrop-blur-md border border-white/10 rounded-lg shadow-2xl flex flex-col z-50 overflow-hidden"
+                        className="fixed bottom-6 right-6 w-80 sm:w-96 h-[500px] bg-deep-black/95 backdrop-blur-md border border-white/10 rounded-lg shadow-2xl flex flex-col z-50 overflow-hidden select-text cursor-auto"
+
+                        // --- AJOUTS POUR LE COPIER-COLLER ---
+                        style={{ userSelect: 'text', WebkitUserSelect: 'text' }}
+                        onCopy={(e) => e.stopPropagation()}
+                        onCut={(e) => e.stopPropagation()}
+                        onPaste={(e) => e.stopPropagation()}
+                        onContextMenu={(e) => e.stopPropagation()}
+                        onKeyDown={(e) => e.stopPropagation()}
+                        onMouseDown={(e) => e.stopPropagation()}
+                    // ------------------------------------
                     >
                         {/* Header */}
                         <div className="flex justify-between items-center p-4 border-b border-white/10 bg-black/40">
