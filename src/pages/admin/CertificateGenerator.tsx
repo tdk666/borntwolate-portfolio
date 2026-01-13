@@ -17,52 +17,108 @@ const CertificateGenerator = () => {
         window.print();
     };
 
+    // --- LE TEMPLATE DU CERTIFICAT (Défini une fois, utilisé deux fois) ---
+    const CertificateTemplate = () => (
+        <div className="bg-white text-black w-[210mm] h-[296mm] p-[20mm] relative box-border overflow-hidden mx-auto">
+            {/* Bordure de sécurité */}
+            <div className="h-full w-full border border-black/10 p-12 flex flex-col justify-between relative box-border">
+
+                {/* Filigrane */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.02] text-9xl font-bold uppercase pointer-events-none select-none rotate-45 whitespace-nowrap">
+                    Born Too Late
+                </div>
+
+                {/* Header */}
+                <div className="text-center space-y-2 mt-8">
+                    <h1 className="font-space-mono text-4xl uppercase tracking-[0.2em] font-bold text-black">Certificat d'Authenticité</h1>
+                    <p className="font-serif italic text-black/60 text-lg">Born Too Late Photography</p>
+                </div>
+
+                {/* Corps */}
+                <div className="space-y-16 my-auto">
+                    <p className="text-center font-serif text-xl leading-relaxed px-16 text-black/80">
+                        Je soussigné, <strong>Théophile Dequecker</strong>, certifie que l'œuvre décrite ci-dessous est un tirage original, réalisé sous mon contrôle, signé et numéroté de ma main.
+                    </p>
+
+                    <div className="grid grid-cols-[120px_1fr] gap-y-8 gap-x-8 px-12 border-l-4 border-black/80 py-4">
+                        <span className="font-space-mono text-xs uppercase tracking-widest text-black/40 pt-2 text-right">Titre</span>
+                        <span className="font-serif text-3xl font-bold italic text-black">{data.title}</span>
+
+                        <span className="font-space-mono text-xs uppercase tracking-widest text-black/40 pt-2 text-right">Série</span>
+                        <span className="font-serif text-2xl text-black">{data.series}</span>
+
+                        <span className="font-space-mono text-xs uppercase tracking-widest text-black/40 pt-1 text-right">Format</span>
+                        <span className="font-space-mono text-lg text-black">{data.format}</span>
+
+                        <span className="font-space-mono text-xs uppercase tracking-widest text-black/40 pt-1 text-right">Support</span>
+                        <span className="font-space-mono text-lg text-black">{data.paper}</span>
+
+                        <span className="font-space-mono text-xs uppercase tracking-widest text-black/40 pt-1 text-right">Édition</span>
+                        <span className="font-space-mono text-2xl font-bold text-black">N° {data.number} / {data.total}</span>
+                    </div>
+                </div>
+
+                {/* Footer / Signature */}
+                <div className="grid grid-cols-2 mt-12 pt-12 border-t border-black/10 pb-8">
+                    <div>
+                        <p className="font-space-mono text-[10px] uppercase tracking-widest text-black/40 mb-3">Fait à Paris, le</p>
+                        <p className="font-serif text-xl text-black">{data.date}</p>
+                    </div>
+                    <div className="text-right">
+                        <p className="font-space-mono text-[10px] uppercase tracking-widest text-black/40 mb-12">Signature de l'Artiste</p>
+                        {/* Ligne de signature */}
+                        <div className="h-px bg-black/20 w-3/4 ml-auto"></div>
+                    </div>
+                </div>
+
+                {/* ID Unique bas de page */}
+                <div className="absolute bottom-4 right-12 text-[8px] font-mono text-black/20">
+                    ID: {Math.random().toString(36).substr(2, 9).toUpperCase()}
+                </div>
+            </div>
+        </div>
+    );
+
     return (
         <div className="min-h-screen bg-neutral-900 text-white p-4 md:p-8">
             <SEO title="Générateur Certificat" description="Admin only" robots="noindex" />
 
-            {/* --- CSS MAGIQUE D'IMPRESSION --- */}
+            {/* --- CSS D'IMPRESSION (Blindé) --- */}
             <style>{`
         @media print {
-            /* 1. On cache TOUT visuellement (but sans casser la structure DOM) */
-            body * {
-                visibility: hidden;
+            /* 1. On cache TOUT le contenu normal du site */
+            body > *:not(#print-layer) {
+                display: none !important;
             }
-
-            /* 2. On configure la page (A4, sans marges navigateur) */
+            
+            /* 2. Configuration de la page A4 stricte */
             @page {
                 size: A4 portrait;
                 margin: 0;
             }
 
-            /* 3. On rend visible UNIQUEMENT le certificat et ses enfants */
-            #certificate-root, #certificate-root * {
-                visibility: visible;
-            }
-
-            /* 4. On sort le certificat du flux pour le plaquer en plein écran */
-            #certificate-root {
-                position: fixed !important;
-                left: 0;
+            /* 3. On affiche uniquement le calque d'impression */
+            #print-layer {
+                display: block !important;
+                position: fixed;
                 top: 0;
+                left: 0;
                 width: 210mm;
                 height: 297mm;
-                z-index: 99999;
                 background: white;
-                /* Reset absolu des marges/paddings */
-                margin: 0 !important;
-                padding: 20mm !important; /* Marge interne esthétique */
-                box-shadow: none !important;
-            }
-            
-            /* Cache les éléments parasites de l'interface admin s'ils persistent */
-            .no-print {
-                display: none !important;
+                z-index: 9999;
+                padding: 0;
+                margin: 0;
             }
         }
       `}</style>
 
-            {/* Interface Admin (Cachée par visibility: hidden à l'impression) */}
+            {/* --- ZONE D'IMPRESSION (Invisible à l'écran, visible au Print) --- */}
+            <div id="print-layer" className="hidden">
+                <CertificateTemplate />
+            </div>
+
+            {/* --- INTERFACE ADMIN (Visible à l'écran, cachée au Print) --- */}
             <div className="max-w-[1600px] mx-auto mb-12 grid lg:grid-cols-[400px_1fr] gap-8 items-start">
 
                 {/* COLONNE GAUCHE : FORMULAIRE */}
@@ -112,7 +168,7 @@ const CertificateGenerator = () => {
                     <div className="mt-8 pt-6 border-t border-white/10 space-y-4">
                         <div className="flex items-start gap-2 text-xs text-silver/60 bg-darkroom-red/10 p-3 rounded">
                             <AlertCircle size={14} className="mt-0.5 shrink-0 text-darkroom-red" />
-                            <p>Dans la fenêtre d'impression, allez dans "Plus de paramètres" et décochez "En-têtes et pieds de page".</p>
+                            <p>N'oubliez pas de décocher "En-têtes et pieds de page" dans la fenêtre d'impression.</p>
                         </div>
 
                         <button
@@ -124,76 +180,15 @@ const CertificateGenerator = () => {
                     </div>
                 </div>
 
-                {/* COLONNE DROITE : APERÇU (Zoom Out) */}
+                {/* COLONNE DROITE : APERÇU ÉCRAN (Avec Zoom, n'affecte pas l'impression) */}
                 <div className="flex flex-col items-center justify-start min-h-[600px] bg-black/20 rounded-xl border border-white/5 p-8 overflow-hidden relative">
-                    <p className="absolute top-4 text-silver/30 text-xs font-space-mono uppercase tracking-widest mb-4">Aperçu A4</p>
+                    <p className="absolute top-4 text-silver/30 text-xs font-space-mono uppercase tracking-widest mb-4">Aperçu Écran</p>
 
-                    <div className="transform scale-[0.6] lg:scale-[0.7] origin-top mt-8 shadow-2xl">
-
-                        {/* --- LE CERTIFICAT (CIBLE D'IMPRESSION) --- */}
-                        <div id="certificate-root" className="bg-white text-black w-[210mm] h-[297mm] p-[20mm] relative box-border">
-
-                            {/* Bordure de sécurité */}
-                            <div className="h-full w-full border border-black/10 p-12 flex flex-col justify-between relative box-border">
-
-                                {/* Filigrane */}
-                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.02] text-9xl font-bold uppercase pointer-events-none select-none rotate-45 whitespace-nowrap">
-                                    Born Too Late
-                                </div>
-
-                                {/* Header */}
-                                <div className="text-center space-y-2 mt-8">
-                                    <h1 className="font-space-mono text-4xl uppercase tracking-[0.2em] font-bold text-black">Certificat d'Authenticité</h1>
-                                    <p className="font-serif italic text-black/60 text-lg">Born Too Late Photography</p>
-                                </div>
-
-                                {/* Corps */}
-                                <div className="space-y-16 my-auto">
-                                    <p className="text-center font-serif text-xl leading-relaxed px-16 text-black/80">
-                                        Je soussigné, <strong>Théophile Dequecker</strong>, certifie que l'œuvre décrite ci-dessous est un tirage original, réalisé sous mon contrôle, signé et numéroté de ma main.
-                                    </p>
-
-                                    <div className="grid grid-cols-[120px_1fr] gap-y-8 gap-x-8 px-12 border-l-4 border-black/80 py-4">
-                                        <span className="font-space-mono text-xs uppercase tracking-widest text-black/40 pt-2 text-right">Titre</span>
-                                        <span className="font-serif text-3xl font-bold italic text-black">{data.title}</span>
-
-                                        <span className="font-space-mono text-xs uppercase tracking-widest text-black/40 pt-2 text-right">Série</span>
-                                        <span className="font-serif text-2xl text-black">{data.series}</span>
-
-                                        <span className="font-space-mono text-xs uppercase tracking-widest text-black/40 pt-1 text-right">Format</span>
-                                        <span className="font-space-mono text-lg text-black">{data.format}</span>
-
-                                        <span className="font-space-mono text-xs uppercase tracking-widest text-black/40 pt-1 text-right">Support</span>
-                                        <span className="font-space-mono text-lg text-black">{data.paper}</span>
-
-                                        <span className="font-space-mono text-xs uppercase tracking-widest text-black/40 pt-1 text-right">Édition</span>
-                                        <span className="font-space-mono text-2xl font-bold text-black">N° {data.number} / {data.total}</span>
-                                    </div>
-                                </div>
-
-                                {/* Footer / Signature */}
-                                <div className="grid grid-cols-2 mt-12 pt-12 border-t border-black/10 pb-8">
-                                    <div>
-                                        <p className="font-space-mono text-[10px] uppercase tracking-widest text-black/40 mb-3">Fait à Paris, le</p>
-                                        <p className="font-serif text-xl text-black">{data.date}</p>
-                                    </div>
-                                    <div className="text-right">
-                                        <p className="font-space-mono text-[10px] uppercase tracking-widest text-black/40 mb-12">Signature de l'Artiste</p>
-                                        {/* Ligne de signature */}
-                                        <div className="h-px bg-black/20 w-3/4 ml-auto"></div>
-                                    </div>
-                                </div>
-
-                                {/* ID Unique bas de page */}
-                                <div className="absolute bottom-4 right-12 text-[8px] font-mono text-black/20">
-                                    ID: {Math.random().toString(36).substr(2, 9).toUpperCase()}
-                                </div>
-                            </div>
-                        </div>
-                        {/* Fin du Certificat */}
-
+                    <div className="transform scale-[0.6] lg:scale-[0.75] origin-top mt-8 shadow-2xl">
+                        <CertificateTemplate />
                     </div>
                 </div>
+
             </div>
         </div>
     );
