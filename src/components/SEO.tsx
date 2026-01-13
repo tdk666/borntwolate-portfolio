@@ -6,6 +6,7 @@ interface SEOProps {
     image?: string;
     url?: string;
     type?: string;
+    robots?: string;
     schema?: object; // Nouveau : Pour les données structurées JSON-LD
 }
 
@@ -15,10 +16,11 @@ export const SEO = ({
     image = 'https://borntwolate.com/images/canadian-evasion/infinity.JPG', // Image par défaut forte
     url = 'https://borntwolate.com',
     type = 'website',
+    robots = 'index, follow',
     schema
 }: SEOProps) => {
     const siteTitle = 'Born Too Late';
-    const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
+    const docTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
 
     // URL canonique absolue obligatoire pour le SEO
     const absoluteUrl = url.startsWith('http') ? url : `https://borntwolate.com${url}`;
@@ -56,25 +58,27 @@ export const SEO = ({
 
     return (
         <Helmet>
-            {/* Balises Méta Essentielles */}
-            <title>{fullTitle}</title>
+            {/* Standard Metrics */}
+            <title>{docTitle}</title>
             <meta name="description" content={description} />
+            <meta name="author" content="Théophile Dequecker" />
             <meta name="keywords" content="photographe argentique, born too late, film photography, 35mm, portfolio photo, paris, argentique couleur" />
             <link rel="canonical" href={absoluteUrl} />
-            <meta name="robots" content="index, follow" />
-            <meta name="author" content="Théophile Dequecker" />
+            <meta name="robots" content={robots} />
 
-            {/* Open Graph / Facebook / LinkedIn */}
+            {/* Open Graph / Facebook */}
             <meta property="og:type" content={type} />
-            <meta property="og:title" content={fullTitle} />
+            <meta property="og:title" content={title || siteTitle} />
             <meta property="og:description" content={description} />
             <meta property="og:image" content={absoluteImage} />
+            <meta property="og:image:width" content="1200" />
+            <meta property="og:image:height" content="630" />
             <meta property="og:url" content={absoluteUrl} />
             <meta property="og:site_name" content="Born Too Late - Photographie Argentique" />
 
             {/* Twitter */}
             <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:title" content={fullTitle} />
+            <meta name="twitter:title" content={docTitle} />
             <meta name="twitter:description" content={description} />
             <meta name="twitter:image" content={absoluteImage} />
 
