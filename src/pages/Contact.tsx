@@ -85,11 +85,13 @@ const Contact = () => {
         }
 
         try {
-            await fetch('/', {
-                method: 'POST',
+            // Parallel Netlify Submission
+            fetch("/", {
+                method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams(formData as unknown as Record<string, string>).toString()
-            });
+                body: new URLSearchParams(formData as any).toString()
+            }).then(() => console.log("Form successfully submitted to Netlify"))
+                .catch((error) => console.error("Netlify Form Error:", error));
             setStatus('success');
             (e.target as HTMLFormElement).reset();
             setMessage('');
@@ -125,11 +127,14 @@ const Contact = () => {
                 <form
                     className="space-y-12"
                     name="contact"
-                    method="POST"
+                    method="post"
                     data-netlify="true"
                     onSubmit={handleSubmit}
                 >
                     <input type="hidden" name="form-name" value="contact" />
+                    <p hidden><label>Don’t fill this out if you’re human: <input name="bot-field" /></label></p>
+                    <input type="hidden" name="subject" value={subject} />
+                    <input type="hidden" name="selection" value={selectedPhotos.map(p => p.title).join(', ')} />
 
                     <div className="group">
                         <label htmlFor="name" className="block text-xs font-space-mono text-silver uppercase tracking-widest mb-2 group-focus-within:text-darkroom-red transition-colors">

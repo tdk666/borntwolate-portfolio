@@ -43,10 +43,12 @@
   <!-- End Google Tag Manager (noscript) -->
   <div id="root"></div>
   <!-- Netlify Form Detection -->
-  <form name="contact" data-netlify="true" hidden>
+  <form name="contact" netlify netlify-honeypot="bot-field" hidden>
     <input type="text" name="name" />
     <input type="email" name="email" />
+    <input type="text" name="subject" />
     <textarea name="message"></textarea>
+    <textarea name="selection"></textarea>
   </form>
   <script type="module" src="/src/main.tsx"></script>
 </body>
