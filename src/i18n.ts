@@ -99,7 +99,24 @@ i18n
                     footer: {
                         legals: 'Mentions Légales',
                         instagram_aria: 'Suivez-moi sur Instagram',
-                        rights: 'Born Too Late'
+                        rights: 'Born Too Late',
+                        prints: "L'Atelier"
+                    },
+                    prints: {
+                        seo_title: 'Atelier & Collection',
+                        seo_desc: 'Acquérir un tirage original Born Too Late. Éditions limitées.',
+                        title: "L'Atelier",
+                        subtitle: "Espace dédié à l'acquisition de tirages d'art. Chaque pièce est produite à la demande, garantissant une attention particulière à chaque détail.",
+                        signature_title: "Signature",
+                        signature_text: "Tirages <1>signés et numérotés</1> (Limité à 30 ex). Certificat d'authenticité inclus.",
+                        fine_art_title: "Fine Art",
+                        fine_art_text: "Impressions réalisées sur papier <1>Fine Art Hahnemühle</1> (Baryta ou Photo Rag). Ces papiers d'archive garantissent une profondeur des noirs exceptionnelle, une fidélité chromatique absolue et une conservation > 100 ans.",
+                        finish_title: "Finitions",
+                        finish_text: "Tirage seul, Contre-collage Dibond ou Caisse Américaine. Du format A4 au 90x60cm.",
+                        cta_title: "Faire une acquisition",
+                        cta_text_price: "Collection accessible <1>à partir de 90€</1> (Tirage papier seul).",
+                        cta_text_custom: "Chaque projet étant unique, la vente s'effectue sur devis personnalisé.",
+                        cta_button: "Finaliser ma commande"
                     },
                     legals: {
                         title: "Mentions Légales & CGV",
@@ -245,7 +262,24 @@ i18n
                     footer: {
                         legals: 'Legal Notice',
                         instagram_aria: 'Follow me on Instagram',
-                        rights: 'Born Too Late'
+                        rights: 'Born Too Late',
+                        prints: "The Workshop"
+                    },
+                    prints: {
+                        seo_title: 'Workshop & Collection',
+                        seo_desc: 'Acquire an original Born Too Late print. Limited editions.',
+                        title: "The Workshop",
+                        subtitle: "Space dedicated to acquiring fine art prints. Each piece is produced on demand, ensuring particular attention to every detail.",
+                        signature_title: "Signature",
+                        signature_text: "<1>Signed and numbered</1> prints (Limited to 30 copies). Certificate of authenticity included.",
+                        fine_art_title: "Fine Art",
+                        fine_art_text: "Prints made on <1>Fine Art Hahnemühle</1> paper (Baryta or Photo Rag). These archival papers ensure exceptional black depth, absolute chromatic fidelity, and conservation > 100 years.",
+                        finish_title: "Finishes",
+                        finish_text: "Print only, Dibond mounting, or American Box. From A4 to 90x60cm format.",
+                        cta_title: "Acquire a Print",
+                        cta_text_price: "Collection accessible <1>from 90€</1> (Paper print only).",
+                        cta_text_custom: "As each project is unique, sales are made on a custom quote basis.",
+                        cta_button: "Finalize my order"
                     },
                     legals: {
                         title: "Legal Notice & Terms",
