@@ -130,9 +130,6 @@ const Contact = () => {
 
             // Clean up
             form.reset();
-            setMessage('');
-            setSubject('');
-            setSelectedPhotos([]);
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
         } catch (error) {
