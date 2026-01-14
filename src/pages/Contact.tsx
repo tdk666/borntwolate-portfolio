@@ -95,6 +95,7 @@ const Contact = () => {
             const serviceID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
             const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
             const templateID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+            const clientTemplateID = import.meta.env.VITE_EMAILJS_TEMPLATE_CLIENT_ID || 'template_l8azy4r';
 
             // 1. Prepare Promises
             // Netlify (CRM Storage)
@@ -104,16 +105,24 @@ const Contact = () => {
                 body: new URLSearchParams(formData as any).toString(),
             });
 
-            // EmailJS (Notification)
-            const emailPromise = emailjs.sendForm(
+            // EmailJS (Admin Notification)
+            const adminEmailPromise = emailjs.sendForm(
                 serviceID,
                 templateID,
                 form,
                 publicKey
             );
 
-            // 2. Wait for BOTH
-            await Promise.all([netlifyPromise, emailPromise]);
+            // EmailJS (Client Acknowledgement)
+            const clientEmailPromise = emailjs.sendForm(
+                serviceID,
+                clientTemplateID,
+                form,
+                publicKey
+            );
+
+            // 2. Wait for ALL (Netlify + Admin Email + Client Email)
+            await Promise.all([netlifyPromise, adminEmailPromise, clientEmailPromise]);
 
             // 3. Success
             setStatus('success');
