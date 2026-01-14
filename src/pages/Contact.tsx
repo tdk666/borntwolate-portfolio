@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { SEO } from '../components/SEO';
 import { useLocation } from 'react-router-dom';
@@ -53,12 +53,12 @@ const Contact = () => {
                         return [...prev, foundPhoto];
                     });
                 }
-                setMessage(`Bonjour Théophile,\n\nJe souhaite acquérir les tirages sélectionnés ci-dessus.\n\nJ'aimerais en savoir plus sur les formats et les tarifs.\n\nCordialement,`);
+                setMessage(t('contact.acquisition_body_selection'));
             } else {
-                setMessage("Bonjour Théophile,\n\nJe souhaite acquérir un tirage photo.\n\nJ'aimerais en savoir plus sur les formats et les tarifs.\n\nCordialement,");
+                setMessage(t('contact.acquisition_body_single'));
             }
         }
-    }, [location]);
+    }, [location, t]);
 
     const handleSelectPhoto = (option: any) => {
         if (!selectedPhotos.some(p => p.id === option.id)) {
@@ -119,7 +119,7 @@ const Contact = () => {
                     {t('contact.subtitle')}
                 </p>
                 <p className="font-space-mono text-xs text-darkroom-red uppercase tracking-widest text-center mb-12">
-                    Tirages d'art disponibles sur demande. Éditions limitées.
+                    {t('contact.available_prints', { defaultValue: "Tirages d'art disponibles sur demande. Éditions limitées." })}
                 </p>
 
                 <form
@@ -167,18 +167,18 @@ const Contact = () => {
                             <VisualSelector
                                 options={allPhotosOptions}
                                 onSelect={handleSelectPhoto}
-                                label="Ajouter une œuvre à votre sélection"
-                                placeholder={selectedPhotos.length === 0 ? "Sélectionner une œuvre" : "Ajouter une autre œuvre..."}
+                                label={t('contact.add_selection')}
+                                placeholder={selectedPhotos.length === 0 ? t('contact.select_work') : t('contact.add_another')}
                             />
 
                             {/* "Cart" / Selected Items */}
                             <div className="space-y-3">
                                 <label className="block text-xs font-space-mono text-silver uppercase tracking-widest">
-                                    Votre sélection ({selectedPhotos.length})
+                                    {t('contact.your_selection')} ({selectedPhotos.length})
                                 </label>
 
                                 {selectedPhotos.length === 0 ? (
-                                    <p className="text-silver/40 text-sm italic font-inter px-2">Aucune œuvre sélectionnée pour le moment.</p>
+                                    <p className="text-silver/40 text-sm italic font-inter px-2">{t('contact.no_selection')}</p>
                                 ) : (
                                     <div className="grid gap-3">
                                         <AnimatePresence>
@@ -201,8 +201,8 @@ const Contact = () => {
                                                         type="button"
                                                         onClick={() => handleRemovePhoto(photo.id)}
                                                         className="text-silver/40 hover:text-darkroom-red transition-colors p-2 self-end sm:self-auto"
-                                                        title="Retirer de la sélection"
-                                                        aria-label="Retirer"
+                                                        title={t('contact.remove_selection')}
+                                                        aria-label={t('contact.remove_selection')}
                                                     >
                                                         <X className="w-4 h-4" />
                                                     </button>
@@ -241,7 +241,7 @@ const Contact = () => {
                             className="mt-1 appearance-none min-w-[16px] w-4 h-4 border border-white/20 rounded-sm bg-transparent checked:bg-darkroom-red checked:border-darkroom-red cursor-pointer transition-colors relative after:content-['✓'] after:absolute after:text-white after:text-xs after:top-[-2px] after:left-[2px] after:opacity-0 checked:after:opacity-100"
                         />
                         <label htmlFor="consent" className="text-xs font-inter text-silver/60 cursor-pointer hover:text-silver transition-colors leading-tight text-left">
-                            En soumettant ce formulaire, j'accepte que mes informations soient utilisées pour traiter ma demande. <a href="/legals" className="underline hover:text-darkroom-red text-silver">Voir Politique de Confidentialité</a>.
+                            {t('contact.consent_text')} <a href="/legals" className="underline hover:text-darkroom-red text-silver">{t('contact.consent_link')}</a>.
                         </label>
                     </div>
 
@@ -251,10 +251,10 @@ const Contact = () => {
                             disabled={status === 'submitting'}
                             className="text-off-white font-space-mono uppercase tracking-widest text-sm border border-white/20 px-8 py-3 hover:bg-white/5 hover:border-off-white transition-all duration-300 disabled:opacity-50 w-full md:w-auto"
                         >
-                            {status === 'submitting' ? 'Développement en cours...' :
+                            {status === 'submitting' ? t('contact.developing') :
                                 status === 'success' ?
-                                    (subject === 'acquisition' ? 'Demande transmise à l\'atelier.' : 'Fixé dans le bain.') :
-                                    (subject === 'acquisition' && selectedPhotos.length > 0) ? "Valider ma demande (Sans engagement)" : t('contact.send')}
+                                    (subject === 'acquisition' ? t('contact.sent_workshop') : t('contact.fixed_bath')) :
+                                    (subject === 'acquisition' && selectedPhotos.length > 0) ? t('contact.validate_request') : t('contact.send')}
                         </button>
 
                         {(status === 'success' && subject === 'acquisition') && (
@@ -263,23 +263,25 @@ const Contact = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 className="text-sm text-off-white font-inter mt-4 max-w-md mx-auto"
                             >
-                                Merci ! Votre sélection pour <span className="text-darkroom-red">{selectedPhotos.map(p => p.title).join(', ')}</span> a été transmise. Je reviens vers vous sous 24h pour finaliser les détails.
+                                <Trans i18nKey="contact.success_message" values={{ titles: selectedPhotos.map(p => p.title).join(', ') }}>
+                                    Merci ! Votre sélection pour <span className="text-darkroom-red">TITRES</span> a été transmise. Je reviens vers vous sous 24h pour finaliser les détails.
+                                </Trans>
                             </motion.p>
                         )}
 
                         {status !== 'success' && (subject === 'acquisition' && selectedPhotos.length > 0) && (
                             <p className="text-[10px] text-silver/50 font-inter mt-3">
-                                Paiement et expédition finalisés par retour de mail.
+                                {t('contact.payment_info')}
                             </p>
                         )}
 
-                        {status === 'error' && <p className="text-red-500 font-space-mono text-xs mt-4">Erreur de chimie. Réessayez.</p>}
+                        {status === 'error' && <p className="text-red-500 font-space-mono text-xs mt-4">{t('contact.error_message')}</p>}
                     </div>
 
                     {/* Back to Gallery Link - "Cerise sur le gâteau" */}
                     <div className="text-center mt-12">
                         <a href="/" className="text-xs font-space-mono text-silver/40 hover:text-off-white transition-colors uppercase tracking-widest">
-                            ← Retourner à la galerie
+                            {t('contact.back_gallery')}
                         </a>
                     </div>
                 </form>

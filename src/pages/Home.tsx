@@ -1,14 +1,15 @@
-import Hero from '../components/Hero';
 import { SEO } from '../components/SEO';
+import Hero from '../components/Hero';
+import { useTranslation } from 'react-i18next';
 
 const Home = () => {
-
+    const { t } = useTranslation();
 
     return (
         <>
             <SEO
-                title="Photographe Argentique & Portfolio Voyage" // Titre fort pour Google
-                description="Bienvenue sur Born Too Late. Le portfolio de photographie argentique de Théophile Dequecker. Une exploration esthétique du monde en 35mm, de Paris à Montréal."
+                title={t('home.seo_title')}
+                description={t('home.seo_desc')}
                 url="/"
             />
             <Hero />

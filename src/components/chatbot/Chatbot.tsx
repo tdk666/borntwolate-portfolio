@@ -4,7 +4,10 @@ import { sendMessageToGemini } from '../../services/gemini';
 import { sendOrderToArtist } from '../../services/email';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { useTranslation } from 'react-i18next'; // IMPORT I18N
+
 export const Chatbot = () => {
+    const { t, i18n } = useTranslation(); // I18N HOOK
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<{ sender: 'user' | 'bot'; text: string }[]>([]);
     const [inputValue, setInputValue] = useState('');
@@ -30,7 +33,7 @@ export const Chatbot = () => {
         const now = Date.now();
         const recentMessages = lastMessageTime.filter(time => now - time < 60000);
         if (recentMessages.length >= 5) {
-            setMessages(prev => [...prev, { sender: 'bot', text: "⏳ Oups ! Vous parlez trop vite pour le Labo. Veuillez attendre une minute." }]);
+            setMessages(prev => [...prev, { sender: 'bot', text: t('chatbot.rate_limit') }]);
             return;
         }
         setLastMessageTime([...recentMessages, now]);
@@ -43,12 +46,14 @@ export const Chatbot = () => {
         try {
             // Format history for Gemini
             const history = messages.map(m => ({
-                role: m.sender === 'user' ? 'user' : 'model',
+                role: (m.sender === 'user' ? 'user' : 'model') as 'user' | 'model',
                 parts: [{ text: m.text }]
             }));
 
-            // @ts-expect-error - simple mapping fix
-            const response = await sendMessageToGemini(userMsg, history);
+            // GET CURRENT LANG (fr/en)
+            const currentLang = (i18n.language && i18n.language.startsWith('en')) ? 'en' : 'fr';
+
+            const response = await sendMessageToGemini(userMsg, history, currentLang);
 
             if (response.includes("<<<ORDER_ACTION>>>")) {
                 try {
@@ -78,10 +83,10 @@ export const Chatbot = () => {
                     const newMessages: { sender: 'bot', text: string }[] = [{ sender: 'bot', text: cleanMessage }];
 
                     if (emailResult.success) {
-                        newMessages.push({ sender: 'bot', text: "✅ Commande transmise avec succès à l'atelier. Vous allez recevoir un email de confirmation." });
+                        newMessages.push({ sender: 'bot', text: t('chatbot.order_success') });
                     } else {
                         console.error("Echec EmailJS:", emailResult);
-                        newMessages.push({ sender: 'bot', text: "⚠️ Erreur technique : La commande a été notée par l'IA mais l'email de confirmation n'a pas pu partir. Veuillez nous contacter via la page Contact." });
+                        newMessages.push({ sender: 'bot', text: t('chatbot.order_error') });
                     }
 
                     // Mise à jour de l'UI
@@ -107,12 +112,12 @@ export const Chatbot = () => {
             const err = error as any;
             console.error("Capture d'erreur Chatbot:", err);
             // ... (error handling code remains same)
-            let errorMsg = "Le processus de développement a échoué. Essayez plus tard.";
+            let errorMsg = t('chatbot.err_technical');
 
             if (err.message === 'API_KEY_MISSING') {
-                errorMsg = "Configuration manquante : Clé API (VITE_GEMINI_API_KEY) introuvable dans le laboratoire.";
+                errorMsg = t('chatbot.err_api_missing');
             } else if (err.message?.includes('429') || err.message?.includes('Quota')) {
-                errorMsg = "Le Labo est surchargé (Quota dépassé). Veuillez attendre quelques instants avant de reposer votre question.";
+                errorMsg = t('chatbot.err_quota');
             } else if (err.message) {
                 // Temporary debugging: show the real error
                 errorMsg = `Erreur technique: ${err.message}`;
@@ -166,7 +171,7 @@ export const Chatbot = () => {
                     whileHover={{ scale: 1.1, rotate: 10 }}
                     onClick={() => setIsOpen(true)}
                     className="fixed bottom-6 right-6 bg-darkroom-red text-white p-4 rounded-full shadow-lg z-50 cursor-pointer border border-white/10"
-                    aria-label="Ouvrir le Labo"
+                    aria-label={t('chatbot.open_label')}
                 >
                     <FlaskConical size={24} />
                 </motion.button>
@@ -194,7 +199,7 @@ export const Chatbot = () => {
                         <div className="flex justify-between items-center p-4 border-b border-white/10 bg-black/40">
                             <div className="flex items-center gap-2">
                                 <FlaskConical size={18} className="text-darkroom-red" />
-                                <h3 className="font-space-mono font-bold text-off-white tracking-widest uppercase text-sm">Le Labo AI</h3>
+                                <h3 className="font-space-mono font-bold text-off-white tracking-widest uppercase text-sm">{t('chatbot.title')}</h3>
                             </div>
                             <button onClick={() => setIsOpen(false)} className="text-silver hover:text-off-white transition-colors">
                                 <X size={18} />
@@ -208,12 +213,10 @@ export const Chatbot = () => {
                                     {/* Assure-toi que l'icône FlaskConical est bien importée de lucide-react */}
                                     <FlaskConical size={32} className="mx-auto mb-4 text-darkroom-red/80" />
                                     <p className="font-space-mono text-xs text-silver mb-4">
-                                        Bienvenue dans le Labo.
+                                        {t('chatbot.welcome_title')}
                                     </p>
                                     <p className="font-inter text-[10px] text-silver/50 leading-tight border border-white/5 p-3 rounded bg-white/5 text-justify">
-                                        Ce chatbot utilise une Intelligence Artificielle (Google Gemini).
-                                        Vos échanges sont traités informatiquement. Ne partagez pas de données sensibles.
-                                        En continuant, vous acceptez notre politique de confidentialité.
+                                        {t('chatbot.welcome_text')}
                                     </p>
                                 </div>
                             )}
@@ -233,7 +236,7 @@ export const Chatbot = () => {
                                 <div className="flex justify-start">
                                     <div className="bg-white/5 p-3 rounded-2xl rounded-tl-none flex items-center gap-2">
                                         <Loader2 size={14} className="animate-spin text-darkroom-red" />
-                                        <span className="text-xs font-space-mono text-silver animate-pulse">Développement...</span>
+                                        <span className="text-xs font-space-mono text-silver animate-pulse">{t('chatbot.developing')}</span>
                                     </div>
                                 </div>
                             )}
@@ -248,9 +251,10 @@ export const Chatbot = () => {
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
                                     onKeyDown={handleKeyPress}
-                                    placeholder="Écrivez votre message..."
+                                    placeholder={t('chatbot.input_placeholder')}
                                     className="flex-1 bg-white/5 border border-white/10 rounded-md px-3 py-2 text-sm text-off-white focus:outline-none focus:border-darkroom-red transition-colors font-inter placeholder:text-silver/40"
                                     disabled={isLoading}
+                                    autoComplete="off"
                                 />
                                 <button
                                     onClick={handleSendMessage}

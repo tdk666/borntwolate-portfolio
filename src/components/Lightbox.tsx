@@ -13,7 +13,7 @@ interface LightboxProps {
 }
 
 const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
-    const { i18n } = useTranslation();
+    const { t, i18n } = useTranslation();
     const navigate = useNavigate();
     const currentLang = i18n.language.split('-')[0] as 'fr' | 'en';
     const controls = useAnimation();
@@ -157,7 +157,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                         }}
                         className="mt-8 text-xs font-space-mono text-silver/50 hover:text-darkroom-red transition-colors uppercase tracking-widest underline decoration-1 underline-offset-4 py-2"
                     >
-                        Collectionner ce tirage
+                        {t('lightbox.collect_button')}
                     </button>
                 </div>
 
@@ -209,7 +209,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                                         }}
                                         className="text-xs font-space-mono text-silver/50 hover:text-darkroom-red transition-colors uppercase tracking-widest underline decoration-1 underline-offset-4 py-3 px-4"
                                     >
-                                        Collectionner ce tirage
+                                        {t('lightbox.collect_button')}
                                     </button>
                                     <button onClick={() => setShowInfo(false)} className="text-xs text-white/30 uppercase tracking-widest hover:text-white py-2 px-4">Close</button>
                                 </div>

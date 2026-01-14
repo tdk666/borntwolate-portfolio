@@ -13,7 +13,7 @@ import { useDarkroom } from '../context/DarkroomContext';
 const SeriesDetail = () => {
     const { id } = useParams<{ id: string }>();
     const { isDarkroom } = useDarkroom();
-    const { i18n } = useTranslation();
+    const { t, i18n } = useTranslation();
     const currentLang = i18n.language.split('-')[0] as 'fr' | 'en';
 
     const seriesIndex = seriesData.findIndex((s) => s.id === id);
@@ -119,7 +119,7 @@ const SeriesDetail = () => {
                         transition={{ duration: 1 }}
                     >
                         <span className="block font-space-mono text-xs text-darkroom-red uppercase tracking-widest mb-4">
-                            Série N° {seriesData.length - seriesIndex} — {series.year}
+                            {t('series_detail.series_no')} {seriesData.length - seriesIndex} — {series.year}
                         </span>
                         <h1
                             className="font-bold font-space-mono uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default whitespace-nowrap"

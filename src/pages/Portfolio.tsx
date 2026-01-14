@@ -70,8 +70,8 @@ const Portfolio = () => {
     return (
         <div className="min-h-screen pt-24 px-4 md:px-8 pb-12">
             <SEO
-                title="Portfolio"
-                description="Galerie complète des œuvres de Théophile Dequecker."
+                title={t('portfolio.seo_title')}
+                description={t('portfolio.seo_desc')}
             />
 
             {/* Filters */}
