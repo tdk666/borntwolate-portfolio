@@ -1,16 +1,17 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { SEO } from '../components/SEO';
 import { useLocation } from 'react-router-dom';
 import { seriesData } from '../data/photos';
 import VisualSelector from '../components/VisualSelector';
-import { X } from 'lucide-react';
-
+import { X, ArrowLeft } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 
 const Contact = () => {
     const { t } = useTranslation();
     const [status, setStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
+    const [isSubmitted, setIsSubmitted] = useState(false);
     const [message, setMessage] = useState('');
     const location = useLocation();
     const [subject, setSubject] = useState('');
@@ -74,33 +75,96 @@ const Contact = () => {
         e.preventDefault();
         setStatus('submitting');
 
-        const formData = new FormData(e.currentTarget);
+        const form = e.currentTarget;
+        const formData = new FormData(form);
 
         // Concatenate selected photos into the message
         if (subject === 'acquisition' && selectedPhotos.length > 0) {
             const photoListString = selectedPhotos.map(p => `- ${p.title} (${p.seriesTitle})`).join('\n');
             const currentMsg = formData.get('message') as string;
             // Inject the list at the TOP of the message for clarity
-            formData.set('message', `[DEMANDE D'ACQUISITION POUR ${selectedPhotos.length} ŒUVRES] :\n${photoListString}\n\n--------------------------------\n\n${currentMsg}`);
+            const fullMessage = `[DEMANDE D'ACQUISITION POUR ${selectedPhotos.length} ŒUVRES] :\n${photoListString}\n\n--------------------------------\n\n${currentMsg}`;
+            formData.set('message', fullMessage);
+            // Update the form's message field value for EmailJS which reads directly from the form element
+            if (form.elements.namedItem('message')) {
+                (form.elements.namedItem('message') as HTMLTextAreaElement).value = fullMessage;
+            }
         }
 
         try {
-            // Parallel Netlify Submission
-            fetch("/", {
+            const serviceID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+            const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+            const templateID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+
+            // 1. Prepare Promises
+            // Netlify (CRM Storage)
+            const netlifyPromise = fetch("/", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams(formData as any).toString()
-            }).then(() => console.log("Form successfully submitted to Netlify"))
-                .catch((error) => console.error("Netlify Form Error:", error));
+                body: new URLSearchParams(formData as any).toString(),
+            });
+
+            // EmailJS (Notification)
+            const emailPromise = emailjs.sendForm(
+                serviceID,
+                templateID,
+                form,
+                publicKey
+            );
+
+            // 2. Wait for BOTH
+            await Promise.all([netlifyPromise, emailPromise]);
+
+            // 3. Success
             setStatus('success');
-            (e.target as HTMLFormElement).reset();
+            setIsSubmitted(true);
+
+            // Clean up
+            form.reset();
             setMessage('');
             setSubject('');
             setSelectedPhotos([]);
-        } catch {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        } catch (error) {
+            console.error("Submission Error:", error);
             setStatus('error');
+            alert("Une erreur est survenue lors de l'envoi. Merci de me contacter directement par email.");
         }
     };
+
+    if (isSubmitted) {
+        return (
+            <div className="min-h-screen pt-32 px-4 md:px-8 pb-12 flex flex-col items-center justify-center max-w-2xl mx-auto text-center">
+                <SEO
+                    title={t('contact.title')}
+                    description="Merci pour votre message."
+                />
+                <motion.div
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.6 }}
+                    className="space-y-8"
+                >
+                    <h1 className="text-4xl md:text-5xl font-space-mono text-off-white uppercase tracking-tighter">
+                        Merci !
+                    </h1>
+                    <div className="w-16 h-px bg-darkroom-red mx-auto" />
+                    <p className="text-silver font-inter text-lg leading-relaxed max-w-lg mx-auto">
+                        Votre demande a bien été transmise à l'atelier.<br />
+                        Je reviens vers vous par email sous 24h pour finaliser les détails.
+                    </p>
+                    <a
+                        href="/"
+                        className="inline-flex items-center gap-2 text-xs font-space-mono text-off-white border border-white/20 px-8 py-4 hover:bg-white/5 hover:border-off-white transition-all duration-300 uppercase tracking-widest mt-8"
+                    >
+                        <ArrowLeft size={16} />
+                        {t('contact.back_gallery')}
+                    </a>
+                </motion.div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen pt-32 px-4 md:px-8 pb-12 flex flex-col items-center justify-center max-w-2xl mx-auto">
@@ -143,7 +207,7 @@ const Contact = () => {
                         <input
                             type="text"
                             id="name"
-                            name="name"
+                            name="client_name" // Changed to match EmailJS template variable often used, or keep 'name' if template expects 'name'
                             required
                             className="w-full bg-transparent border-b border-white/20 py-2 text-off-white font-inter focus:outline-none focus:border-darkroom-red transition-colors"
                             placeholder={t('contact.placeholderName')}
@@ -157,7 +221,7 @@ const Contact = () => {
                         <input
                             type="email"
                             id="email"
-                            name="email"
+                            name="client_email" // Changed to match common EmailJS patterns, check template
                             required
                             className="w-full bg-transparent border-b border-white/20 py-2 text-off-white font-inter focus:outline-none focus:border-darkroom-red transition-colors"
                             placeholder={t('contact.placeholderEmail')}
@@ -257,30 +321,14 @@ const Contact = () => {
                             className="text-off-white font-space-mono uppercase tracking-widest text-sm border border-white/20 px-8 py-3 hover:bg-white/5 hover:border-off-white transition-all duration-300 disabled:opacity-50 w-full md:w-auto"
                         >
                             {status === 'submitting' ? t('contact.developing') :
-                                status === 'success' ?
-                                    (subject === 'acquisition' ? t('contact.sent_workshop') : t('contact.fixed_bath')) :
-                                    (subject === 'acquisition' && selectedPhotos.length > 0) ? t('contact.validate_request') : t('contact.send')}
+                                (subject === 'acquisition' && selectedPhotos.length > 0) ? t('contact.validate_request') : t('contact.send')}
                         </button>
 
-                        {(status === 'success' && subject === 'acquisition') && (
-                            <motion.p
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="text-sm text-off-white font-inter mt-4 max-w-md mx-auto"
-                            >
-                                <Trans i18nKey="contact.success_message" values={{ titles: selectedPhotos.map(p => p.title).join(', ') }}>
-                                    Merci ! Votre sélection pour <span className="text-darkroom-red">TITRES</span> a été transmise. Je reviens vers vous sous 24h pour finaliser les détails.
-                                </Trans>
-                            </motion.p>
-                        )}
-
-                        {status !== 'success' && (subject === 'acquisition' && selectedPhotos.length > 0) && (
+                        {(subject === 'acquisition' && selectedPhotos.length > 0) && (
                             <p className="text-[10px] text-silver/50 font-inter mt-3">
                                 {t('contact.payment_info')}
                             </p>
                         )}
-
-                        {status === 'error' && <p className="text-red-500 font-space-mono text-xs mt-4">{t('contact.error_message')}</p>}
                     </div>
 
                     {/* Back to Gallery Link - "Cerise sur le gâteau" */}
@@ -290,8 +338,6 @@ const Contact = () => {
                         </a>
                     </div>
                 </form>
-
-
             </motion.div>
         </div>
     );
