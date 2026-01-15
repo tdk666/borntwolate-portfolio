@@ -97,6 +97,39 @@ const Contact = () => {
             const templateID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
             const clientTemplateID = import.meta.env.VITE_EMAILJS_TEMPLATE_CLIENT_ID || 'template_l8azy4r';
 
+            // Extract values for template mapping
+            const userName = formData.get('user_name') as string;
+            const userEmail = formData.get('user_email') as string;
+            const message = formData.get('message') as string;
+            const subj = formData.get('subject') as string;
+            const sel = formData.get('selection') as string;
+
+            // SUPERSET PARAMS for Contact Form
+            const templateParams = {
+                // Core
+                user_name: userName,
+                user_email: userEmail,
+                message: message,
+                subject: subj,
+                selection: sel,
+
+                // Provenance
+                source: (subj === 'acquisition' || sel) ? "Page Prints via Formulaire" : "Formulaire Contact",
+
+                // Name aliases
+                from_name: userName,
+                client_name: userName,
+                name: userName,
+
+                // Email aliases
+                client_email: userEmail,
+                reply_to: userEmail,
+                email: userEmail,
+            };
+
+            console.log("📨 Sending Form via EmailJS with params:", templateParams);
+
+
             // 1. Prepare Promises
             // Netlify (CRM Storage)
             const netlifyPromise = fetch("/", {
@@ -106,18 +139,18 @@ const Contact = () => {
             });
 
             // EmailJS (Admin Notification)
-            const adminEmailPromise = emailjs.sendForm(
+            const adminEmailPromise = emailjs.send(
                 serviceID,
                 templateID,
-                form,
+                templateParams,
                 publicKey
             );
 
             // EmailJS (Client Acknowledgement)
-            const clientEmailPromise = emailjs.sendForm(
+            const clientEmailPromise = emailjs.send(
                 serviceID,
                 clientTemplateID,
-                form,
+                templateParams,
                 publicKey
             );
 
@@ -216,7 +249,7 @@ const Contact = () => {
                         <input
                             type="text"
                             id="name"
-                            name="client_name" // Changed to match EmailJS template variable often used, or keep 'name' if template expects 'name'
+                            name="user_name" // Matched to your template {user_name}
                             required
                             className="w-full bg-transparent border-b border-white/20 py-2 text-off-white font-inter focus:outline-none focus:border-darkroom-red transition-colors"
                             placeholder={t('contact.placeholderName')}
@@ -230,7 +263,7 @@ const Contact = () => {
                         <input
                             type="email"
                             id="email"
-                            name="client_email" // Changed to match common EmailJS patterns, check template
+                            name="user_email" // Matched to your template {user_email}
                             required
                             className="w-full bg-transparent border-b border-white/20 py-2 text-off-white font-inter focus:outline-none focus:border-darkroom-red transition-colors"
                             placeholder={t('contact.placeholderEmail')}

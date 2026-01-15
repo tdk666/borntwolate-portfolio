@@ -74,9 +74,10 @@ export const Chatbot = () => {
                         format: orderData.format || "Non spécifié",
                         price: orderData.price || "Sur devis",
                         address: orderData.address || "Non communiquée",
-                        client_email: orderData.client_email || "Non communiqué",
-                        client_name: orderData.client_name || "Non communiqué",
-                        ai_summary: orderData.ai_summary || ""
+                        user_email: orderData.client_email || "Non communiqué",
+                        user_name: orderData.client_name || "Non communiqué",
+                        ai_summary: orderData.ai_summary || "",
+                        source: "Chatbot (Le Labo)"
                     });
 
                     // 3. Gestion de la réponse UI selon le succès RÉEL
