@@ -15,9 +15,6 @@ const Footer = () => {
 
                 {/* Links */}
                 <div className="flex items-center gap-8 order-1 md:order-2">
-                    <Link to="/prints" className="hover:text-darkroom-red transition-colors">
-                        {t('footer.prints')}
-                    </Link>
                     <Link to="/legals" className="hover:text-darkroom-red transition-colors">
                         {t('footer.legals')}
                     </Link>

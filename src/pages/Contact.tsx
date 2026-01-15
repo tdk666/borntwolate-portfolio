@@ -82,31 +82,46 @@ const Contact = () => {
         // Concatenate selected photos into the message
         let artworkTitle = "";
         let seriesTitle = "";
-        let format = "";
         let artworkList = "";
 
+        // Standard Acquisition Logic (Pre-selection)
         if (subject === 'acquisition' && selectedPhotos.length > 0) {
             const photoListString = selectedPhotos.map(p => `- ${p.title} (${p.seriesTitle})`).join('\n');
             artworkList = photoListString;
-            const currentMsg = formData.get('message') as string;
-            // Inject the list at the TOP of the message for clarity
-            const fullMessage = `[DEMANDE D'ACQUISITION POUR ${selectedPhotos.length} ŒUVRES] :\n${photoListString}\n\n--------------------------------\n\n${currentMsg}`;
-            formData.set('message', fullMessage);
-            // Update the form's message field value for EmailJS which reads directly from the form element
-            if (form.elements.namedItem('message')) {
-                (form.elements.namedItem('message') as HTMLTextAreaElement).value = fullMessage;
-            }
 
-            // Populate Artwork Details for Admin Template
+            // Populate Artwork Details for Admin Template defaults
             if (selectedPhotos.length === 1) {
                 artworkTitle = selectedPhotos[0].title;
                 seriesTitle = selectedPhotos[0].seriesTitle;
-                format = "À définir avec le client";
             } else {
                 artworkTitle = "Sélection Multiple (Voir Message)";
                 seriesTitle = "Diverses Séries";
-                format = "À définir avec le client";
             }
+        }
+
+        // Get Explicit User Choices from Form
+        const formatSelected = formData.get('format') as string || "Non défini";
+        const finitionSelected = formData.get('finition') as string || "Non définie";
+
+
+        // Construct Message Body
+        const currentMsg = formData.get('message') as string;
+        let finalMessage = currentMsg;
+
+        if (subject === 'acquisition') {
+            // Append Specs
+            const specs = `\n\n[SPECIFICATIONS]\nFormat : ${formatSelected}\nFinition : ${finitionSelected}`;
+
+            // Prepend Selection if exists
+            if (selectedPhotos.length > 0) {
+                const photoListString = selectedPhotos.map(p => `- ${p.title} (${p.seriesTitle})`).join('\n');
+                finalMessage = `[DEMANDE D'ACQUISITION POUR ${selectedPhotos.length} ŒUVRES] :\n${photoListString}\n\n${specs}\n\n--------------------------------\n\n${currentMsg}`;
+            } else {
+                finalMessage = `[DEMANDE D'ACQUISITION SPONTANÉE]\n${specs}\n\n--------------------------------\n\n${currentMsg}`;
+            }
+
+            // Update FormData for Netlify
+            formData.set('message', finalMessage);
         }
 
         try {
@@ -118,7 +133,6 @@ const Contact = () => {
             // Extract values for template mapping
             const userName = formData.get('user_name') as string;
             const userEmail = formData.get('user_email') as string;
-            const message = formData.get('message') as string;
             const subj = formData.get('subject') as string;
             const sel = formData.get('selection') as string;
 
@@ -127,14 +141,15 @@ const Contact = () => {
                 // Core
                 user_name: userName,
                 user_email: userEmail,
-                message: message,
+                message: finalMessage,
                 subject: subj,
                 selection: sel,
 
                 // Artwork Specifics (Admin Template)
                 artwork_title: artworkTitle,
                 series_title: seriesTitle,
-                format: format,
+                format: formatSelected,
+                finition: finitionSelected,
                 artwork_list: artworkList,
 
                 // Provenance
@@ -384,6 +399,44 @@ const Contact = () => {
                         />
                     </div>
 
+                    {/* ACQUISITION SPECIFICS: Format & Finition */}
+                    {(subject === 'acquisition') && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-white/10 mb-6">
+                            <div className="group">
+                                <label htmlFor="format" className="block text-xs font-space-mono text-silver uppercase tracking-widest mb-2 group-focus-within:text-darkroom-red transition-colors">
+                                    Format souhaité
+                                </label>
+                                <select
+                                    id="format"
+                                    name="format"
+                                    className="w-full bg-black/50 border-b border-white/20 py-2 text-off-white font-inter focus:outline-none focus:border-darkroom-red transition-colors appearance-none"
+                                >
+                                    <option value="Non défini" className="bg-black text-silver">Je ne sais pas encore</option>
+                                    <option value="20x30 cm (A4)" className="bg-black text-off-white">20x30 cm (A4) - Collection</option>
+                                    <option value="30x45 cm (A3+)" className="bg-black text-off-white">30x45 cm (A3+) - Standard</option>
+                                    <option value="40x60 cm" className="bg-black text-off-white">40x60 cm - Grand</option>
+                                    <option value="60x90 cm" className="bg-black text-off-white">60x90 cm - Géant</option>
+                                    <option value="Sur Mesure" className="bg-black text-off-white">Sur Mesure</option>
+                                </select>
+                            </div>
+
+                            <div className="group">
+                                <label htmlFor="finition" className="block text-xs font-space-mono text-silver uppercase tracking-widest mb-2 group-focus-within:text-darkroom-red transition-colors">
+                                    Finition
+                                </label>
+                                <select
+                                    id="finition"
+                                    name="finition"
+                                    className="w-full bg-black/50 border-b border-white/20 py-2 text-off-white font-inter focus:outline-none focus:border-darkroom-red transition-colors appearance-none"
+                                >
+                                    <option value="Non définie" className="bg-black text-silver">Je ne sais pas encore</option>
+                                    <option value="Tirage Seul" className="bg-black text-off-white">Tirage Seul (Collection)</option>
+                                    <option value="Encadré Nielsen" className="bg-black text-off-white">Encadré Nielsen (Élégance)</option>
+                                    <option value="Caisse Américaine" className="bg-black text-off-white">Caisse Américaine (Galerie)</option>
+                                </select>
+                            </div>
+                        </div>
+                    )}
 
                     <div className="flex items-start gap-3 pt-2 group mb-6">
                         <input
@@ -404,14 +457,8 @@ const Contact = () => {
                             className="text-off-white font-space-mono uppercase tracking-widest text-sm border border-white/20 px-8 py-3 hover:bg-white/5 hover:border-off-white transition-all duration-300 disabled:opacity-50 w-full md:w-auto"
                         >
                             {status === 'submitting' ? t('contact.developing') :
-                                (subject === 'acquisition' && selectedPhotos.length > 0) ? t('contact.validate_request') : t('contact.send')}
+                                (subject === 'acquisition') ? t('contact.validate_request') : t('contact.send')}
                         </button>
-
-                        {(subject === 'acquisition' && selectedPhotos.length > 0) && (
-                            <p className="text-[10px] text-silver/50 font-inter mt-3">
-                                {t('contact.payment_info')}
-                            </p>
-                        )}
                     </div>
 
                     {/* Back to Gallery Link - "Cerise sur le gâteau" */}

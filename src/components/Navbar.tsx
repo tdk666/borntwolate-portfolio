@@ -34,6 +34,7 @@ const Navbar = () => {
     const links = [
         { path: '/portfolio', label: t('nav.portfolio') },
         { path: '/series', label: t('nav.series') },
+        { path: '/prints', label: "Atelier" },
         { path: '/about', label: t('nav.about') },
         { path: '/contact', label: t('nav.contact') },
     ];
