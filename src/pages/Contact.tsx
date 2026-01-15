@@ -129,6 +129,9 @@ const Contact = () => {
             setIsSubmitted(true);
 
             // Clean up
+            setMessage('');
+            setSelectedPhotos([]);
+            setSubject('');
             form.reset();
             window.scrollTo({ top: 0, behavior: 'smooth' });
 

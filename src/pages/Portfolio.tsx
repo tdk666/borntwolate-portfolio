@@ -141,7 +141,6 @@ const Portfolio = () => {
                                         <div className="group-hover:shadow-xl transition-shadow duration-300 ease-out border border-white/10">
                                             <div className="relative overflow-hidden bg-gray-900">
                                                 <motion.img
-                                                    layoutId={`photo-${photo.id}`} // <--- Magic Move Key
                                                     src={photo.url}
                                                     alt={photo.alt_accessible?.[i18n.language.startsWith('en') ? 'en' : 'fr'] || photo.title}
                                                     className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105 select-none block"
