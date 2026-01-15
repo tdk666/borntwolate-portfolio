@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { SEO } from '../components/SEO';
 import { useLocation } from 'react-router-dom';
 import { seriesData } from '../data/photos';
@@ -24,6 +24,7 @@ const Contact = () => {
         url: string;
     }
     const [selectedPhotos, setSelectedPhotos] = useState<SelectedPhoto[]>([]);
+    const initialParamsProcessed = useRef(false);
 
     // Helper to get all photos for the selector
     const allPhotosOptions = seriesData.flatMap(series =>
@@ -37,6 +38,8 @@ const Contact = () => {
     );
 
     useEffect(() => {
+        if (initialParamsProcessed.current) return;
+
         const params = new URLSearchParams(location.search);
         const subj = params.get('subject');
 
@@ -48,17 +51,15 @@ const Contact = () => {
                 // Find the photo in our flattened list
                 const foundPhoto = allPhotosOptions.find(p => p.title === photoTitleParam);
                 if (foundPhoto) {
-                    // Check if not already added to avoid duplicates on strict mode re-renders
-                    setSelectedPhotos(prev => {
-                        if (prev.some(p => p.id === foundPhoto.id)) return prev;
-                        return [...prev, foundPhoto];
-                    });
+                    // Initial set
+                    setSelectedPhotos([foundPhoto]);
                 }
                 setMessage(t('contact.acquisition_body_selection'));
             } else {
                 setMessage(t('contact.acquisition_body_single'));
             }
         }
+        initialParamsProcessed.current = true;
     }, [location, t]);
 
     const handleSelectPhoto = (option: any) => {
@@ -79,6 +80,10 @@ const Contact = () => {
         const formData = new FormData(form);
 
         // Concatenate selected photos into the message
+        let artworkTitle = "";
+        let seriesTitle = "";
+        let format = "";
+
         if (subject === 'acquisition' && selectedPhotos.length > 0) {
             const photoListString = selectedPhotos.map(p => `- ${p.title} (${p.seriesTitle})`).join('\n');
             const currentMsg = formData.get('message') as string;
@@ -88,6 +93,17 @@ const Contact = () => {
             // Update the form's message field value for EmailJS which reads directly from the form element
             if (form.elements.namedItem('message')) {
                 (form.elements.namedItem('message') as HTMLTextAreaElement).value = fullMessage;
+            }
+
+            // Populate Artwork Details for Admin Template
+            if (selectedPhotos.length === 1) {
+                artworkTitle = selectedPhotos[0].title;
+                seriesTitle = selectedPhotos[0].seriesTitle;
+                format = "À définir avec le client";
+            } else {
+                artworkTitle = "Sélection Multiple (Voir Message)";
+                seriesTitle = "Diverses Séries";
+                format = "À définir avec le client";
             }
         }
 
@@ -112,6 +128,11 @@ const Contact = () => {
                 message: message,
                 subject: subj,
                 selection: sel,
+
+                // Artwork Specifics (Admin Template)
+                artwork_title: artworkTitle,
+                series_title: seriesTitle,
+                format: format,
 
                 // Provenance
                 source: (subj === 'acquisition' || sel) ? "Page Prints via Formulaire" : "Formulaire Contact",
