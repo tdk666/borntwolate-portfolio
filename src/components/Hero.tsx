@@ -150,7 +150,7 @@ const Hero = () => {
                         y: 0,
                         transition: { delay: 3.0, duration: 1.2, ease: "easeOut" }
                     }}
-                    className="text-xs md:text-sm font-space-mono text-silver uppercase tracking-[0.5em] drop-shadow-lg"
+                    className="text-xs md:text-sm font-space-mono text-white/90 uppercase tracking-[0.5em] drop-shadow-lg"
                 >
                     {t('home.subtitle')}
                 </motion.h2>

@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
@@ -9,7 +9,7 @@ import SeriesDetail from './pages/SeriesDetail';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import { useDarkroom } from './context/DarkroomContext';
-import { Chatbot } from './components/chatbot/Chatbot';
+// import { Chatbot } from './components/chatbot/Chatbot'; // REMOVE DIRECT IMPORT
 import Prints from './pages/Prints';
 import CertificateGenerator from './pages/admin/CertificateGenerator';
 
@@ -17,6 +17,9 @@ import Footer from './components/Footer';
 import NotFound from './pages/NotFound';
 import Legals from './pages/Legals';
 import ScrollToTop from './components/ScrollToTop';
+
+// LAZY LOAD CHATBOT
+const Chatbot = lazy(() => import('./components/chatbot/Chatbot').then(module => ({ default: module.Chatbot })));
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -62,7 +65,9 @@ function App() {
           <AnimatedRoutes />
         </main>
         <Footer />
-        <Chatbot />
+        <Suspense fallback={null}>
+          <Chatbot />
+        </Suspense>
       </div>
     </Router>
   );

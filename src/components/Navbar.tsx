@@ -44,7 +44,7 @@ const Navbar = () => {
                 variants={{ visible: { y: 0 }, hidden: { y: '-100%' } }}
                 animate={hidden ? "hidden" : "visible"}
                 transition={{ duration: 0.35, ease: "easeInOut" }}
-                className="fixed top-0 left-0 w-full z-40 px-6 py-6 flex justify-between items-center mix-blend-difference text-off-white bg-gradient-to-b from-black/50 to-transparent pointer-events-auto"
+                className="fixed top-0 left-0 w-full z-40 px-6 py-6 flex justify-between items-center text-white bg-gradient-to-b from-black/60 to-transparent pointer-events-auto"
             >
                 <div className="z-50 drop-shadow-md">
                     {location.pathname !== '/' && (

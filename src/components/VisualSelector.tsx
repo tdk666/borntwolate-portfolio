@@ -49,7 +49,10 @@ const VisualSelector = ({ options, onSelect, label = "Sélectionner une œuvre",
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full bg-white/5 border border-white/20 py-3 px-4 text-off-white font-inter flex justify-between items-center hover:bg-white/10 transition-colors focus:outline-none focus:border-darkroom-red"
+                aria-expanded={isOpen}
+                aria-haspopup="listbox"
+                aria-controls="visual-selector-list"
+                className="w-full bg-white/5 border border-white/20 py-3 px-4 text-off-white font-inter flex justify-between items-center hover:bg-white/10 transition-colors focus:outline-none focus:border-darkroom-red focus:ring-1 focus:ring-darkroom-red"
             >
                 <span className="text-silver/80">{placeholder}</span>
                 <ChevronDown className={`w-4 h-4 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
@@ -63,6 +66,8 @@ const VisualSelector = ({ options, onSelect, label = "Sélectionner une œuvre",
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
                         className="absolute z-50 w-full mt-1 bg-[#1a1a1a] border border-white/20 max-h-80 overflow-y-auto shadow-2xl custom-scrollbar"
+                        role="listbox"
+                        id="visual-selector-list"
                     >
                         {/* Internal Search (optional but good for UX) */}
                         <div className="sticky top-0 bg-[#1a1a1a] p-2 border-b border-white/10">
@@ -73,6 +78,7 @@ const VisualSelector = ({ options, onSelect, label = "Sélectionner une œuvre",
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="w-full bg-black/50 border border-white/10 px-3 py-2 text-sm text-off-white focus:outline-none focus:border-darkroom-red transition-colors font-space-mono"
                                 autoFocus
+                                aria-label="Filtrer les œuvres"
                             />
                         </div>
 
@@ -82,12 +88,20 @@ const VisualSelector = ({ options, onSelect, label = "Sélectionner une œuvre",
                                     <button
                                         key={option.id}
                                         type="button"
+                                        role="option"
+                                        aria-selected="false"
                                         onClick={() => {
                                             onSelect(option);
                                             setIsOpen(false);
                                             setSearchTerm('');
                                         }}
-                                        className="w-full flex items-center gap-4 p-3 hover:bg-white/5 transition-colors text-left group/item"
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                onSelect(option);
+                                                setIsOpen(false);
+                                            }
+                                        }}
+                                        className="w-full flex items-center gap-4 p-3 hover:bg-white/5 transition-colors text-left group/item focus:bg-white/10 focus:outline-none"
                                     >
                                         <img
                                             src={option.url}
