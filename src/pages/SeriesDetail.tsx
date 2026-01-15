@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, Navigate } from 'react-router-dom';
 import { SEO } from '../components/SEO';
 import { motion, AnimatePresence } from 'framer-motion';
 import { seriesData } from '../data/photos';
@@ -34,7 +34,9 @@ const SeriesDetail = () => {
         };
     }, [series, id, isDarkroom]);
 
-    if (!series) return <div className="min-h-screen flex items-center justify-center">Series not found.</div>;
+    if (!series) {
+        return <Navigate to="/404" replace />;
+    }
 
     const nextSeries = seriesData[(seriesIndex + 1) % seriesData.length];
     const prevSeries = seriesData[(seriesIndex - 1 + seriesData.length) % seriesData.length];

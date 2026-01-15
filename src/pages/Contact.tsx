@@ -178,10 +178,27 @@ const Contact = () => {
                 publicKey
             );
 
-            // 2. Wait for ALL (Netlify + Admin Email + Client Email)
-            await Promise.all([netlifyPromise, adminEmailPromise, clientEmailPromise]);
+            // 2. Wait for ALL (Netlify + Admin Email + Client Email) using allSettled for robustness
+            const results = await Promise.allSettled([netlifyPromise, adminEmailPromise, clientEmailPromise]);
 
-            // 3. Success
+            // Check results
+            const netlifyResult = results[0];
+            const adminResult = results[1];
+            // clientResult is results[2] (optional, less critical)
+
+            // Critical failure: If Netlify AND Admin Email fail, then it's a real error.
+            // If at least one works, we consider it a success for the user (we don't want to block them).
+            const isNetlifySuccess = netlifyResult.status === 'fulfilled';
+            const isAdminSuccess = adminResult.status === 'fulfilled';
+
+            if (!isNetlifySuccess && !isAdminSuccess) {
+                throw new Error("Both storage services failed.");
+            }
+
+            if (!isNetlifySuccess) console.error("Netlify Save Failed:", (netlifyResult as PromiseRejectedResult).reason);
+            if (!isAdminSuccess) console.error("Element Admin Email Failed:", (adminResult as PromiseRejectedResult).reason);
+
+            // 3. Success (Partial or Full)
             setStatus('success');
             setIsSubmitted(true);
 
@@ -193,7 +210,7 @@ const Contact = () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });
 
         } catch (error) {
-            console.error("Submission Error:", error);
+            console.error("Critical Submission Error:", error);
             setStatus('error');
             alert("Une erreur est survenue lors de l'envoi. Merci de me contacter directement par email.");
         }

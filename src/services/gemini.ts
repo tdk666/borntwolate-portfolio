@@ -232,7 +232,10 @@ export const sendMessageToGemini = async (message: string, history: { role: 'use
   const activeModel = getModel(lang);
 
   if (!activeModel) {
-    throw new Error("API_KEY_MISSING");
+    console.warn("⚠️ Chatbot Warning: VITE_GEMINI_API_KEY is missing.");
+    return lang === 'fr'
+      ? "Le chatbot est momentanément indisponible (Configuration manquante). Vous pouvez me contacter directement via la page Contact."
+      : "The chatbot is properly unavailable (Missing configuration). You can contact me directly via the Contact page.";
   }
 
   try {
@@ -249,6 +252,8 @@ export const sendMessageToGemini = async (message: string, history: { role: 'use
     return response.text();
   } catch (error) {
     console.error("Gemini Error:", error);
-    throw error;
+    return lang === 'fr'
+      ? "Désolé, je rencontre un problème de connexion. Réessayez dans un instant."
+      : "Sorry, I am experiencing a connection issue. Please try again in a moment.";
   }
 };
