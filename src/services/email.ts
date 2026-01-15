@@ -13,6 +13,7 @@ interface OrderData {
     message?: string;
     subject?: string;
     selection?: string;
+    artwork_list?: string; // NEW: Liste propre pour le mail client
     source?: string; // NEW: Provenance (e.g. "Chatbot", "Formulaire Contact")
 }
 

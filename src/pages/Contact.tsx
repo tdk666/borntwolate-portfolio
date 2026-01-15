@@ -83,9 +83,11 @@ const Contact = () => {
         let artworkTitle = "";
         let seriesTitle = "";
         let format = "";
+        let artworkList = "";
 
         if (subject === 'acquisition' && selectedPhotos.length > 0) {
             const photoListString = selectedPhotos.map(p => `- ${p.title} (${p.seriesTitle})`).join('\n');
+            artworkList = photoListString;
             const currentMsg = formData.get('message') as string;
             // Inject the list at the TOP of the message for clarity
             const fullMessage = `[DEMANDE D'ACQUISITION POUR ${selectedPhotos.length} ŒUVRES] :\n${photoListString}\n\n--------------------------------\n\n${currentMsg}`;
@@ -133,6 +135,7 @@ const Contact = () => {
                 artwork_title: artworkTitle,
                 series_title: seriesTitle,
                 format: format,
+                artwork_list: artworkList,
 
                 // Provenance
                 source: (subj === 'acquisition' || sel) ? "Page Prints via Formulaire" : "Formulaire Contact",
