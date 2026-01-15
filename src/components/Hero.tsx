@@ -119,7 +119,7 @@ const Hero = () => {
             </AnimatePresence>
 
             {/* Overlay Text with Focus Breathing */}
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4 mix-blend-difference">
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4">
                 <motion.h1
                     custom={2.2}
                     initial={{ opacity: 0, filter: 'blur(15px)', y: 20 }}
@@ -129,7 +129,7 @@ const Hero = () => {
                         y: 0,
                         transition: { delay: 2.2, duration: 1.2, ease: "easeOut" }
                     }}
-                    className="text-5xl md:text-8xl font-serif italic text-off-white tracking-tighter mb-6 drop-shadow-lg"
+                    className="text-5xl md:text-8xl font-serif italic text-white tracking-tighter mb-6 drop-shadow-2xl"
                 >
                     Théophile Dequecker
                 </motion.h1>
