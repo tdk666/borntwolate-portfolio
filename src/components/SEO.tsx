@@ -58,7 +58,13 @@ export const SEO = ({
     };
 
     const finalSchema = schema
-        ? { "@context": "https://schema.org", "@graph": [...baseSchema["@graph"], schema] }
+        ? {
+            "@context": "https://schema.org",
+            "@graph": [
+                ...baseSchema["@graph"],
+                ...((schema as any)["@graph"] || [schema])
+            ]
+        }
         : baseSchema;
 
     return (

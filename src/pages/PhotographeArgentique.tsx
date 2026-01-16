@@ -78,7 +78,7 @@ const PhotographeArgentique = () => {
                     <div className="aspect-[16/9] overflow-hidden">
                         <img
                             src="/images/puglia/vespa.jpg"
-                            alt="Photographe argentique Paris - Libertà Bianca"
+                            alt="Tirage argentique couleur Vespa blanc, série Puglia Famiglia, esthétique Dolce Vita et grain cinéma CineStill"
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
                         />
                     </div>
@@ -117,7 +117,7 @@ const PhotographeArgentique = () => {
                     <div className="w-full max-w-lg mx-auto">
                         <img
                             src="/images/retro-mountain/mountain-retro.jpg"
-                            alt="Le Gardien des Cimes - Noir et Blanc"
+                            alt="Tirage argentique noir et blanc Le Gardien des Cimes, skieur minimaliste, série Retro Mountain, papier Canson Baryta"
                             className="w-full h-auto object-cover transition-transform duration-700 hover:scale-105 opacity-90 hover:opacity-100 shadow-2xl"
                         />
                     </div>
@@ -139,7 +139,11 @@ const PhotographeArgentique = () => {
                         {content.sections[1].content[0].text.map((p, idx) => (
                             <p key={idx}>{idx === 0 ? (
                                 <>
-                                    {p.split('séries')[0]}séries (<Link to="/series/winter-in-the-fruit" className="text-off-white hover:text-darkroom-red transition-colors italic">New York</Link>, <Link to="/series/canadian-evasion" className="text-off-white hover:text-darkroom-red transition-colors italic">Canadian Evasion</Link>...) {p.split('séries')[1]?.split('simple')[1] ? 'simple' + p.split('séries')[1].split('simple')[1] : ''}
+                                    {p.split('(')[0]}
+                                    (
+                                    <Link to="/series/winter-in-the-fruit" className="text-off-white hover:text-darkroom-red transition-colors italic">Winter in the Fruit</Link>, <Link to="/series/mauvais-garcons" className="text-off-white hover:text-darkroom-red transition-colors italic">Mauvais Garçons</Link>, <Link to="/series/canadian-evasion" className="text-off-white hover:text-darkroom-red transition-colors italic">Canadian Evasion</Link>
+                                    )
+                                    {p.split(')')[1]}
                                 </>
                             ) : p}</p>
                         ))}
@@ -179,7 +183,7 @@ const PhotographeArgentique = () => {
                 <figure className="mb-24">
                     <img
                         src="/images/canadian-evasion/intrus.JPG"
-                        alt="Bivouac Sauvage - Canadian Evasion"
+                        alt="Tirage argentique couleur Bivouac, tente solitaire, série Canadian Evasion, ambiance Into The Wild"
                         className="w-full h-auto object-cover max-h-[80vh] opacity-90"
                     />
                     <figcaption className="mt-4 text-xs text-center text-darkroom-red font-space-mono tracking-widest uppercase opacity-80">
