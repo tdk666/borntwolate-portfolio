@@ -27,7 +27,7 @@ const About = () => {
                     <div className="overflow-hidden">
                         <img
                             src={aboutData.image}
-                            alt="Théophile Dequecker - Autoportrait"
+                            alt="Portrait noir et blanc de Théophile Dequecker, photographe argentique, avec un appareil"
                             className="w-full h-auto grayscale contrast-110 filter sepia-[0.1] transition-all duration-700 group-hover:scale-105 block"
                             width="600"
                             height="400"

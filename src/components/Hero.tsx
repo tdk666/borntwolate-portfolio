@@ -4,7 +4,7 @@ import { photos, type Photo } from '../data/photos';
 import { useTranslation } from 'react-i18next';
 
 const Hero = () => {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const [currentIndex, setCurrentIndex] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
     const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
@@ -102,11 +102,10 @@ const Hero = () => {
                     }}
                     className="absolute inset-0 w-full h-full"
                 >
-                    {/* Check if we have photos before trying to render */}
                     {currentPhotos.length > 0 && (
                         <img
                             src={currentPhotos[currentIndex]?.url}
-                            alt="Hero Background"
+                            alt={currentPhotos[currentIndex]?.alt_accessible?.[i18n.language.startsWith('en') ? 'en' : 'fr'] || "Photographie argentique d'art - Théophile Dequecker"}
                             className="w-full h-full object-cover opacity-50"
                             loading={currentIndex === 0 ? "eager" : "lazy"}
                             fetchPriority={currentIndex === 0 ? "high" : "auto"}

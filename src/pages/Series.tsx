@@ -63,6 +63,7 @@ const Series = () => {
                             // OPTIMISATION LCP :
                             // On charge en priorité la première image de chaque colonne (les 2 du haut sur desktop)
                             const isPriority = index === 0;
+                            const coverPhoto = seriesItem.photos.find(p => p.url === seriesItem.coverImage);
 
                             return (
                                 <motion.div
@@ -81,7 +82,7 @@ const Series = () => {
                                         <div className="overflow-hidden mb-6 bg-gray-900 border border-white/10"> {/* Fond gris pour éviter flash */}
                                             <img
                                                 src={seriesItem.coverImage}
-                                                alt="" // Alt vide car le titre est juste en dessous (évite redondance pour lecteurs d'écran)
+                                                alt={coverPhoto?.alt_accessible?.[i18n.language.startsWith('en') ? 'en' : 'fr'] || seriesItem.title}
                                                 className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-105 block"
                                                 // PERFORMANCE
                                                 loading={isPriority ? "eager" : "lazy"}
