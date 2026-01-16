@@ -20,6 +20,8 @@ import ScrollToTop from './components/ScrollToTop';
 
 // LAZY LOAD CHATBOT
 const Chatbot = lazy(() => import('./components/chatbot/Chatbot').then(module => ({ default: module.Chatbot })));
+const PhotographeArgentique = lazy(() => import('./pages/PhotographeArgentique'));
+
 
 function AnimatedRoutes() {
   const location = useLocation();
@@ -34,6 +36,7 @@ function AnimatedRoutes() {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/prints" element={<Prints />} />
+        <Route path="/photographe-argentique" element={<PhotographeArgentique />} />
         <Route path="/admin/certificate" element={<CertificateGenerator />} />
         <Route path="/legals" element={<Legals />} />
         <Route path="*" element={<NotFound />} />

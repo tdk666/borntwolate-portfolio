@@ -19,6 +19,11 @@ const Footer = () => {
                         {t('footer.legals')}
                     </Link>
 
+                    <Link to="/photographe-argentique" className="hover:text-darkroom-red transition-colors hidden md:block">
+                        Photographe Argentique Paris
+                    </Link>
+
+
                     <a
                         href="https://instagram.com/borntwolate"
                         target="_blank"

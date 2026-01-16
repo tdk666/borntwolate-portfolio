@@ -15,6 +15,7 @@ const pages = [
   '/portfolio',
   '/series',
   '/contact',
+  '/prints',
   '/legals'
 ];
 

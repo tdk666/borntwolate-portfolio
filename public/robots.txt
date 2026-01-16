@@ -3,6 +3,5 @@ Allow: /
 Disallow: /assets/
 Disallow: /*.json
 Disallow: /admin/
-Disallow: /prints/
 
 Sitemap: https://borntwolate.com/sitemap.xml
