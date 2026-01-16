@@ -16,7 +16,8 @@ const pages = [
   '/series',
   '/contact',
   '/prints',
-  '/legals'
+  '/legals',
+  '/photographe-argentique'
 ];
 
 // 2. Liste manuelle des IDs de séries
