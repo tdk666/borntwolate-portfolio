@@ -16,6 +16,7 @@ i18n
                     nav: {
                         portfolio: 'Portfolio',
                         series: 'Séries',
+                        photographer: 'Photographe',
                         about: 'À Propos',
                         contact: 'Contact',
                         switch: 'EN'
@@ -179,6 +180,7 @@ i18n
                     nav: {
                         portfolio: 'Portfolio',
                         series: 'Series',
+                        photographer: 'Photographer',
                         about: 'About',
                         contact: 'Contact',
                         switch: 'FR'

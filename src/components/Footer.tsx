@@ -19,8 +19,9 @@ const Footer = () => {
                         {t('footer.legals')}
                     </Link>
 
-                    <Link to="/photographe-argentique" className="hover:text-darkroom-red transition-colors hidden md:block">
-                        Photographe Argentique Paris
+                    <Link to="/photographe-argentique" className="hover:text-darkroom-red transition-colors">
+                        <span className="md:hidden">{t('nav.photographer')}</span>
+                        <span className="hidden md:inline">Photographe Argentique Paris</span>
                     </Link>
 
 
