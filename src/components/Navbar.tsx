@@ -45,7 +45,7 @@ const Navbar = () => {
                 variants={{ visible: { y: 0 }, hidden: { y: '-100%' } }}
                 animate={hidden ? "hidden" : "visible"}
                 transition={{ duration: 0.35, ease: "easeInOut" }}
-                className="fixed top-0 left-0 w-full z-40 px-6 py-6 flex justify-between items-center text-white bg-gradient-to-b from-black/60 to-transparent pointer-events-auto"
+                className="fixed top-0 left-0 w-full z-[100] px-6 py-6 flex justify-between items-center text-white bg-gradient-to-b from-black/60 to-transparent pointer-events-auto"
             >
                 <div className="z-50 drop-shadow-md">
                     {location.pathname !== '/' && (
@@ -107,7 +107,7 @@ const Navbar = () => {
                         initial={{ opacity: 0, y: '-100%' }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: '-100%' }}
-                        className="fixed inset-0 bg-black z-30 flex flex-col items-center justify-center space-y-8 md:hidden"
+                        className="fixed inset-0 bg-black z-[90] flex flex-col items-center justify-center space-y-8 md:hidden"
                     >
                         {links.map((link, i) => (
                             <motion.div key={link.path} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.1 }}>

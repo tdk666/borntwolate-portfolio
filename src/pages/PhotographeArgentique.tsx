@@ -121,12 +121,12 @@ const PhotographeArgentique = () => {
 
                 {/* IMAGE BREAK 2: Le Gardien des Cimes (Vertical Full) */}
                 <FadeIn>
-                    <figure className="mb-24">
-                        <div className="w-full max-w-lg mx-auto">
+                    <figure className="mb-24 -mx-6 md:-mx-24 relative group">
+                        <div className="aspect-[3/4] md:aspect-[4/3] w-full overflow-hidden">
                             <img
                                 src="/images/retro-mountain/mountain-retro.jpg"
                                 alt="Tirage argentique noir et blanc Le Gardien des Cimes, skieur minimaliste, série Retro Mountain, papier Canson Baryta"
-                                className="w-full h-auto object-cover transition-transform duration-700 hover:scale-105 opacity-90 hover:opacity-100 shadow-2xl"
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100 shadow-2xl"
                             />
                         </div>
                         <figcaption className="mt-4 text-xs text-center text-darkroom-red font-space-mono tracking-widest uppercase opacity-80">
@@ -195,12 +195,14 @@ const PhotographeArgentique = () => {
 
                 {/* IMAGE BREAK 3: Bivouac (Moved here) */}
                 <FadeIn>
-                    <figure className="mb-24">
-                        <img
-                            src="/images/canadian-evasion/intrus.JPG"
-                            alt="Tirage argentique couleur Bivouac, tente solitaire, série Canadian Evasion, ambiance Into The Wild"
-                            className="w-full h-auto object-cover max-h-[80vh] opacity-90"
-                        />
+                    <figure className="mb-24 -mx-6 md:-mx-24 relative group">
+                        <div className="aspect-[16/9] w-full overflow-hidden">
+                            <img
+                                src="/images/canadian-evasion/intrus.JPG"
+                                alt="Tirage argentique couleur Bivouac, tente solitaire, série Canadian Evasion, ambiance Into The Wild"
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-90 group-hover:opacity-100"
+                            />
+                        </div>
                         <figcaption className="mt-4 text-xs text-center text-darkroom-red font-space-mono tracking-widest uppercase opacity-80">
                             Canadian Evasion — "Bivouac"
                         </figcaption>
