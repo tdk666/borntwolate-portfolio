@@ -7,6 +7,7 @@ import { seriesData } from '../data/photos';
 import VisualSelector from '../components/VisualSelector';
 import { X, ArrowLeft } from 'lucide-react';
 import emailjs from '@emailjs/browser';
+import { FadeIn } from '../components/animations/FadeIn';
 
 const Contact = () => {
     const { t } = useTranslation();
@@ -238,12 +239,7 @@ const Contact = () => {
                     title={t('contact.title')}
                     description="Merci pour votre message."
                 />
-                <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.6 }}
-                    className="space-y-8"
-                >
+                <FadeIn className="space-y-8">
                     <h1 className="text-4xl md:text-5xl font-space-mono text-off-white uppercase tracking-tighter">
                         Merci !
                     </h1>
@@ -259,7 +255,7 @@ const Contact = () => {
                         <ArrowLeft size={16} />
                         {t('contact.back_gallery')}
                     </a>
-                </motion.div>
+                </FadeIn>
             </div>
         );
     }
@@ -270,12 +266,7 @@ const Contact = () => {
                 title={t('contact.title')}
                 description="Contactez Théophile Dequecker pour des tirages d'art, des collaborations ou simplement pour échanger sur la photographie argentique."
             />
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="w-full"
-            >
+            <FadeIn className="w-full">
                 <h1 className="text-4xl md:text-5xl font-space-mono text-off-white mb-2 uppercase tracking-tighter text-center">
                     {t('contact.title')}
                 </h1>
@@ -468,7 +459,7 @@ const Contact = () => {
                         </a>
                     </div>
                 </form>
-            </motion.div>
+            </FadeIn>
         </div>
     );
 };

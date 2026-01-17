@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { photos, type Photo } from '../data/photos';
 import { useTranslation } from 'react-i18next';
 import { SEO } from '../components/SEO'; // AJOUT SEO
+import { FadeIn } from '../components/animations/FadeIn'; // AJOUT SEO
 import Lightbox from '../components/Lightbox';
 import { Magnetic } from '../components/Magnetic';
 
@@ -75,19 +76,21 @@ const Portfolio = () => {
             />
 
             {/* Filters */}
-            <div className="flex flex-wrap justify-center gap-6 mb-12">
-                {categories.map((category) => (
-                    <Magnetic key={category}>
-                        <button
-                            onClick={() => setFilter(category)}
-                            aria-label={`Filtrer par ${t(`categories.${category}`)}`}
-                            className={`text-sm font-space-mono uppercase tracking-widest transition-colors duration-300 hover-analog ${filter === category ? 'text-darkroom-red underline underline-offset-4' : 'text-silver hover:text-off-white'}`}
-                        >
-                            {t(`categories.${category}`)}
-                        </button>
-                    </Magnetic>
-                ))}
-            </div>
+            <FadeIn delay={0.2} noVertical>
+                <div className="flex flex-wrap justify-center gap-6 mb-12">
+                    {categories.map((category) => (
+                        <Magnetic key={category}>
+                            <button
+                                onClick={() => setFilter(category)}
+                                aria-label={`Filtrer par ${t(`categories.${category}`)}`}
+                                className={`text-sm font-space-mono uppercase tracking-widest transition-colors duration-300 hover-analog ${filter === category ? 'text-darkroom-red underline underline-offset-4' : 'text-silver hover:text-off-white'}`}
+                            >
+                                {t(`categories.${category}`)}
+                            </button>
+                        </Magnetic>
+                    ))}
+                </div>
+            </FadeIn>
 
             {/* Grid */}
             <div className="flex gap-4 items-start justify-center">
@@ -127,7 +130,8 @@ const Portfolio = () => {
                                         layout
                                         variants={developVariants} // Utilise les nouveaux variants
                                         initial="hidden"
-                                        animate="visible"
+                                        whileInView="visible" // CHANGED from animate to whileInView for Scroll Trigger
+                                        viewport={{ once: true, margin: "0px 0px -100px 0px" }} // TRIGGER
                                         exit="exit"
                                         key={photo.id}
                                         className="relative group cursor-pointer m-0 outline-none focus:ring-2 focus:ring-darkroom-red rounded-sm"

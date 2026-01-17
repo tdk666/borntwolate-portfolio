@@ -9,6 +9,7 @@ import Lightbox from '../components/Lightbox';
 import { useTranslation } from 'react-i18next';
 import SeriesNavigation from '../components/SeriesNavigation';
 import { useDarkroom } from '../context/DarkroomContext';
+import { FadeIn } from '../components/animations/FadeIn';
 
 const SeriesDetail = () => {
     const { id } = useParams<{ id: string }>();
@@ -115,11 +116,7 @@ const SeriesDetail = () => {
 
                 {/* COLONNE GAUCHE : Titre Sticky & Monumental */}
                 <div className="md:col-span-5 md:sticky md:top-32 z-10">
-                    <motion.div
-                        initial={{ opacity: 0, x: -50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 1 }}
-                    >
+                    <FadeIn delay={0.2}>
                         <span className="block font-space-mono text-xs text-darkroom-red uppercase tracking-widest mb-4">
                             {t('series_detail.series_no')} {seriesData.length - seriesIndex} — {series.year}
                         </span>
@@ -147,22 +144,19 @@ const SeriesDetail = () => {
                                 ))}
                             </span>
                         </h1>
-                    </motion.div>
+                    </FadeIn>
                 </div>
 
                 {/* COLONNE DROITE : Texte Éditorial */}
                 <div className="md:col-span-7">
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5, duration: 0.8 }}
-                        className="prose prose-invert prose-lg max-w-none"
-                    >
-                        {/* Utilisation de la Lettrine CSS définie plus tôt */}
-                        <p className="font-inter font-light text-xl md:text-2xl leading-relaxed text-justify drop-cap opacity-90">
-                            {series.description[currentLang]}
-                        </p>
-                    </motion.div>
+                    <FadeIn delay={0.6}>
+                        <div className="prose prose-invert prose-lg max-w-none">
+                            {/* Utilisation de la Lettrine CSS définie plus tôt */}
+                            <p className="font-inter font-light text-xl md:text-2xl leading-relaxed text-justify drop-cap opacity-90">
+                                {series.description[currentLang]}
+                            </p>
+                        </div>
+                    </FadeIn>
                 </div>
             </div>
 
@@ -171,10 +165,10 @@ const SeriesDetail = () => {
                     {series.photos.map((photo, index) => (
                         <motion.figure
                             key={photo.id}
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true, margin: "500px" }}
-                            transition={{ duration: 0.5, delay: index * 0.05 }}
+                            initial={{ opacity: 0, y: 30 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: "0px 0px -50px 0px" }}
+                            transition={{ duration: 0.8, delay: index * 0.05, ease: "easeOut" }}
                             className="mb-10 gallery-matting cursor-examine relative group block m-0 bg-white/5 min-h-[200px] focus:outline-none focus:ring-2 focus:ring-current focus:ring-offset-4 focus:ring-offset-black rounded-sm"
                             onClick={() => setSelectedPhotoIndex(index)}
                             onKeyDown={(e) => {

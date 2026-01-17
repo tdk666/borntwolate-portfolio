@@ -1,7 +1,7 @@
-import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { aboutData } from '../data/about';
 import { SEO } from '../components/SEO';
+import { FadeIn } from '../components/animations/FadeIn';
 
 const About = () => {
     const { t, i18n } = useTranslation();
@@ -17,12 +17,7 @@ const About = () => {
             />
 
             {/* Colonne Gauche : Image Portrait */}
-            <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8 }}
-                className="w-full md:w-5/12 md:sticky md:top-32"
-            >
+            <FadeIn delay={0.2} className="w-full md:w-5/12 md:sticky md:top-32">
                 <div className="relative overflow-hidden group border border-white/5 p-2 bg-[#F9F8F4]/5">
                     <div className="overflow-hidden">
                         <img
@@ -36,15 +31,10 @@ const About = () => {
                         />
                     </div>
                 </div>
-            </motion.div>
+            </FadeIn>
 
             {/* Colonne Droite : Contenu & Manifeste */}
-            <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="w-full md:w-6/12 space-y-12 flex flex-col justify-center py-8"
-            >
+            <FadeIn delay={0.4} className="w-full md:w-6/12 space-y-12 flex flex-col justify-center py-8">
                 {/* En-tête */}
                 <header>
                     <h1 className="text-6xl md:text-7xl font-serif font-light text-off-white mb-4 italic tracking-tight">
@@ -100,7 +90,7 @@ const About = () => {
                         </li>
                     </ul>
                 </section>
-            </motion.div>
+            </FadeIn>
         </div>
     );
 };
