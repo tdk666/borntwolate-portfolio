@@ -42,9 +42,10 @@ const Series = () => {
     return (
         <div className="min-h-screen pt-32 px-4 md:px-12 pb-20">
             {/* SEO META DESCRIPTION */}
+            {/* SEO META DESCRIPTION */}
             <SEO
-                title="Séries"
-                description="Explorez les séries thématiques de Théophile Dequecker. De l'hiver new-yorkais aux montagnes polonaises, chaque série raconte une histoire unique sur pellicule."
+                title={t('series_seo.title')}
+                description={t('series_seo.desc')}
             />
 
             <motion.h1
@@ -77,7 +78,7 @@ const Series = () => {
                                     <Link
                                         to={`/series/${seriesItem.id}`}
                                         className="block focus:outline-none focus:ring-2 focus:ring-darkroom-red focus:ring-offset-4 focus:ring-offset-black rounded-sm"
-                                        aria-label={`Voir la série ${seriesItem.title}`}
+                                        aria-label={t('series_seo.aria_view', { title: seriesItem.title })}
                                     >
                                         <div className="overflow-hidden mb-6 bg-gray-900 border border-white/10"> {/* Fond gris pour éviter flash */}
                                             <img

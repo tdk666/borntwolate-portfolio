@@ -161,7 +161,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                     </button>
                 </div>
 
-                <div className="md:hidden absolute bottom-0 left-0 w-full z-40 pointer-events-none">
+                <div className="md:hidden absolute bottom-0 left-0 w-full z-[80] pointer-events-none">
                     <motion.div
                         drag="y"
                         dragConstraints={{ top: -300, bottom: 0 }}
@@ -183,7 +183,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                                     className="flex flex-col items-center gap-2 mb-2"
                                 >
                                     <div className="w-12 h-1 bg-white/30 rounded-full" />
-                                    <span className="text-[10px] text-white/50 uppercase tracking-widest font-space-mono">Scan / Scroll Up</span>
+                                    <span className="text-[10px] text-white/50 uppercase tracking-widest font-space-mono">{t('lightbox.scan')}</span>
                                 </motion.div>
                             )}
                             <div className="w-full flex justify-between items-end">
@@ -195,7 +195,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                             initial={false}
                             animate={{ height: showInfo ? 'auto' : 0, opacity: showInfo ? 1 : 0 }}
                             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                            className="bg-black/95 backdrop-blur-xl px-6 overflow-hidden border-t border-white/10"
+                            className="bg-black/95 backdrop-blur-xl px-6 overflow-hidden border-t border-white/10 pb-12"
                         >
                             <div className="py-8 space-y-6">
                                 {photo.technical_info && <p className="font-mono text-xs text-darkroom-red uppercase tracking-widest">{photo.technical_info}</p>}
@@ -211,7 +211,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                                     >
                                         {t('lightbox.collect_button')}
                                     </button>
-                                    <button onClick={() => setShowInfo(false)} className="text-xs text-white/30 uppercase tracking-widest hover:text-white py-2 px-4">Close</button>
+                                    <button onClick={() => setShowInfo(false)} className="text-xs text-white/30 uppercase tracking-widest hover:text-white py-2 px-4">{t('lightbox.close')}</button>
                                 </div>
                             </div>
                         </motion.div>

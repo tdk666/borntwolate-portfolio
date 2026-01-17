@@ -65,10 +65,32 @@ i18n
                         payment_info: "Paiement et expédition finalisés par retour de mail.",
                         error_message: "Erreur de chimie. Réessayez.",
                         back_gallery: "← Retourner à la galerie",
-                        available_prints: "Tirages d'art disponibles sur demande. Éditions limitées."
+                        available_prints: "Tirages d'art disponibles sur demande. Éditions limitées.",
+                        selection: "Sélection",
+                        format_label: "Format souhaité",
+                        finish_label: "Finition",
+                        options: {
+                            unknown: "Je ne sais pas encore",
+                            print_only: "Tirage Seul (Collection)",
+                            framed: "Encadré Nielsen (Élégance)",
+                            shadow_box: "Caisse Américaine (Galerie)",
+                            custom: "Sur Mesure",
+                            a4: "20x30 cm (A4) - Collection",
+                            a3: "30x45 cm (A3+) - Standard",
+                            large: "40x60 cm - Grand",
+                            giant: "60x90 cm - Géant"
+                        },
+
                     },
                     lightbox: {
-                        collect_button: "Collectionner ce tirage"
+                        collect_button: "Collectionner ce tirage",
+                        close: "Fermer",
+                        scan: "Scan / Scroll Up"
+                    },
+                    series_seo: {
+                        title: "Séries",
+                        desc: "Explorez les séries thématiques de Théophile Dequecker. De l'hiver new-yorkais aux montagnes polonaises, chaque série raconte une histoire unique sur pellicule.",
+                        aria_view: "Voir la série {{title}}"
                     },
                     home: {
                         seo_title: 'Photographe Argentique & Portfolio Voyage',
@@ -117,7 +139,24 @@ i18n
                         cta_title: "Faire une acquisition",
                         cta_text_price: "Collection accessible <1>à partir de 90€</1> (Tirage papier seul).",
                         cta_text_custom: "Chaque projet étant unique, la vente s'effectue sur devis personnalisé.",
-                        cta_button: "Finaliser ma commande"
+                        cta_button: "Finaliser ma commande",
+                        view_on_wall: "Voir sur un mur",
+                        finishes_title: "Les Finitions",
+                        currency: "Devise",
+                        pricing_grid_title: "Grille Tarifaire Complète",
+                        table_format: "Format",
+                        table_collection: "Collection",
+                        table_elegance: "Élégance",
+                        table_galerie: "Galerie",
+                        starting_from: "À partir de",
+                        shipping_france: "France",
+                        shipping_europe: "Europe",
+                        shipping_world: "Monde",
+                        shipping_quote: "Sur devis (Grands Formats)",
+                    },
+                    wall: {
+                        simulated_size: "Simulation",
+                        close: "Fermer"
                     },
                     legals: {
                         title: "Mentions Légales & CGV",
@@ -172,7 +211,44 @@ i18n
                         err_quota: "Le Labo est surchargé (Quota dépassé). Veuillez attendre quelques instants avant de reposer votre question.",
                         order_success: "✅ Commande transmise avec succès à l'atelier. Vous allez recevoir un email de confirmation.",
                         order_error: "⚠️ Erreur technique : La commande a été notée par l'IA mais l'email de confirmation n'a pas pu partir. Veuillez nous contacter via la page Contact."
-                    }
+                    },
+                    pricing: {
+                        collection: {
+                            label: "La Collection",
+                            description: "L'œuvre pure. Tirage Fine Art sur papier Canson Infinity Baryta. Livré roulé, prêt à encadrer.",
+                            features: {
+                                "0": "Papier Canson Baryta",
+                                "1": "Qualité Musée",
+                                "2": "Signé & Numéroté",
+                                "3": "Livré roulé"
+                            }
+                        },
+                        elegance: {
+                            label: "L'Élégance",
+                            description: "La sobriété intemporelle. Encadrement aluminium noir mat Nielsen Alpha.",
+                            features: {
+                                "0": "Cadre Nielsen Alpha",
+                                "1": "Aluminium Noir Mat",
+                                "2": "Prêt à accrocher",
+                                "3": "Livraison Europe Uniq."
+                            }
+                        },
+                        galerie: {
+                            label: "La Galerie",
+                            description: "L'immersion totale. Tirage contrecollé flottant dans une Caisse Américaine en bois noir.",
+                            features: {
+                                "0": "Caisse Américaine Bois",
+                                "1": "Effet Flottant",
+                                "2": "Finition Luxe",
+                                "3": "Sans vitre (Reflets 0)"
+                            }
+                        }
+                    },
+                    guarantee: {
+                        title: "Garantie & Authenticité",
+                        text: "Chaque tirage est une œuvre originale, numérotée et signée (limite de 30 exemplaires). Certificat d'authenticité inclus."
+                    },
+
                 },
             },
             en: {
@@ -229,10 +305,32 @@ i18n
                         payment_info: "Payment and shipping finalized by return email.",
                         error_message: "Chemistry error. Please try again.",
                         back_gallery: "← Back to Gallery",
-                        available_prints: "Fine Art Prints available upon request. Limited Editions."
+                        available_prints: "Fine Art Prints available upon request. Limited Editions.",
+                        selection: "Selection",
+                        format_label: "Preferred Format",
+                        finish_label: "Finish",
+                        options: {
+                            unknown: "I don't know yet",
+                            print_only: "Print Only (Collection)",
+                            framed: "Nielsen Framed (Elegance)",
+                            shadow_box: "Shadow Box (Gallery)",
+                            custom: "Custom Request",
+                            a4: "20x30 cm (A4) - Collection",
+                            a3: "30x45 cm (A3+) - Standard",
+                            large: "40x60 cm - Large",
+                            giant: "60x90 cm - Giant"
+                        },
+
                     },
                     lightbox: {
-                        collect_button: "Collect this print"
+                        collect_button: "Collect this print",
+                        close: "Close",
+                        scan: "Scan / Scroll Up"
+                    },
+                    series_seo: {
+                        title: "Series",
+                        desc: "Explore the thematic series of Théophile Dequecker. From New York winter to Polish mountains, each series tells a unique story on film.",
+                        aria_view: "View series {{title}}"
                     },
                     home: {
                         seo_title: 'Analog Photographer & Travel Portfolio',
@@ -281,7 +379,24 @@ i18n
                         cta_title: "Acquire a Print",
                         cta_text_price: "Collection accessible <1>from 90€</1> (Paper print only).",
                         cta_text_custom: "As each project is unique, sales are made on a custom quote basis.",
-                        cta_button: "Finalize my order"
+                        cta_button: "Finalize my order",
+                        view_on_wall: "View on wall",
+                        finishes_title: "The Finishes",
+                        currency: "Currency",
+                        pricing_grid_title: "Complete Pricing Grid",
+                        table_format: "Format",
+                        table_collection: "Collection",
+                        table_elegance: "Elegance",
+                        table_galerie: "Gallery",
+                        starting_from: "Starting from",
+                        shipping_france: "France",
+                        shipping_europe: "Europe",
+                        shipping_world: "World",
+                        shipping_quote: "On Quote (Large Formats)",
+                    },
+                    wall: {
+                        simulated_size: "Simulation",
+                        close: "Close"
                     },
                     legals: {
                         title: "Legal Notice & Terms",
@@ -336,7 +451,44 @@ i18n
                         err_quota: "The Lab is overloaded (Quota exceeded). Please wait a few moments before asking your question again.",
                         order_success: "✅ Order successfully sent to the workshop. You will receive a confirmation email.",
                         order_error: "⚠️ Technical error: The order was noted by the AI but the confirmation email could not be sent. Please contact us via the Contact page."
-                    }
+                    },
+                    pricing: {
+                        collection: {
+                            label: "The Collection",
+                            description: "The pure artwork. Fine Art print on Canson Infinity Baryta paper. Delivered rolled, ready to frame.",
+                            features: {
+                                "0": "Canson Baryta Paper",
+                                "1": "Museum Quality",
+                                "2": "Signed & Numbered",
+                                "3": "Delivered rolled"
+                            }
+                        },
+                        elegance: {
+                            label: "The Elegance",
+                            description: "Timeless sobriety. Matte black aluminum framing by Nielsen Alpha.",
+                            features: {
+                                "0": "Nielsen Alpha Frame",
+                                "1": "Matte Black Aluminum",
+                                "2": "Ready to hang",
+                                "3": "Europe Shipping Only"
+                            }
+                        },
+                        galerie: {
+                            label: "The Gallery",
+                            description: "Total immersion. Mounted print floating in a black wooden American Box.",
+                            features: {
+                                "0": "Wooden American Box",
+                                "1": "Floating Effect",
+                                "2": "Luxury Finish",
+                                "3": "No Glass (0 Reflections)"
+                            }
+                        }
+                    },
+                    guarantee: {
+                        title: "Guarantee & Authenticity",
+                        text: "Each print is an original work, numbered and signed (limited to 30 copies). Certificate of authenticity included."
+                    },
+
                 },
             },
         },

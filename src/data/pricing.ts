@@ -19,37 +19,52 @@ export interface ProductRange {
 
 export const PRICING_CATALOG: Record<string, ProductRange> = {
     collection: {
-        label: "La Collection",
-        description: "L'œuvre pure. Tirage Fine Art sur papier Canson Infinity Baryta. Livré roulé, prêt à encadrer.",
-        features: ["Papier Canson Baryta", "Qualité Musée", "Signé & Numéroté", "Livré roulé"],
+        label: "pricing.collection.label",
+        description: "pricing.collection.description",
+        features: [
+            "pricing.collection.features.0",
+            "pricing.collection.features.1",
+            "pricing.collection.features.2",
+            "pricing.collection.features.3"
+        ],
         prices: {
             "20x30": 90,
             "30x45": 130,
             "40x60": 220,
             "60x90": 390
         },
-        shipping: { france: 12, europe: 20, world: 35 }
+        shipping: { france: 0, europe: 20, world: 35 }
     },
     elegance: {
-        label: "L'Élégance",
-        description: "La sobriété intemporelle. Encadrement aluminium noir mat Nielsen Alpha.",
-        features: ["Cadre Nielsen Alpha", "Aluminium Noir Mat", "Prêt à accrocher", "Livraison Europe Uniq."],
+        label: "pricing.elegance.label",
+        description: "pricing.elegance.description",
+        features: [
+            "pricing.elegance.features.0",
+            "pricing.elegance.features.1",
+            "pricing.elegance.features.2",
+            "pricing.elegance.features.3"
+        ],
         prices: {
             "30x45": 290,
             "40x60": 450
         },
-        shipping: { france: 50, europe: 100, world: null }
+        shipping: { france: 0, europe: 100, world: null }
     },
     galerie: {
-        label: "La Galerie",
-        description: "L'immersion totale. Tirage contrecollé flottant dans une Caisse Américaine en bois noir.",
-        features: ["Caisse Américaine Bois", "Effet Flottant", "Finition Luxe", "Sans vitre (Reflets 0)"],
+        label: "pricing.galerie.label",
+        description: "pricing.galerie.description",
+        features: [
+            "pricing.galerie.features.0",
+            "pricing.galerie.features.1",
+            "pricing.galerie.features.2",
+            "pricing.galerie.features.3"
+        ],
         prices: {
             "30x45": 450,
             "40x60": 650,
             "60x90": 950,
             "70x100": 1200
         },
-        shipping: { france: 50, europe: 100, world: null }
+        shipping: { france: 0, europe: 100, world: null }
     }
 };

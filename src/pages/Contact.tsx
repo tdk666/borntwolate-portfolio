@@ -395,35 +395,35 @@ const Contact = () => {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-white/10 mb-6">
                             <div className="group">
                                 <label htmlFor="format" className="block text-xs font-space-mono text-silver uppercase tracking-widest mb-2 group-focus-within:text-darkroom-red transition-colors">
-                                    Format souhaité
+                                    {t('contact.format_label')}
                                 </label>
                                 <select
                                     id="format"
                                     name="format"
                                     className="w-full bg-black/50 border-b border-white/20 py-2 text-off-white font-inter focus:outline-none focus:border-darkroom-red transition-colors appearance-none"
                                 >
-                                    <option value="Non défini" className="bg-black text-silver">Je ne sais pas encore</option>
-                                    <option value="20x30 cm (A4)" className="bg-black text-off-white">20x30 cm (A4) - Collection</option>
-                                    <option value="30x45 cm (A3+)" className="bg-black text-off-white">30x45 cm (A3+) - Standard</option>
-                                    <option value="40x60 cm" className="bg-black text-off-white">40x60 cm - Grand</option>
-                                    <option value="60x90 cm" className="bg-black text-off-white">60x90 cm - Géant</option>
-                                    <option value="Sur Mesure" className="bg-black text-off-white">Sur Mesure</option>
+                                    <option value="Non défini" className="bg-black text-silver">{t('contact.options.unknown')}</option>
+                                    <option value="20x30 cm (A4)" className="bg-black text-off-white">{t('contact.options.a4')}</option>
+                                    <option value="30x45 cm (A3+)" className="bg-black text-off-white">{t('contact.options.a3')}</option>
+                                    <option value="40x60 cm" className="bg-black text-off-white">{t('contact.options.large')}</option>
+                                    <option value="60x90 cm" className="bg-black text-off-white">{t('contact.options.giant')}</option>
+                                    <option value="Sur Mesure" className="bg-black text-off-white">{t('contact.options.custom')}</option>
                                 </select>
                             </div>
 
                             <div className="group">
                                 <label htmlFor="finition" className="block text-xs font-space-mono text-silver uppercase tracking-widest mb-2 group-focus-within:text-darkroom-red transition-colors">
-                                    Finition
+                                    {t('contact.finish_label')}
                                 </label>
                                 <select
                                     id="finition"
                                     name="finition"
                                     className="w-full bg-black/50 border-b border-white/20 py-2 text-off-white font-inter focus:outline-none focus:border-darkroom-red transition-colors appearance-none"
                                 >
-                                    <option value="Non définie" className="bg-black text-silver">Je ne sais pas encore</option>
-                                    <option value="Tirage Seul" className="bg-black text-off-white">Tirage Seul (Collection)</option>
-                                    <option value="Encadré Nielsen" className="bg-black text-off-white">Encadré Nielsen (Élégance)</option>
-                                    <option value="Caisse Américaine" className="bg-black text-off-white">Caisse Américaine (Galerie)</option>
+                                    <option value="Non définie" className="bg-black text-silver">{t('contact.options.unknown')}</option>
+                                    <option value="Tirage Seul" className="bg-black text-off-white">{t('contact.options.print_only')}</option>
+                                    <option value="Encadré Nielsen" className="bg-black text-off-white">{t('contact.options.framed')}</option>
+                                    <option value="Caisse Américaine" className="bg-black text-off-white">{t('contact.options.shadow_box')}</option>
                                 </select>
                             </div>
                         </div>

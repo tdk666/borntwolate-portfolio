@@ -119,10 +119,10 @@ const PhotographeArgentique = () => {
                     </section>
                 </FadeIn>
 
-                {/* IMAGE BREAK 2: Le Gardien des Cimes (Vertical Full) */}
+                {/* IMAGE BREAK 2: Le Gardien des Cimes (Vertical Full - REDUCED SIZE) */}
                 <FadeIn>
                     <figure className="mb-24 -mx-6 md:-mx-24 relative group">
-                        <div className="aspect-[3/4] md:aspect-[4/3] w-full overflow-hidden">
+                        <div className="aspect-[3/4] md:aspect-[3/4] w-full max-w-sm mx-auto overflow-hidden">
                             <img
                                 src="/images/retro-mountain/mountain-retro.jpg"
                                 alt="Tirage argentique noir et blanc Le Gardien des Cimes, skieur minimaliste, série Retro Mountain, papier Canson Baryta"
