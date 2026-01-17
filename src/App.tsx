@@ -61,7 +61,7 @@ function App() {
       <div
         className={`min-h-screen transition-colors duration-700 font-sans selection:bg-darkroom-red selection:text-off-white ${isDarkroom ? 'darkroom-mode' : ''} flex flex-col`}
       >
-        <div className="hidden md:block md:fixed md:inset-0 pointer-events-none z-50 opacity-[0.03] mix-blend-overlay" style={{ backgroundImage: 'url("https://grainy-gradients.vercel.app/noise.svg")' }}></div>
+        <div className="film-grain"></div>
         <ScrollToTop />
         <Navbar />
         <main className="flex-grow">

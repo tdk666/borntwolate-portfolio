@@ -2,14 +2,14 @@
 
 @theme {
   --color-deep-black: #0A0A0A;
-  --color-off-white: #F8F6F0;
+  --color-off-white: #f0f0f0;
   --color-warm-sepia: #D4A574;
   --color-silver: #B8B8B8;
   --color-darkroom-red: #8B0000;
 
   --font-mono: "Space Mono", monospace;
   --font-sans: "Inter", sans-serif;
-  --font-serif: "Cormorant Garamond", serif;
+  --font-serif: "Playfair Display", serif;
 }
 
 /* Base Styles */
