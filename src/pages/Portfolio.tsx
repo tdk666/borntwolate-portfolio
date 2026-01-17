@@ -153,7 +153,7 @@ const Portfolio = () => {
                                                     decoding={isPriority ? "sync" : "async"}
                                                     draggable="false"
                                                 />
-                                                <figcaption className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                                                <figcaption className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-[60]">
                                                     <div className="text-center p-2">
                                                         <h3 className="text-off-white font-space-mono text-lg">{photo.title}</h3>
                                                         <p className="text-warm-sepia font-inter text-xs uppercase tracking-widest mt-2">{t(`categories.${photo.category}`)}</p>

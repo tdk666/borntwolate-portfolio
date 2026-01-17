@@ -121,7 +121,7 @@ const SeriesDetail = () => {
                             {t('series_detail.series_no')} {seriesData.length - seriesIndex} — {series.year}
                         </span>
                         <h1
-                            className="font-bold font-space-mono uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default whitespace-nowrap"
+                            className="font-serif font-light italic tracking-tight leading-[0.9] mb-8 text-outline cursor-default whitespace-nowrap"
                             style={{ color: isDarkroom ? undefined : series.theme?.text }}
                         >
                             {/* Mobile Structure: Fluid based on mobileSize */}
@@ -191,7 +191,7 @@ const SeriesDetail = () => {
                                 onContextMenu={(e) => e.preventDefault()}
                                 draggable="false"
                             />
-                            <figcaption className="absolute inset-0 flex items-end justify-center pb-6 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                            <figcaption className="absolute inset-0 flex items-end justify-center pb-6 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-[60]">
                                 <span className="text-off-white font-space-mono text-sm uppercase tracking-widest transform translate-y-0 md:translate-y-2 md:group-hover:translate-y-0 transition-transform duration-500 drop-shadow-md">
                                     {photo.title}
                                 </span>

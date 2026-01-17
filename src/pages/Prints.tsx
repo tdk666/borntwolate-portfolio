@@ -180,14 +180,36 @@ const Prints = () => {
                             </tbody>
                         </table>
                     </div>
-                    <div className="mt-8 flex justify-center gap-8 text-xs text-silver/40 font-space-mono uppercase tracking-widest">
-                        <span className="flex items-center gap-2"><Package size={14} /> Livraison UE : 20€ - Monde : 35€+</span>
+
+                    {/* DYNAMIC SHIPPING FOOTER */}
+                    <div className="mt-8 flex justify-center gap-8 text-xs text-silver/40 font-space-mono uppercase tracking-widest flex-wrap">
+                        <span className="flex items-center gap-2">
+                            <Package size={14} />
+                            {(() => {
+                                const ranges = Object.values(PRICING_CATALOG);
+                                const getRange = (zone: 'france' | 'europe') => {
+                                    const prices = ranges.map(r => r.shipping[zone]).filter((p): p is number => p !== null);
+                                    if (prices.length === 0) return 'N/A';
+                                    const min = Math.min(...prices);
+                                    const max = Math.max(...prices);
+                                    return min === max ? `${min}€` : `${min}€ - ${max}€`;
+                                };
+
+                                const hasWorldUnavailable = ranges.some(r => r.shipping.world === null);
+
+                                return (
+                                    <>
+                                        France : {getRange('france')} • Europe : {getRange('europe')} • Monde : {hasWorldUnavailable ? 'Sur devis (Grands Formats)' : '35€+'}
+                                    </>
+                                );
+                            })()}
+                        </span>
                     </div>
                 </motion.section>
 
                 {/* 5. LEGAL MENTIONS (CRUCIAL) */}
-                <motion.p variants={itemVariants} className="text-center text-xs text-silver/30 max-w-2xl mx-auto mb-20 font-inter leading-relaxed">
-                    Toutes les œuvres sont signées, numérotées et limitées à 30 exemplaires tous formats confondus, accompagnées de leur certificat d'authenticité.
+                <motion.p variants={itemVariants} className="text-center text-xs text-silver/50 max-w-2xl mx-auto mb-20 font-inter leading-relaxed">
+                    <strong className="font-bold text-silver">Engagement Légal :</strong> Toutes les œuvres sont signées, numérotées et <strong className="font-bold text-white">limitées à 30 exemplaires</strong> tous formats confondus, accompagnées de leur certificat d'authenticité.
                 </motion.p>
 
                 {/* 6. CALL TO ACTION */}

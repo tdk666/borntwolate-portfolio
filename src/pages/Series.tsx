@@ -51,7 +51,7 @@ const Series = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
-                className="text-4xl md:text-6xl font-space-mono font-bold text-off-white mb-16 text-center tracking-tighter hover-analog"
+                className="text-4xl md:text-6xl font-serif font-light italic text-off-white mb-16 text-center tracking-tight hover-analog"
             >
                 {t('nav.series')}
             </motion.h1>
