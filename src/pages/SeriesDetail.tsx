@@ -121,7 +121,7 @@ const SeriesDetail = () => {
                             {t('series_detail.series_no')} {seriesData.length - seriesIndex} — {series.year}
                         </span>
                         <h1
-                            className="font-serif font-light italic tracking-tight leading-[0.9] mb-8 text-outline cursor-default whitespace-nowrap"
+                            className="font-space-mono font-bold uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default whitespace-nowrap"
                             style={{ color: isDarkroom ? undefined : series.theme?.text }}
                         >
                             {/* Mobile Structure: Fluid based on mobileSize */}
@@ -186,7 +186,7 @@ const SeriesDetail = () => {
                                 alt={photo.alt_accessible?.[currentLang] || photo.title}
                                 loading={index < 2 ? "eager" : "lazy"}
                                 fetchPriority={index < 2 ? "high" : "auto"}
-                                decoding={index < 2 ? "sync" : "async"}
+                                decoding="async"
                                 className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.01]"
                                 onContextMenu={(e) => e.preventDefault()}
                                 draggable="false"

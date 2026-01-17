@@ -51,7 +51,7 @@ const Series = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8 }}
-                className="text-4xl md:text-6xl font-serif font-light italic text-off-white mb-16 text-center tracking-tight hover-analog"
+                className="text-5xl md:text-7xl font-space-mono font-bold text-off-white mb-16 text-center uppercase tracking-tighter hover-analog"
             >
                 {t('nav.series')}
             </motion.h1>
@@ -87,7 +87,7 @@ const Series = () => {
                                                 // PERFORMANCE
                                                 loading={isPriority ? "eager" : "lazy"}
                                                 fetchPriority={isPriority ? "high" : "auto"}
-                                                decoding={isPriority ? "sync" : "async"}
+                                                decoding="async"
                                             />
                                         </div>
                                         <div className="flex justify-between items-baseline border-b border-silver/20 pb-4 group-hover:border-warm-sepia transition-colors duration-500">
