@@ -175,6 +175,12 @@ const Prints = () => {
                                         <div className="text-right">
                                             <span className="text-xs text-silver/40 uppercase block mb-1">{t('prints.starting_from')}</span>
                                             <span className="text-2xl font-space-mono text-white">{formatPrice(minRangePrice)}</span>
+                                            {/* Currency Disclaimer */}
+                                            {currency !== 'EUR' && (
+                                                <div className="text-right text-[10px] text-silver/50 -mt-2 mb-2 font-mono">
+                                                    *Converion approx. Débit en EUR.
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

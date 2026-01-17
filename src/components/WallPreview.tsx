@@ -24,26 +24,36 @@ const WallPreview = ({ isOpen, onClose, imageSrc }: WallPreviewProps) => {
     // State Derived
     const isLargeFormat = selectedSize.width >= 60; // 60x90 and 70x100 are "Large"
     const [containerWidth, setContainerWidth] = useState(0);
-
-    // Image de fond dynamique (RETOUR VERSIONS SANS HUMAIN)
-    // - Petit/Moyen : Vue "Salon Intime" (Canapé centré)
-    // - Grand : Vue "Grand Mur" (Canapé à gauche)
-    const bgUrl = isLargeFormat ? "/assets/living-room-bg-wide.png" : "/assets/living-room-bg.png";
+    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
         const handleResize = () => {
-            setContainerWidth(window.innerWidth);
+            const width = window.innerWidth;
+            setContainerWidth(width);
+            setIsMobile(width < 768);
         };
-        handleResize();
+        handleResize(); // Init
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    // Image de fond dynamique (Avec Version Mobile Optimisée)
+    const getBgUrl = () => {
+        if (isLargeFormat) {
+            return isMobile ? "/assets/living-room-bg-wide-mobile.png" : "/assets/living-room-bg-wide.png";
+        }
+        return isMobile ? "/assets/living-room-bg-mobile.png" : "/assets/living-room-bg.png";
+    };
+
+    const bgUrl = getBgUrl();
+
     // LOGIQUE DE DIMENSIONNEMENT PRECISE (REALISTIC SCALE)
     const pixelsPerCm = useMemo(() => {
         // Le mur fait 300cm de large. Sur l'écran, il occupe 100vw (ou containerWidth).
-        return containerWidth / WALL_WIDTH_CM;
-    }, [containerWidth]);
+        // Ajustement Mobile : On "zoome" pour que le mur ne fasse que 180cm virtuels, rendant l'oeuvre plus grande/visible.
+        const virtualWallWidthCm = isMobile ? 180 : WALL_WIDTH_CM;
+        return containerWidth / virtualWallWidthCm;
+    }, [containerWidth, isMobile]);
 
     // Dimensions Réelles (en cm)
     // Cadre : 1.5cm
@@ -57,7 +67,6 @@ const WallPreview = ({ isOpen, onClose, imageSrc }: WallPreviewProps) => {
     const imageHeightPx = selectedSize.height * pixelsPerCm;
 
     // Le conteneur (Cadre + Mat + Image)
-    // On ajoute le mat et le cadre aux dimensions de l'image
     const totalWidthPx = imageWidthPx + (matSizeCm * 2 * pixelsPerCm) + (frameSizeCm * 2 * pixelsPerCm);
     const totalHeightPx = imageHeightPx + (matSizeCm * 2 * pixelsPerCm) + (frameSizeCm * 2 * pixelsPerCm);
 
@@ -82,12 +91,13 @@ const WallPreview = ({ isOpen, onClose, imageSrc }: WallPreviewProps) => {
                     {/* Overlay sombre pour focus */}
                     <div className="absolute inset-0 bg-black/30 pointer-events-none" />
 
-                    {/* Close Button */}
+                    {/* Close Button - Desktop & Mobile Friendly */}
                     <button
                         onClick={onClose}
-                        className="absolute top-6 right-6 z-[120] text-white/60 hover:text-white transition-colors bg-black/20 hover:bg-black/50 p-2 rounded-full backdrop-blur-sm"
+                        className="absolute top-4 right-4 md:top-6 md:right-6 z-[120] text-white/80 hover:text-white transition-colors bg-black/40 hover:bg-black/60 p-3 md:p-2 rounded-full backdrop-blur-md shadow-lg"
+                        aria-label="Close Wall Preview"
                     >
-                        <X size={32} strokeWidth={1} />
+                        <X size={28} strokeWidth={1.5} />
                     </button>
 
                     {/* The Print on the Wall - POSITIONNEMENT DYNAMIQUE */}
@@ -95,8 +105,8 @@ const WallPreview = ({ isOpen, onClose, imageSrc }: WallPreviewProps) => {
                         className={`
                             relative z-[115] w-full h-full flex items-center pointer-events-none transition-all duration-700
                             ${isLargeFormat
-                                ? 'justify-end pr-[12%] pb-12 md:pb-0' // Grand format : A droite (Humain à gauche/milieu)
-                                : 'justify-center pb-32 md:pb-48'       // Petit format : Centré (Humain en dessous)
+                                ? 'justify-end pr-[5%] md:pr-[12%] pb-20 md:pb-0' // Grand format : Ajusté mobile
+                                : 'justify-center pb-24 md:pb-48'       // Petit format : Ajusté mobile
                             }
                         `}
                     >
@@ -131,6 +141,7 @@ const WallPreview = ({ isOpen, onClose, imageSrc }: WallPreviewProps) => {
                                         src={imageSrc}
                                         alt="Simulation"
                                         className="w-full h-full object-cover block"
+                                        loading="lazy" /* Performance optimization */
                                     />
                                     {/* Reflet Vitre par-dessus l'image uniquement */}
                                     <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-50 mix-blend-overlay pointer-events-none" />
