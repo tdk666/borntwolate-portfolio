@@ -62,7 +62,7 @@ export const SEO = ({
             "@context": "https://schema.org",
             "@graph": [
                 ...baseSchema["@graph"],
-                ...((schema as any)["@graph"] || [schema])
+                ...((schema as { "@graph"?: unknown[] })["@graph"] || [schema])
             ]
         }
         : baseSchema;

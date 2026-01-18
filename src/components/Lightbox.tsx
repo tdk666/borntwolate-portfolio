@@ -48,32 +48,40 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, [handleKeyDown]);
 
-    // --- FIX 2: Gestion intelligente du Touch ---
-    const [touchStart, setTouchStart] = useState<number | null>(null);
-    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+    const [touchStart, setTouchStart] = useState<{ x: number, y: number } | null>(null);
+    const [touchEnd, setTouchEnd] = useState<{ x: number, y: number } | null>(null);
 
     const onTouchStart = (e: React.TouchEvent) => {
-        // IMPORTANT: Si on touche l'image, on laisse Framer Motion gérer (onDrag).
-        // On ne track le swipe manuel que si on touche le fond noir.
         if ((e.target as HTMLElement).tagName === 'IMG') {
             setTouchStart(null);
             return;
         }
-
         setTouchEnd(null);
-        setTouchStart(e.targetTouches[0].clientX);
+        setTouchStart({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY });
     };
 
     const onTouchMove = (e: React.TouchEvent) => {
-        if (touchStart === null) return; // Si on a ignoré le start, on ignore le move
-        setTouchEnd(e.targetTouches[0].clientX);
+        if (touchStart === null) return;
+        setTouchEnd({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY });
     };
 
     const onTouchEnd = () => {
         if (!touchStart || !touchEnd) return;
-        const distance = touchStart - touchEnd;
-        const isLeftSwipe = distance > 50;
-        const isRightSwipe = distance < -50;
+
+        const distanceX = touchStart.x - touchEnd.x;
+        const distanceY = touchStart.y - touchEnd.y;
+
+        // If vertical movement is dominant, it's a scroll, ignore swipe
+        if (Math.abs(distanceY) > Math.abs(distanceX)) {
+            // Reset
+            setTouchStart(null);
+            setTouchEnd(null);
+            return;
+        }
+
+        const isLeftSwipe = distanceX > 50;
+        const isRightSwipe = distanceX < -50;
 
         if (isLeftSwipe) handleNavigate('next');
         if (isRightSwipe) handleNavigate('prev');

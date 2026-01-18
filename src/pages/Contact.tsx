@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { SEO } from '../components/SEO';
 import { useLocation } from 'react-router-dom';
 import { seriesData } from '../data/photos';
@@ -28,7 +28,7 @@ const Contact = () => {
     const initialParamsProcessed = useRef(false);
 
     // Helper to get all photos for the selector
-    const allPhotosOptions = seriesData.flatMap(series =>
+    const allPhotosOptions = useMemo(() => seriesData.flatMap(series =>
         series.photos.map(photo => ({
             id: photo.id,
             url: photo.url,
@@ -36,7 +36,7 @@ const Contact = () => {
             seriesTitle: series.title,
             value: photo.title // keeping value if needed compatibility
         }))
-    );
+    ), []);
 
     useEffect(() => {
         if (initialParamsProcessed.current) return;
@@ -61,9 +61,17 @@ const Contact = () => {
             }
         }
         initialParamsProcessed.current = true;
-    }, [location, t]);
+    }, [location, t, allPhotosOptions]);
 
-    const handleSelectPhoto = (option: any) => {
+    interface SelectorOption {
+        id: number | string;
+        url: string;
+        title: string;
+        seriesTitle: string;
+        value: string;
+    }
+
+    const handleSelectPhoto = (option: SelectorOption) => {
         if (!selectedPhotos.some(p => p.id === option.id)) {
             setSelectedPhotos([...selectedPhotos, option]);
         }
@@ -175,6 +183,7 @@ const Contact = () => {
             const netlifyPromise = fetch("/", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 body: new URLSearchParams(formData as any).toString(),
             });
 

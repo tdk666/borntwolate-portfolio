@@ -7,8 +7,8 @@ export const photographeArgentiqueData = {
         hero: {
             title: "Photographe argentique : L'art de capturer ce qui va disparaître",
             text: [
-                "Dans un monde saturé d'images instantanées et jetables, je fais le choix de la photographie argentique comme un acte de résistance. \"BornTwoLate\", c'est cette sensation d'arriver juste après la bataille, de vouloir figer une époque qui nous glisse entre les doigts. Ici, nous ne parlons pas de pixels froids, mais de lumière fixée par la chimie, de grain vivant et d'imperfections sublimes. C'est une relation intime entre le sujet et la mécanique de précision de mon Rollei 35.",
-                "Que vous soyez un amateur d'esthétique urbaine ou un collectionneur averti, vous entrez dans un univers où chaque clic est une décision irréversible. Mon travail est une ode à la patience : figer sur une pellicule sensible l'atmosphère des rues de Paris, la verticalité de New York ou l'étrangeté de Montréal, pour en faire des souvenirs tangibles et intemporels."
+                "Dans un monde saturé d'images instantanées et jetables, le photographe argentique fait le choix de la pellicule comme un acte de résistance. \"BornTwoLate\" incarne cette sensation d'arriver juste après la bataille, cette volonté de figer une époque qui nous glisse entre les doigts. Ici, il ne s'agit pas de pixels froids, mais de lumière fixée par la chimie, de grain vivant et d'imperfections sublimes. Une relation intime se noue entre le sujet et la mécanique de précision du Rollei 35.",
+                "Que vous soyez un amateur d'esthétique urbaine ou un collectionneur averti, vous entrez dans un univers où chaque clic est une décision irréversible. Le travail de Borntwolate est une ode à la patience : figer sur une pellicule sensible l'atmosphère des rues de Paris, la verticalité de New York ou l'étrangeté de Montréal, pour en faire des souvenirs tangibles et intemporels."
             ]
         },
         sections: [
@@ -18,13 +18,13 @@ export const photographeArgentiqueData = {
                     {
                         subtitle: "Le retour à une matière organique et vivante",
                         text: [
-                            "À l'heure de la perfection numérique lisse, l'argentique offre une texture incomparable. Ce n'est pas seulement une image, c'est une expérience sensorielle. Le rendu du grain, la profondeur des contrastes en noir et blanc (Rollei Retro 400S) ou la chaleur unique de la couleur (Kodak Portra, CineStill 400D) apportent une âme que le digital peine à imiter. Opter pour cette pratique, c'est embrasser le charme de l'aléatoire. Une photo argentique possède une épaisseur, une vibration. C'est ce retour au tangible et à l'authentique qui définit ma démarche artistique : documenter le réel avec une patine nostalgique."
+                            "À l'heure de la perfection numérique lisse, l'argentique offre une texture incomparable. Ce n'est pas seulement une image, c'est une expérience sensorielle. Le rendu du grain, la profondeur des contrastes en noir et blanc (Rollei Retro 400S) ou la chaleur unique de la couleur (Kodak Portra, CineStill 400D) apportent une âme que le digital peine à imiter. Opter pour cette pratique, c'est embrasser le charme de l'aléatoire. Une photo argentique possède une épaisseur, une vibration. C'est ce retour au tangible et à l'authentique qui définit la démarche artistique du photographe : documenter le réel avec une patine nostalgique."
                         ]
                     },
                     {
                         subtitle: "Une alternative d'auteur face à l'intelligence artificielle",
                         text: [
-                            "Alors que l'IA inonde le web d'images synthétiques, le rôle du photographe argentique redevient celui d'un témoin du réel. Contrairement à une image générée par algorithme, mes clichés sont la preuve physique qu'un instant a existé. De la prise de vue avec mes boîtiers analogiques jusqu'à la sélection rigoureuse des négatifs, chaque étape est manuelle. Je ne cherche pas à produire du contenu en masse, mais à proposer une vision singulière, souvent mélancolique et cinématographique. C'est cette démarche d'auteur qui transforme une simple image en une œuvre d'art, capable de traverser le temps."
+                            "Alors que l'IA inonde le web d'images synthétiques, le rôle du photographe argentique redevient celui d'un témoin du réel. Contrairement à une image générée par algorithme, ces clichés sont la preuve physique qu'un instant a existé. De la prise de vue avec des boîtiers analogiques jusqu'à la sélection rigoureuse des négatifs, chaque étape est manuelle. L'objectif n'est pas de produire du contenu en masse, mais de proposer une vision singulière, souvent mélancolique et cinématographique. C'est cette démarche d'auteur qui transforme une simple image en une œuvre d'art, capable de traverser le temps."
                         ]
                     }
                 ]
@@ -34,8 +34,8 @@ export const photographeArgentiqueData = {
                 content: [
                     {
                         text: [
-                            "Être photographe aujourd'hui, c'est offrir un regard. Mes séries (Winter in the Fruit, Mauvais Garçons, Canadian Evasion) ne sont pas de simples reportages, mais des invitations au voyage et à la contemplation. Mon travail ne s'arrête pas au déclenchement. Il englobe toute la chaîne de création, en collaboration étroite avec le laboratoire Picto Paris, référence historique des plus grands photographes depuis 1950. C'est cette exigence qui garantit une cohérence esthétique à vos projets d'acquisition.",
-                            "La photographie argentique nous rappelle que la beauté réside dans la fragilité de l'instant. Que vous souhaitiez habiller vos murs d'une fenêtre sur le monde ou transmettre un patrimoine visuel unique, chaque tirage Borntwolate est conçu pour durer et traverser les générations."
+                            "Être photographe aujourd'hui, c'est offrir un regard. Les séries (Winter in the Fruit, Mauvais Garçons, Canadian Evasion) ne sont pas de simples reportages, mais des invitations au voyage et à la contemplation. Le travail ne s'arrête pas au déclenchement. Il englobe toute la chaîne de création, en collaboration étroite avec le laboratoire Picto Paris, référence historique des plus grands photographes depuis 1950. C'est cette exigence qui garantit une cohérence esthétique à tout projet d'acquisition.",
+                            "La photographie argentique nous rappelle que la beauté réside dans la fragilité de l'instant. Pour habiller des murs d'une fenêtre sur le monde ou transmettre un patrimoine visuel unique, chaque tirage Borntwolate est conçu pour durer et traverser les générations."
                         ]
                     }
                 ]
@@ -43,7 +43,7 @@ export const photographeArgentiqueData = {
         ],
         shop_section: {
             title: "La collection de tirages d'art en édition limitée",
-            intro: "Pour les passionnés, j'ai conçu une boutique en ligne dédiée à la vente de tirages d'art. Acquérir une œuvre Borntwolate, c'est posséder un fragment de temps. Loin des posters industriels, je propose trois niveaux de finition pour sublimer vos intérieurs :",
+            intro: "Pour les passionnés, une boutique en ligne dédiée à la vente de tirages d'art a été conçue. Acquérir une œuvre Borntwolate, c'est posséder un fragment de temps. Loin des posters industriels, trois niveaux de finition sont proposés pour sublimer vos intérieurs :",
             items: [
                 { label: "La Collection", desc: "L'œuvre pure sur papier d'art, livrée roulée." },
                 { label: "L'Élégance", desc: "Encadrement aluminium Nielsen Alpha, sobre et moderne." },
@@ -52,11 +52,11 @@ export const photographeArgentiqueData = {
             details: [
                 {
                     title: "L'excellence du tirage hybride : Négatif argentique & Impression Pigmentaire",
-                    text: "La confusion est fréquente. Mes images naissent de la chimie (le négatif argentique), mais sont magnifiées par la technologie moderne. Je pratique un flux hybride : le négatif est scanné en très haute définition pour préserver son grain originel, puis tiré en jet d'encre pigmentaire (Giclée print). Cette technique, validée par les galeries, permet d'obtenir une précision colorimétrique absolue tout en gardant l'âme de la pellicule. C'est l'alliance parfaite entre le charme de l'ancien et la précision contemporaine."
+                    text: "La confusion est fréquente. Ces images naissent de la chimie (le négatif argentique), mais sont magnifiées par la technologie moderne. Le photographe pratique un flux hybride : le négatif est scanné en très haute définition pour préserver son grain originel, puis tiré en jet d'encre pigmentaire (Giclée print). Cette technique, validée par les galeries, permet d'obtenir une précision colorimétrique absolue tout en gardant l'âme de la pellicule. C'est l'alliance parfaite entre le charme de l'ancien et la précision contemporaine."
                 },
                 {
                     title: "Le choix du papier Canson Infinity Baryta",
-                    text: "Pour garantir une qualité muséale, j'ai sélectionné exclusivement le papier Canson Infinity Baryta. Ce support prestigieux offre des noirs profonds, une main exceptionnelle et une texture qui rappelle les papiers barytés traditionnels de la chambre noire. Pourquoi ce choix ? Pour la pérennité. Un tirage pigmentaire sur ce papier, réalisé par les artisans de chez Picto, offre une garantie de conservation supérieure à 100 ans (norme ISO 9706). C'est le support par excellence pour la collection et l'investissement artistique."
+                    text: "Pour garantir une qualité muséale, le choix s'est porté exclusivement sur le papier Canson Infinity Baryta. Ce support prestigieux offre des noirs profonds, une main exceptionnelle et une texture qui rappelle les papiers barytés traditionnels de la chambre noire. Pourquoi ce choix ? Pour la pérennité. Un tirage pigmentaire sur ce papier, réalisé par les artisans de chez Picto, offre une garantie de conservation supérieure à 100 ans (norme ISO 9706). C'est le support par excellence pour la collection et l'investissement artistique."
                 }
             ]
         },
@@ -65,11 +65,11 @@ export const photographeArgentiqueData = {
             items: [
                 {
                     title: "Boîtiers légendaires et émulsions mythiques",
-                    text: "Le matériel est le prolongement de l'œil. J'utilise des boîtiers analogiques réputés pour leur robustesse et leur optique, notamment le mythique Rollei 35. Mais le véritable pinceau, c'est la pellicule. Le choix du film détermine l'esthétique. J'alterne entre le grain marqué d'une Rollei Retro 400S pour le noir et blanc contrasté, et les teintes cinématographiques des Kodak Portra ou CineStill 400D pour la couleur. Connaître la réaction de ces émulsions face aux néons de la nuit ou à la neige de New York est le fruit d'années d'expérience."
+                    text: "Le matériel est le prolongement de l'œil. Borntwolate utilise des boîtiers analogiques réputés pour leur robustesse et leur optique, notamment le mythique Rollei 35. Mais le véritable pinceau, c'est la pellicule. Le choix du film détermine l'esthétique. L'artiste alterne entre le grain marqué d'une Rollei Retro 400S pour le noir et blanc contrasté, et les teintes cinématographiques des Kodak Portra ou CineStill 400D pour la couleur. Connaître la réaction de ces émulsions face aux néons de la nuit ou à la neige de New York est le fruit d'années d'expérience."
                 },
                 {
                     title: "De la numérisation HD au tirage d'art",
-                    text: "L'argentique vit avec son temps. Une fois le film développé, je procède à une numérisation haute résolution. Cette étape cruciale permet de rendre le grain organique imprimable en grand format (jusqu'au 70x100cm) sans perte de qualité. C'est le pont entre la tradition de la pellicule et les exigences d'exposition actuelles."
+                    text: "L'argentique vit avec son temps. Une fois le film développé, une numérisation haute résolution est effectuée. Cette étape cruciale permet de rendre le grain organique imprimable en grand format (jusqu'au 70x100cm) sans perte de qualité. C'est le pont entre la tradition de la pellicule et les exigences d'exposition actuelles."
                 }
             ]
         },
@@ -78,7 +78,7 @@ export const photographeArgentiqueData = {
             items: [
                 {
                     q: "Est-il possible de commander un format sur mesure ?",
-                    a: "Oui. Ma boutique propose les standards (30x45, 40x60, 60x90), mais je peux réaliser des formats personnalisés sur demande via le formulaire de contact, toujours sur papier Canson Infinity Baryta."
+                    a: "Oui. La boutique propose les standards (30x45, 40x60, 60x90), mais des formats personnalisés peuvent être réalisés sur demande via le formulaire de contact, toujours sur papier Canson Infinity Baryta."
                 },
                 {
                     q: "Quels sont les délais pour recevoir une œuvre ?",
@@ -90,7 +90,7 @@ export const photographeArgentiqueData = {
                 },
                 {
                     q: "Pourquoi choisir la finition Caisse Américaine ?",
-                    a: "C'est la finition \"Luxe\" par excellence. Le tirage est contrecollé et semble flotter à l'intérieur d'un cadre en bois, sans vitre. Cela offre une immersion totale dans l'image, sans reflet, mettant en valeur la texture du papier et le grain de la pellicule. C'est la finition que je recommande pour les grands formats."
+                    a: "C'est la finition \"Luxe\" par excellence. Le tirage est contrecollé et semble flotter à l'intérieur d'un cadre en bois, sans vitre. Cela offre une immersion totale dans l'image, sans reflet, mettant en valeur la texture du papier et le grain de la pellicule. C'est la finition recommandée pour les grands formats."
                 }
             ]
         },
@@ -110,8 +110,8 @@ export const photographeArgentiqueData = {
         hero: {
             title: "Analog Photographer: The art of capturing what will disappear",
             text: [
-                "In a world saturated with instant and disposable images, I choose analog photography as an act of resistance. \"BornTwoLate\" is this sensation of arriving just after the battle, of wanting to freeze an era slipping through our fingers. Here, we don't speak of cold pixels, but of light fixed by chemistry, of living grain and sublime imperfections. It is an intimate relationship between the subject and the precision mechanics of my Rollei 35.",
-                "Whether you are an urban aesthetic lover or a savvy collector, you enter a universe where every click is an irreversible decision. My work is an ode to patience: fixing on sensitive film the atmosphere of Paris streets, the verticality of New York or the strangeness of Montreal, to make them tangible and timeless memories."
+                "In a world saturated with instant and disposable images, the photographer chooses analog photography as an act of resistance. \"BornTwoLate\" is this sensation of arriving just after the battle, of wanting to freeze an era slipping through our fingers. Here, we don't speak of cold pixels, but of light fixed by chemistry, of living grain and sublime imperfections. It is an intimate relationship between the subject and the precision mechanics of the Rollei 35.",
+                "Whether you are an urban aesthetic lover or a savvy collector, you enter a universe where every click is an irreversible decision. The work is an ode to patience: fixing on sensitive film the atmosphere of Paris streets, the verticality of New York or the strangeness of Montreal, to make them tangible and timeless memories."
             ]
         },
         sections: [
@@ -121,13 +121,13 @@ export const photographeArgentiqueData = {
                     {
                         subtitle: "The return to organic and living matter",
                         text: [
-                            "In times of smooth digital perfection, analog offers incomparable texture. It is not just an image, it is a sensory experience. The grain rendering, contrast depth in black and white (Rollei Retro 400S) or unique color warmth (Kodak Portra, CineStill 400D) bring a soul that digital struggles to imitate. Choosing this practice means embracing the charm of randomness. An analog photo possesses thickness, vibration. It is this return to the tangible and authentic that defines my artistic approach: documenting reality with a nostalgic patina."
+                            "In times of smooth digital perfection, analog offers incomparable texture. It is not just an image, it is a sensory experience. The grain rendering, contrast depth in black and white (Rollei Retro 400S) or unique color warmth (Kodak Portra, CineStill 400D) bring a soul that digital struggles to imitate. Choosing this practice means embracing the charm of randomness. An analog photo possesses thickness, vibration. It is this return to the tangible and authentic that defines the artistic approach: documenting reality with a nostalgic patina."
                         ]
                     },
                     {
                         subtitle: "A distinct author's alternative to Artificial Intelligence",
                         text: [
-                            "While AI floods the web with synthetic images, the analog photographer's role becomes that of a witness to reality again. Unlike an algorithm-generated image, my shots are physical proof that a moment existed. From shooting with my analog cameras to the rigorous selection of negatives, every step is manual. I do not seek to mass-produce content but to offer a singular vision, often melancholic and cinematic. It is this author's approach that transforms a simple image into a work of art capable of traversing time."
+                            "While AI floods the web with synthetic images, the analog photographer's role becomes that of a witness to reality again. Unlike an algorithm-generated image, these shots are physical proof that a moment existed. From shooting with analog cameras to the rigorous selection of negatives, every step is manual. Borntwolate does not seek to mass-produce content but to offer a singular vision, often melancholic and cinematic. It is this author's approach that transforms a simple image into a work of art capable of traversing time."
                         ]
                     }
                 ]
@@ -137,7 +137,7 @@ export const photographeArgentiqueData = {
                 content: [
                     {
                         text: [
-                            "Being a photographer today implies offering a perspective. My series (Winter in the Fruit, Mauvais Garçons, Canadian Evasion) are not simple reports, but invitations to travel and contemplation. My work does not stop at the shutter release. It encompasses the entire creation chain, in close collaboration with Picto Paris laboratory, a historical reference for the greatest photographers since 1950. This requirement guarantees aesthetic consistency for your acquisition projects.",
+                            "Being a photographer today implies offering a perspective. The series (Winter in the Fruit, Mauvais Garçons, Canadian Evasion) are not simple reports, but invitations to travel and contemplation. The work does not stop at the shutter release. It encompasses the entire creation chain, in close collaboration with Picto Paris laboratory, a historical reference for the greatest photographers since 1950. This requirement guarantees aesthetic consistency for acquisition projects.",
                             "Analog photography reminds us that beauty lies in the fragility of the moment. Whether you wish to dress your walls with a window on the world or transmit a unique visual heritage, each Borntwolate print is designed to last and span generations."
                         ]
                     }
@@ -146,7 +146,7 @@ export const photographeArgentiqueData = {
         ],
         shop_section: {
             title: "The limited edition fine art print collection",
-            intro: "For enthusiasts, I have designed an online shop dedicated to selling fine art prints. Acquiring a Borntwolate work means possessing a fragment of time. Far from industrial posters, I offer three finish levels to enhance your interiors:",
+            intro: "For enthusiasts, an online shop dedicated to selling fine art prints has been designed. Acquiring a Borntwolate work means possessing a fragment of time. Far from industrial posters, three finish levels are offered to enhance your interiors:",
             items: [
                 { label: "The Collection", desc: "Pure work on art paper, delivered rolled." },
                 { label: "The Elegance", desc: "Nielsen Alpha aluminum framing, sober and modern." },
@@ -155,11 +155,11 @@ export const photographeArgentiqueData = {
             details: [
                 {
                     title: "Excellence of the hybrid print: Analog Negative & Pigment Print",
-                    text: "Confusion is common. My images are born from chemistry (the analog negative) but are magnified by modern technology. I practice a hybrid flow: the negative is scanned in very high definition to preserve its original grain, then printed in pigment inkjet (Giclée print). This technique, validated by galleries, allows absolute colorimetric precision while keeping the film's soul. It is the perfect alliance between the charm of the old and temporary precision."
+                    text: "Confusion is common. The images are born from chemistry (the analog negative) but are magnified by modern technology. The photographer practices a hybrid flow: the negative is scanned in very high definition to preserve its original grain, then printed in pigment inkjet (Giclée print). This technique, validated by galleries, allows absolute colorimetric precision while keeping the film's soul. It is the perfect alliance between the charm of the old and temporary precision."
                 },
                 {
                     title: "The choice of Canson Infinity Baryta paper",
-                    text: "To guarantee museum quality, I exclusively selected Canson Infinity Baryta paper. This prestigious support offers deep blacks, exceptional handle, and a texture recalling traditional darkroom baryta papers. Why this choice? For longevity. A pigment print on this paper, made by Picto artisans, offers a conservation guarantee superior to 100 years (ISO 9706 standard). It is the support par excellence for collection and artistic investment."
+                    text: "To guarantee museum quality, Borntwolate exclusively selected Canson Infinity Baryta paper. This prestigious support offers deep blacks, exceptional handle, and a texture recalling traditional darkroom baryta papers. Why this choice? For longevity. A pigment print on this paper, made by Picto artisans, offers a conservation guarantee superior to 100 years (ISO 9706 standard). It is the support par excellence for collection and artistic investment."
                 }
             ]
         },
@@ -168,11 +168,11 @@ export const photographeArgentiqueData = {
             items: [
                 {
                     title: "Legendary cameras and mythical emulsions",
-                    text: "Gear is the extension of the eye. I use analog cameras renowned for their robustness and optics, notably the mythical Rollei 35. But the real brush is the film. The choice of film determines the aesthetic. I alternate between the marked grain of a Rollei Retro 400S for contrasted black and white, and the cinematic hues of Kodak Portra or CineStill 400D for color. Knowing the reaction of these emulsions to night neons or New York snow is the fruit of years of experience."
+                    text: "Gear is the extension of the eye. Borntwolate uses analog cameras renowned for their robustness and optics, notably the mythical Rollei 35. But the real brush is the film. The choice of film determines the aesthetic. The artist alternates between the marked grain of a Rollei Retro 400S for contrasted black and white, and the cinematic hues of Kodak Portra or CineStill 400D for color. Knowing the reaction of these emulsions to night neons or New York snow is the fruit of years of experience."
                 },
                 {
                     title: "From HD digitization to fine art printing",
-                    text: "Analog lives with its time. Once the film is developed, I proceed with high-resolution scanning. This crucial step makes the organic grain printable in large format (up to 70x100cm) without quality loss. It is the bridge between film tradition and current exhibition requirements."
+                    text: "Analog lives with its time. Once the film is developed, a high-resolution scanning is performed. This crucial step makes the organic grain printable in large format (up to 70x100cm) without quality loss. It is the bridge between film tradition and current exhibition requirements."
                 }
             ]
         },
@@ -181,7 +181,7 @@ export const photographeArgentiqueData = {
             items: [
                 {
                     q: "Is it possible to order a custom size?",
-                    a: "Yes. My shop offers standards (30x45, 40x60, 60x90), but I can create custom sizes on request via the contact form, always on Canson Infinity Baryta paper."
+                    a: "Yes. The shop offers standards (30x45, 40x60, 60x90), but custom sizes can be created on request via the contact form, always on Canson Infinity Baryta paper."
                 },
                 {
                     q: "What are the lead times to receive a work?",
@@ -193,7 +193,7 @@ export const photographeArgentiqueData = {
                 },
                 {
                     q: "Why choose the American Box finish?",
-                    a: "It is the \"Luxury\" finish par excellence. The print is laminated and seems to float inside a wooden frame, without glass. This offers total immersion in the image, without reflection, highlighting the paper texture and film grain. It is the finish I recommend for large formats."
+                    a: "It is the \"Luxury\" finish par excellence. The print is laminated and seems to float inside a wooden frame, without glass. This offers total immersion in the image, without reflection, highlighting the paper texture and film grain. It is the finish recommended for large formats."
                 }
             ]
         },

@@ -19,7 +19,7 @@ const Portfolio = () => {
     const [filteredPhotos, setFilteredPhotos] = useState<Photo[]>(photos);
 
     useEffect(() => {
-        let result = filter === 'all'
+        const result = filter === 'all'
             ? [...photos]
             : photos.filter((photo) => photo.category === filter);
 

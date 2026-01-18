@@ -53,6 +53,7 @@ export const CurrencyProvider = ({ children }: { children: ReactNode }) => {
     );
 };
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useCurrency = () => {
     const context = useContext(CurrencyContext);
     if (!context) throw new Error('useCurrency must be used within a CurrencyProvider');

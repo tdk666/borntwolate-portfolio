@@ -103,11 +103,11 @@ const PhotographeArgentique = () => {
                         </div>
 
                         <div className="grid md:grid-cols-2 gap-12 text-silver/80">
-                            {content.sections[0].content.map((block, idx) => (
+                            {content.sections[0].content.map((block: { subtitle?: string, text: string[] }, idx) => (
                                 <div key={idx}>
-                                    {('subtitle' in block) && (
+                                    {block.subtitle && (
                                         <h3 className="text-xl font-medium text-off-white mb-4 font-serif">
-                                            {(block as any).subtitle}
+                                            {block.subtitle}
                                         </h3>
                                     )}
                                     <div className="space-y-4">
@@ -122,7 +122,7 @@ const PhotographeArgentique = () => {
                 {/* IMAGE BREAK 2: Le Gardien des Cimes (Vertical Full - REDUCED SIZE) */}
                 <FadeIn>
                     <figure className="mb-24 -mx-6 md:-mx-24 relative group">
-                        <div className="aspect-[3/4] md:aspect-[3/4] w-full max-w-sm mx-auto overflow-hidden">
+                        <div className="aspect-[2/3] w-full max-w-md mx-auto overflow-hidden">
                             <img
                                 src="/images/retro-mountain/mountain-retro.jpg"
                                 alt="Tirage argentique noir et blanc Le Gardien des Cimes, skieur minimaliste, série Retro Mountain, papier Canson Baryta"

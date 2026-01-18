@@ -10,15 +10,12 @@ const Hero = () => {
     const [isMobile, setIsMobile] = useState(() => typeof window !== 'undefined' ? window.innerWidth < 768 : false);
 
     // State for shuffled photos to avoid impure render calls
-    const [landscapePhotos, setLandscapePhotos] = useState<Photo[]>([]);
-    const [portraitPhotos, setPortraitPhotos] = useState<Photo[]>([]);
-
-    useEffect(() => {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setLandscapePhotos(photos.filter(p => p.orientation === 'landscape').sort(() => 0.5 - Math.random()).slice(0, 8));
-        // eslint-disable-next-line react-hooks/set-state-in-effect
-        setPortraitPhotos(photos.filter(p => p.orientation === 'portrait').sort(() => 0.5 - Math.random()).slice(0, 8));
-    }, []);
+    const [landscapePhotos] = useState<Photo[]>(() =>
+        photos.filter(p => p.orientation === 'landscape').sort(() => 0.5 - Math.random()).slice(0, 8)
+    );
+    const [portraitPhotos] = useState<Photo[]>(() =>
+        photos.filter(p => p.orientation === 'portrait').sort(() => 0.5 - Math.random()).slice(0, 8)
+    );
 
     // Select the active list based on screen width
     const currentPhotos = isMobile ? portraitPhotos : landscapePhotos;
