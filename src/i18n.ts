@@ -243,7 +243,8 @@ i18n
                             "img_20x30": "(Format Image 20x30)",
                             "full_frame": "(Plein Cadre)",
                             "img_60x90": "(Format Image 60x90)",
-                            "masterpiece": "(Édition Prestige)"
+                            "masterpiece": "(Édition Prestige)",
+                            "redirecting": "Redirection vers Stripe...",
                         }
                     },
                     prints: {
@@ -485,10 +486,10 @@ i18n
                             "40x60": "40x60 cm",
                             "60x90": "60x90 cm",
                             "70x105": "70x105 cm",
-                            
+
                             "30x40": "Framed 30x40 cm",
                             "60x80": "Framed 60x80 cm",
-                            
+
                             "24x36": "Shadow Box 24x36 cm",
                             "50x75": "Shadow Box 50x75 cm",
 
@@ -496,6 +497,7 @@ i18n
                             "detail_24x36": "(Image 24x36 cm)",
                             "detail_47x70": "(Image 47x70 cm)",
                             "detail_full": "(Full Frame)",
+                            "redirecting": "Redirecting to Stripe...",
                         }
                     },
                     prints: {

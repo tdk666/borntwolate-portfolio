@@ -5,7 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { PRICING_CATALOG } from '../data/pricing';
 
-const WALL_WIDTH_CM = 300; // Mur de 3 mètres
+const WALL_WIDTH_DESKTOP = 300; // Mur de 3 mètres
+const WALL_WIDTH_MOBILE = 150; // Mur de 1.5 mètres (zoom)
 
 // Marges spécifiques pour la Collection (en cm)
 const COLLECTION_MARGINS: Record<string, number> = {
@@ -30,15 +31,24 @@ export default function WallPreview({ isOpen, onClose, imageSrc, initialSize = '
     const [currentSize, setCurrentSize] = useState(initialSize);
     const [isPortrait, setIsPortrait] = useState(false);
     const [mounted, setMounted] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
         setMounted(true);
-        document.body.style.overflow = 'hidden';
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        }
+
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+
         return () => {
             setMounted(false);
             document.body.style.overflow = '';
+            window.removeEventListener('resize', checkMobile);
         };
-    }, []);
+    }, [isOpen]); // Added isOpen dependency to correctly manage overflow
 
     // Détection automatique de l'orientation de l'image
     useEffect(() => {
@@ -95,7 +105,8 @@ export default function WallPreview({ isOpen, onClose, imageSrc, initialSize = '
     }, [currentFinish]);
 
     const getWidthPercentage = () => {
-        return (displayW / WALL_WIDTH_CM) * 100;
+        const wallWidth = isMobile ? WALL_WIDTH_MOBILE : WALL_WIDTH_DESKTOP;
+        return (displayW / wallWidth) * 100;
     };
 
     const getAspectRatio = () => {
@@ -127,7 +138,8 @@ export default function WallPreview({ isOpen, onClose, imageSrc, initialSize = '
                 return "bg-white ring-1 ring-[#1A1A1A] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border-[4px] border-[#1A1A1A]";
             case 'exception':
                 // Caisse Américaine: Cadre Bois Noir Mat + Ombre Massive
-                return "bg-[#1A1A1A] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] border border-[#111]";
+                // FIX: Use outline for frame and transparent border for gap
+                return "bg-[#1A1A1A] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] border-[4px] border-transparent outline outline-[12px] outline-[#1A1A1A]";
             default: return "bg-white shadow-lg";
         }
     };

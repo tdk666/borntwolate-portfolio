@@ -18,6 +18,7 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
   const [selectedVariantId, setSelectedVariantId] = useState<string>(PRICING_CATALOG['collection'].variants[0].id);
   const [isWallPreviewOpen, setIsWallPreviewOpen] = useState(false);
   const [currency, setCurrency] = useState<'EUR' | 'USD' | 'GBP'>('EUR');
+  const [isLoading, setIsLoading] = useState(false);
 
   if (!isOpen) return null;
 
@@ -81,7 +82,14 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
               </p>
             </div>
             {imageSrc && (
-              <img src={imageSrc} alt={photoTitle} className="mt-6 w-full max-h-[40vh] object-contain rounded border border-white/10 opacity-80" />
+              <img 
+                src={imageSrc} 
+                alt={photoTitle} 
+                className="mt-6 w-full max-h-[40vh] object-contain rounded border border-white/10 opacity-80"
+                onError={(e) => {
+                    (e.target as HTMLImageElement).style.display = 'none'; // Hide if broken
+                }} 
+            />
             )}
           </div>
 
@@ -96,6 +104,8 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
                 return (
                   <button
                     key={key}
+                    role="tab"
+                    aria-selected={activeTab === key}
                     onClick={() => { setActiveTab(key as any); setSelectedVariantId(range.variants[0].id); }}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${activeTab === key
                       ? 'bg-white text-black'
@@ -177,16 +187,18 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
                 href={finalStripeUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full bg-white text-black py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-200 transition-colors"
-                onClick={() => {
+                className={`w-full bg-white text-black py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-gray-200 transition-colors ${isLoading ? 'opacity-70 cursor-wait' : ''}`}
+                onClick={(e) => {
                   if (currency !== 'EUR') {
-                    // Optional: Confirm with user that payment is in EUR? 
-                    // For now we just let them proceed to Stripe which shows EUR.
+                    // currency check
                   }
+                  setIsLoading(true);
+                  // Reset after delay
+                  setTimeout(() => setIsLoading(false), 2000);
                 }}
               >
-                {t('acquisition.proceed_payment')}
-                <ArrowRight className="w-4 h-4" />
+                {isLoading ? t('acquisition.redirecting') : t('acquisition.proceed_payment')}
+                {!isLoading && <ArrowRight className="w-4 h-4" />}
               </a>
 
               <div className="mt-3 flex justify-center gap-2 text-[10px] text-white/30">
