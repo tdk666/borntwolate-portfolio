@@ -112,12 +112,14 @@ export default function Prints() {
                 </div>
             </FadeIn>
 
-            <WallPreview
-                isOpen={isWallPreviewOpen}
-                onClose={() => setIsWallPreviewOpen(false)}
-                finish="elegance"
-                imageSrc="/images/puglia/vespa.jpg" // Liberta Bianca par défaut
-            />
+            {isWallPreviewOpen && (
+                <WallPreview
+                    isOpen={isWallPreviewOpen}
+                    onClose={() => setIsWallPreviewOpen(false)}
+                    finish="elegance"
+                    imageSrc="/images/puglia/vespa.jpg" // Liberta Bianca par défaut
+                />
+            )}
         </div>
     );
 }
