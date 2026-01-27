@@ -14,9 +14,10 @@ interface FadeInProps {
      * Custom duration for specific needs. Default is 0.6s.
      */
     duration?: number;
+    onClick?: (event: React.MouseEvent) => void;
 }
 
-export const FadeIn = ({ children, delay = 0, className = "", noVertical = false, duration = 0.6 }: FadeInProps) => {
+export const FadeIn = ({ children, delay = 0, className = "", noVertical = false, duration = 0.6, onClick }: FadeInProps) => {
     return (
         <motion.div
             initial={{ opacity: 0, y: noVertical ? 0 : 20 }}
@@ -24,6 +25,7 @@ export const FadeIn = ({ children, delay = 0, className = "", noVertical = false
             viewport={{ once: true, margin: "0px 0px -50px 0px" }}
             transition={{ duration: duration, delay: delay, ease: "easeOut" }}
             className={className}
+            onClick={onClick}
         >
             {children}
         </motion.div>

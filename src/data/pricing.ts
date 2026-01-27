@@ -1,70 +1,72 @@
-export interface PricingItem {
-    price: number;
+export interface ProductVariant {
+    id: string;
     label: string;
-}
-
-export interface ShippingRates {
-    france: number;
-    europe: number;
-    world: number | null; // null si pas de livraison
+    details?: string; // Ex: "(Image 20x30)"
+    price: number;
+    stripeUrl: string; // Lien de paiement direct
 }
 
 export interface ProductRange {
+    id: string;
     label: string;
     description: string;
+    shipping_text: string;
     features: string[];
-    prices: Record<string, number>; // Format "20x30": 90
-    shipping: ShippingRates;
+    variants: ProductVariant[];
 }
 
 export const PRICING_CATALOG: Record<string, ProductRange> = {
     collection: {
-        label: "pricing.collection.label",
-        description: "pricing.collection.description",
+        id: 'collection',
+        label: "La Collection",
+        description: "L'entrée de gamme premium. Tirage Fine Art sur papier Canson Infinity Platine Fibre Rag 310g. Livré avec une marge blanche tournante pour faciliter l'encadrement futur.",
+        shipping_text: "Livraison Offerte (France)",
         features: [
-            "pricing.collection.features.0",
-            "pricing.collection.features.1",
-            "pricing.collection.features.2",
-            "pricing.collection.features.3"
+            "Papier Canson Platine 310g",
+            "Marge blanche incluse (Protection)",
+            "Signé & Numéroté (30 ex)",
+            "Livré roulé (Tube renforcé)"
         ],
-        prices: {
-            "20x30": 90,
-            "30x45": 130,
-            "40x60": 220,
-            "60x90": 390
-        },
-        shipping: { france: 0, europe: 20, world: 35 }
+        variants: [
+            { id: '20x30', label: '20x30 cm', price: 45, stripeUrl: 'https://buy.stripe.com/6oU8wP3t7cxE6FD73I1Jm0b' },
+            { id: '30x45', label: '30x45 cm', price: 80, stripeUrl: 'https://buy.stripe.com/eVqfZh1kZ8hoe8573I1Jm0c' },
+            { id: '40x60', label: '40x60 cm', price: 135, stripeUrl: 'https://buy.stripe.com/bJe7sL7Jn55c6FD2Ns1Jm0d' },
+            { id: '60x90', label: '60x90 cm', price: 270, stripeUrl: 'https://buy.stripe.com/eVq9ATbZDapw2pnfAe1Jm0e' },
+            { id: '70x105', label: '70x105 cm', price: 370, stripeUrl: 'https://buy.stripe.com/8x228r5BffJQ4xv5ZE1Jm0f' }
+        ]
     },
     elegance: {
-        label: "pricing.elegance.label",
-        description: "pricing.elegance.description",
+        id: 'elegance',
+        label: "L'Élégance (Cadre)",
+        description: "Le Prêt-à-accrocher intemporel. Tirage centré avec un Passe-Partout blanc tournant dans un cadre Aluminium Noir Mat (Nielsen Alpha).",
+        shipping_text: "Livraison Incluse (France) • Europe (+50€)",
         features: [
-            "pricing.elegance.features.0",
-            "pricing.elegance.features.1",
-            "pricing.elegance.features.2",
-            "pricing.elegance.features.3"
+            "Cadre Nielsen Alpha Noir",
+            "Passe-partout Blanc Musée",
+            "Verre Minéral & Dos Dibond",
+            "Prêt à accrocher"
         ],
-        prices: {
-            "30x45": 290,
-            "40x60": 450
-        },
-        shipping: { france: 0, europe: 100, world: null }
+        variants: [
+            { id: '30x40', label: 'Cadre 30x40 cm', details: '(Image 20x30)', price: 290, stripeUrl: 'https://buy.stripe.com/8x29AT9RvbtAfc90Fk1Jm0g' },
+            { id: '40x60', label: 'Cadre 40x60 cm', details: '(Image 24x36)', price: 495, stripeUrl: 'https://buy.stripe.com/fZueVd1kZ8ho5Bz4VA1Jm0h' },
+            { id: '60x80', label: 'Cadre 60x80 cm', details: '(Image 47x70)', price: 890, stripeUrl: 'https://buy.stripe.com/7sY5kDaVz8hobZXfAe1Jm0i' }
+        ]
     },
-    galerie: {
-        label: "pricing.galerie.label",
-        description: "pricing.galerie.description",
+    exception: {
+        id: 'exception',
+        label: "Exception (Caisse)",
+        description: "La finition Galerie ultime. Tirage contrecollé sur Aluminium 1mm, flottant dans une Caisse Américaine en bois noir. Sans verre pour une immersion totale.",
+        shipping_text: "Livraison Incluse (France) • Europe (+50€)",
         features: [
-            "pricing.galerie.features.0",
-            "pricing.galerie.features.1",
-            "pricing.galerie.features.2",
-            "pricing.galerie.features.3"
+            "Caisse Américaine Bois Noir",
+            "Contrecollage Alu 1mm",
+            "Sans Vitre (Zéro Reflet)",
+            "Aspect Flottant"
         ],
-        prices: {
-            "30x45": 450,
-            "40x60": 650,
-            "60x90": 950,
-            "70x100": 1200
-        },
-        shipping: { france: 0, europe: 100, world: null }
+        variants: [
+            { id: '24x36', label: 'Caisse 24x36 cm', price: 290, stripeUrl: 'https://buy.stripe.com/00wdR9gfT7dkaVT3Rw1Jm0j' },
+            { id: '40x60', label: 'Caisse 40x60 cm', price: 490, stripeUrl: 'https://buy.stripe.com/bJedR97Jn69g5Bz87M1Jm0k' },
+            { id: '50x75', label: 'Caisse 50x75 cm', price: 690, stripeUrl: 'https://buy.stripe.com/8x26oHd3Hapwd41ds61Jm0l' }
+        ]
     }
 };

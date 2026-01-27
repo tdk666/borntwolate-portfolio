@@ -1,197 +1,277 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Ruler } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { PRICING_CATALOG } from '../data/pricing';
+
+const WALL_WIDTH_CM = 300; // Mur de 3 mètres
+
+// Marges spécifiques pour la Collection (en cm)
+const COLLECTION_MARGINS: Record<string, number> = {
+    '20x30': 2,
+    '30x45': 3,
+    '40x60': 4,
+    '60x90': 5,
+    '70x105': 6
+};
 
 interface WallPreviewProps {
     isOpen: boolean;
     onClose: () => void;
-    imageSrc: string;
+    imageSrc?: string;
+    initialSize?: string;
+    finish: 'collection' | 'elegance' | 'exception';
 }
 
-const WALL_WIDTH_CM = 300; // Largeur du mur visible en cm (3 mètres)
-const SIZES = [
-    { label: "20x30 cm", width: 20, height: 30 }, // A4 approx
-    { label: "30x45 cm", width: 30, height: 45 }, // A3+ approx
-    { label: "40x60 cm", width: 40, height: 60 },
-    { label: "60x90 cm", width: 60, height: 90 },
-    { label: "70x100 cm", width: 70, height: 100 }, // Giant
-];
-
-const WallPreview = ({ isOpen, onClose, imageSrc }: WallPreviewProps) => {
+export default function WallPreview({ isOpen, onClose, imageSrc, initialSize = '30x45', finish }: WallPreviewProps) {
     const { t } = useTranslation();
-    const [selectedSize, setSelectedSize] = useState(SIZES[1]); // Default 30x45
-    // State Derived
-    const isLargeFormat = selectedSize.width >= 60; // 60x90 and 70x100 are "Large"
-    const [containerWidth, setContainerWidth] = useState(0);
-    const [isMobile, setIsMobile] = useState(false);
+    const [currentFinish, setCurrentFinish] = useState<keyof typeof PRICING_CATALOG>(finish);
+    const [currentSize, setCurrentSize] = useState(initialSize);
+    const [isPortrait, setIsPortrait] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        const handleResize = () => {
-            const width = window.innerWidth;
-            setContainerWidth(width);
-            setIsMobile(width < 768);
+        setMounted(true);
+        document.body.style.overflow = 'hidden';
+        return () => {
+            setMounted(false);
+            document.body.style.overflow = '';
         };
-        handleResize(); // Init
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // Image de fond dynamique (Avec Version Mobile Optimisée)
-    const getBgUrl = () => {
-        if (isLargeFormat) {
-            return isMobile ? "/assets/living-room-bg-wide-mobile.png" : "/assets/living-room-bg-wide.png";
+    // Détection automatique de l'orientation de l'image
+    useEffect(() => {
+        if (isOpen && imageSrc) {
+            const img = new Image();
+            img.src = imageSrc;
+            img.onload = () => {
+                if (img.naturalHeight > img.naturalWidth) {
+                    setIsPortrait(true);
+                } else {
+                    setIsPortrait(false);
+                }
+            };
         }
-        return isMobile ? "/assets/living-room-bg-mobile.png" : "/assets/living-room-bg.png";
+
+        if (isOpen) {
+            setCurrentFinish(finish);
+            setCurrentSize(initialSize);
+        }
+    }, [isOpen, imageSrc, finish, initialSize]);
+
+    const activeRange = PRICING_CATALOG[currentFinish];
+
+    // Extraire les dimensions et gérer l'orientation
+    const availableSizes = activeRange.variants.map(v => {
+        let w = 30, h = 45;
+        const match = v.id.match(/(\d+)x(\d+)/);
+        if (match) {
+            w = parseInt(match[1]);
+            h = parseInt(match[2]);
+        }
+
+        const min = Math.min(w, h);
+        const max = Math.max(w, h);
+        return {
+            id: v.id,
+            label: v.label,
+            small: min,
+            large: max
+        };
+    });
+
+    const currentVariantDims = availableSizes.find(s => s.id === currentSize) || availableSizes[0];
+
+    // Calcul des dimensions affichées selon l'orientation AUTOMATIQUE
+    const displayW = isPortrait ? currentVariantDims.small : currentVariantDims.large;
+    const displayH = isPortrait ? currentVariantDims.large : currentVariantDims.small;
+
+    useEffect(() => {
+        const exists = availableSizes.find(s => s.id === currentSize);
+        if (!exists && availableSizes.length > 0) {
+            setCurrentSize(availableSizes[0].id);
+        }
+    }, [currentFinish]);
+
+    const getWidthPercentage = () => {
+        return (displayW / WALL_WIDTH_CM) * 100;
     };
 
-    const bgUrl = getBgUrl();
+    const getAspectRatio = () => {
+        return `${displayW}/${displayH}`;
+    };
 
-    // LOGIQUE DE DIMENSIONNEMENT PRECISE (REALISTIC SCALE)
-    const pixelsPerCm = useMemo(() => {
-        // Le mur fait 300cm de large. Sur l'écran, il occupe 100vw (ou containerWidth).
-        // Ajustement Mobile : On "zoome" pour que le mur ne fasse que 180cm virtuels, rendant l'oeuvre plus grande/visible.
-        const virtualWallWidthCm = isMobile ? 180 : WALL_WIDTH_CM;
-        return containerWidth / virtualWallWidthCm;
-    }, [containerWidth, isMobile]);
+    const getPaddingStyle = () => {
+        if (currentFinish === 'collection') {
+            const marginCm = COLLECTION_MARGINS[currentSize] || 3;
+            const p = (marginCm / displayW) * 100;
+            return { padding: `${p}%` };
+        }
+        if (currentFinish === 'elegance') {
+            return { padding: '4%' };
+        }
+        // Exception: No padding here, handled by gap logic
+        if (currentFinish === 'exception') {
+            return { padding: '3%' }; // Simulating the gap
+        }
+        return {};
+    };
 
-    // Dimensions Réelles (en cm)
-    // Cadre : 1.5cm
-    // Passe-partout (Mat) : REDUIT DE 80% (Demande user)
-    // Esthétique fine : 3% de la petite dimension, min 1.5cm, max 3cm.
-    const matSizeCm = Math.min(Math.max(Math.min(selectedSize.width, selectedSize.height) * 0.03, 1.5), 3);
-    const frameSizeCm = 1.2; // 1.2cm frame width
+    const getFrameClasses = () => {
+        switch (currentFinish) {
+            case 'collection':
+                return "bg-[#FAFAFA] shadow-[0_1px_3px_rgba(0,0,0,0.12),0_1px_2px_rgba(0,0,0,0.24)]";
+            case 'elegance':
+                // Cadre Alu Noir Mat + Reflet Blanc Inset + Ombre Murale Diffuse
+                return "bg-white ring-1 ring-[#1A1A1A] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border-[4px] border-[#1A1A1A]";
+            case 'exception':
+                // Caisse Américaine: Cadre Bois Noir Mat + Ombre Massive
+                return "bg-[#1A1A1A] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] border border-[#111]";
+            default: return "bg-white shadow-lg";
+        }
+    };
 
-    // Dimensions en Pixels pour le rendu
-    const imageWidthPx = selectedSize.width * pixelsPerCm;
-    const imageHeightPx = selectedSize.height * pixelsPerCm;
+    const getImageContainerClasses = () => {
+        switch (currentFinish) {
+            case 'collection':
+                return "bg-[#FAFAFA]"; // Seamless with margin
+            case 'elegance':
+                // Ombre interne pour le biseau du passe-partout blanc
+                return "bg-white shadow-[inset_0_0_4px_rgba(0,0,0,0.15)]";
+            case 'exception':
+                // Effet Flottant: L'image projette une ombre dans la caisse
+                return "shadow-[0_10px_20px_rgba(0,0,0,0.5)] ring-1 ring-white/5";
+            default: return "bg-white";
+        }
+    };
 
-    // Le conteneur (Cadre + Mat + Image)
-    const totalWidthPx = imageWidthPx + (matSizeCm * 2 * pixelsPerCm) + (frameSizeCm * 2 * pixelsPerCm);
-    const totalHeightPx = imageHeightPx + (matSizeCm * 2 * pixelsPerCm) + (frameSizeCm * 2 * pixelsPerCm);
+    if (!mounted) return null;
 
-    const matPaddingPx = matSizeCm * pixelsPerCm;
-    const frameBorderPx = frameSizeCm * pixelsPerCm;
-
-    return (
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-[110] bg-black flex items-center justify-center overflow-hidden"
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-[9999] flex items-center justify-center bg-black"
+                    style={{
+                        position: 'fixed',
+                        top: 0,
+                        left: 0,
+                        width: '100vw',
+                        height: '100vh',
+                        margin: 0,
+                        padding: 0,
+                        maxWidth: '100vw',
+                        maxHeight: '100vh',
+                        overflow: 'hidden'
+                    }}
+                    onClick={onClose}
                 >
-                    {/* Background Wall - SANS TRANSITION (Demande user) */}
-                    <div
-                        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-                        style={{ backgroundImage: `url(${bgUrl})` }}
-                    />
-
-                    {/* Overlay sombre pour focus */}
-                    <div className="absolute inset-0 bg-black/30 pointer-events-none" />
-
-                    {/* Close Button - Desktop & Mobile Friendly */}
-                    <button
-                        onClick={onClose}
-                        className="absolute top-4 right-4 md:top-6 md:right-6 z-[120] text-white/80 hover:text-white transition-colors bg-black/40 hover:bg-black/60 p-3 md:p-2 rounded-full backdrop-blur-md shadow-lg"
-                        aria-label="Close Wall Preview"
-                    >
-                        <X size={28} strokeWidth={1.5} />
+                    <button onClick={onClose} className="absolute top-6 right-6 text-white/50 hover:text-white z-[10000] p-2">
+                        <X className="w-8 h-8" />
                     </button>
 
-                    {/* The Print on the Wall - POSITIONNEMENT DYNAMIQUE */}
-                    <div
-                        className={`
-                            relative z-[115] w-full h-full flex items-center pointer-events-none transition-all duration-700
-                            ${isLargeFormat
-                                ? 'justify-end pr-[5%] md:pr-[12%] pb-20 md:pb-0' // Grand format : Ajusté mobile
-                                : 'justify-center pb-24 md:pb-48'       // Petit format : Ajusté mobile
-                            }
-                        `}
-                    >
-                        {/* Cadre Global (Frame Extérieur) */}
-                        <motion.div
-                            layout={false} // Pas d'animation de layout lors du switch de fond
-                            initial={false}
-                            animate={{
-                                width: totalWidthPx,
-                                height: totalHeightPx,
-                                padding: frameBorderPx
-                            }}
-                            transition={{ type: "spring", stiffness: 200, damping: 25 }}
-                            className="relative bg-[#1a1a1a] shadow-2xl overflow-hidden flex items-center justify-center"
+                    {/* Container Plein Écran Force */}
+                    <div className="absolute inset-0 w-full h-full flex items-center justify-center overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                        {/* Minimalist Scale Wall (Generated) */}
+                        <img
+                            src="/assets/minimalist_scale_wall.png"
+                            alt="Mur Salon Minimaliste"
+                            className="absolute inset-0 w-full h-full object-cover"
                             style={{
-                                boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.7)",
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                                objectPosition: 'center',
+                                opacity: 1,
+                                zIndex: 0
                             }}
+                        />
+
+                        {/* Le Cadre */}
+                        <motion.div
+                            layout
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            className={`relative transition-all duration-500 ease-out flex items-center justify-center ${getFrameClasses()}`}
+                            style={{
+                                width: `${getWidthPercentage()}%`,
+                                aspectRatio: getAspectRatio(),
+                                // Padding removed from here to avoid "Percent of Parent (Wall)" calculation bug
+                                transform: 'translateY(-5%)',
+                                zIndex: 50 // Force frame to front
+                            }}
+                            onClick={(e) => e.stopPropagation()}
                         >
-                            {/* Texture Cadre Bois (Optionnel) */}
-                            <div className="absolute inset-0 bg-[#252525] opacity-20 pointer-events-none" />
+                            {/* Specific styling for Elegance reflection if needed, handled by border/shadow above */}
+                            {currentFinish === 'elegance' && (
+                                <div className="absolute inset-0 border-t border-white/20 pointer-events-none z-20" />
+                            )}
 
-                            {/* Le Contenu Interne (Mat + Image) */}
+                            {/* Inner Image Container (Matte/Gap) - Applies Padding relative to Frame Size */}
                             <div
-                                className="w-full h-full bg-white flex items-center justify-center relative shadow-[inset_0_0_15px_rgba(0,0,0,0.5)]"
-                                style={{
-                                    padding: matPaddingPx
-                                }}
+                                className={`relative w-full h-full overflow-hidden ${getImageContainerClasses()}`}
+                                style={{ ...getPaddingStyle() }} // Padding applied here is relative to THIS container's width (which is 100% of Frame)
                             >
-                                {/* L'Image */}
-                                <div className="relative w-full h-full shadow-sm">
-                                    <img
-                                        src={imageSrc}
-                                        alt="Simulation"
-                                        className="w-full h-full object-cover block"
-                                        loading="lazy" /* Performance optimization */
-                                    />
-                                    {/* Reflet Vitre par-dessus l'image uniquement */}
-                                    <div className="absolute inset-0 bg-gradient-to-tr from-white/10 via-transparent to-transparent opacity-50 mix-blend-overlay pointer-events-none" />
-                                </div>
-
-                                {/* Ombre portée interne du Mat sur l'image (Biseau) */}
-                                <div className="absolute inset-0 pointer-events-none shadow-[inset_2px_2px_6px_rgba(0,0,0,0.15)]"
-                                    style={{ margin: matPaddingPx }}
+                                <img
+                                    src={imageSrc || "/social-card.jpg"}
+                                    alt="Preview"
+                                    className="w-full h-full object-contain block z-10"
+                                    style={{ zIndex: 10 }}
+                                // Removed shadow-inner which was acting as a darkening filter
                                 />
                             </div>
-
-                            {/* Reflet global vitre */}
-                            <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-20 pointer-events-none mix-blend-overlay z-50" />
                         </motion.div>
                     </div>
 
-                    {/* Controls Bar */}
-                    <motion.div
-                        initial={{ y: 100, opacity: 0 }}
-                        animate={{ y: 0, opacity: 1 }}
-                        transition={{ delay: 0.2 }}
-                        className="absolute bottom-10 left-0 right-0 z-[120] flex flex-col items-center gap-4 px-4 pointer-events-auto"
+                    {/* CONTROLS BAR - Glassmorphism Updated */}
+                    <div
+                        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 p-6 bg-black/80 backdrop-blur-md rounded-2xl border border-white/10 w-[90%] max-w-2xl z-[10000] shadow-2xl"
+                        onClick={(e) => e.stopPropagation()}
                     >
-                        <div className="bg-black/60 backdrop-blur-xl border border-white/10 rounded-full px-6 py-4 flex flex-wrap justify-center gap-4 shadow-2xl max-w-3xl">
-                            <div className="flex items-center gap-2 text-white/50 border-r border-white/10 pr-4 mr-2 hidden sm:flex">
-                                <Ruler size={16} />
-                                <span className="font-space-mono text-xs uppercase tracking-widest">{t('wall.simulated_size') || "Simulation"}</span>
-                            </div>
-
-                            {SIZES.map((size) => (
+                        {/* Ranges */}
+                        <div className="flex gap-2 flex-wrap justify-center border-b border-white/10 pb-4 w-full">
+                            {Object.entries(PRICING_CATALOG).map(([key]) => (
                                 <button
-                                    key={size.label}
-                                    onClick={() => setSelectedSize(size)}
-                                    className={`
-                                        text-xs font-space-mono uppercase tracking-widest py-1 px-3 rounded-full transition-all duration-300
-                                        ${selectedSize.label === size.label
-                                            ? 'bg-white text-black font-bold'
-                                            : 'text-silver hover:text-white hover:bg-white/10'}
-                                    `}
+                                    key={key}
+                                    onClick={() => setCurrentFinish(key as any)}
+                                    className={`px-4 py-2 rounded-lg text-xs font-medium transition-all uppercase tracking-wider ${currentFinish === key
+                                        ? 'bg-white text-black shadow-lg shadow-white/10'
+                                        : 'bg-white/5 text-white/50 hover:bg-white/10 hover:text-white'
+                                        }`}
                                 >
-                                    {size.label}
+                                    {/* Using standard keys for translation based on range ID */}
+                                    {key === 'collection' ? t('pricing.collection.label') :
+                                        key === 'elegance' ? t('pricing.elegance.label') :
+                                            t('pricing.exception.label')}
                                 </button>
                             ))}
                         </div>
-                    </motion.div>
 
+                        {/* Sizes */}
+                        <div className="flex flex-wrap items-center justify-center gap-4 w-full">
+                            <div className="flex gap-2 flex-wrap justify-center">
+                                {availableSizes.map((size) => (
+                                    <button
+                                        key={size.id}
+                                        onClick={() => setCurrentSize(size.id)}
+                                        className={`px-3 py-1.5 rounded-md text-xs transition-all font-mono ${currentSize === size.id
+                                            ? 'bg-white text-black font-bold ring-2 ring-white/50'
+                                            : 'text-white/60 hover:text-white bg-white/5 border border-white/5 hover:border-white/20'
+                                            }`}
+                                    >
+                                        {size.small}x{size.large}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
                 </motion.div>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
-};
-
-export default WallPreview;
+}

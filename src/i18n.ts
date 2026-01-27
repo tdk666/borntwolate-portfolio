@@ -125,35 +125,7 @@ i18n
                         rights: 'Born Too Late',
                         prints: "L'Atelier"
                     },
-                    prints: {
-                        seo_title: 'Atelier & Collection',
-                        seo_desc: 'Acquérir un tirage original Born Too Late. Éditions limitées.',
-                        title: "L'Atelier",
-                        subtitle: "Espace dédié à l'acquisition de tirages d'art. Chaque pièce est produite à la demande, garantissant une attention particulière à chaque détail.",
-                        signature_title: "Signature",
-                        signature_text: "Tirages <1>signés et numérotés</1> (Limité à 30 ex). Certificat d'authenticité inclus.",
-                        fine_art_title: "Fine Art",
-                        fine_art_text: "Impressions réalisées sur papier <1>Fine Art Hahnemühle</1> (Baryta ou Photo Rag). Ces papiers d'archive garantissent une profondeur des noirs exceptionnelle, une fidélité chromatique absolue et une conservation > 100 ans.",
-                        finish_title: "Finitions",
-                        finish_text: "Tirage seul, Contre-collage Dibond ou Caisse Américaine. Du format A4 au 90x60cm.",
-                        cta_title: "Faire une acquisition",
-                        cta_text_price: "Collection accessible <1>à partir de 90€</1> (Tirage papier seul).",
-                        cta_text_custom: "Chaque projet étant unique, la vente s'effectue sur devis personnalisé.",
-                        cta_button: "Finaliser ma commande",
-                        view_on_wall: "Voir sur un mur",
-                        finishes_title: "Les Finitions",
-                        currency: "Devise",
-                        pricing_grid_title: "Grille Tarifaire Complète",
-                        table_format: "Format",
-                        table_collection: "Collection",
-                        table_elegance: "Élégance",
-                        table_galerie: "Galerie",
-                        starting_from: "À partir de",
-                        shipping_france: "France",
-                        shipping_europe: "Europe",
-                        shipping_world: "Monde",
-                        shipping_quote: "Sur devis (Grands Formats)",
-                    },
+
                     wall: {
                         simulated_size: "Simulation",
                         close: "Fermer"
@@ -233,8 +205,8 @@ i18n
                                 "3": "Livraison Europe Uniq."
                             }
                         },
-                        galerie: {
-                            label: "La Galerie",
+                        exception: {
+                            label: "L'Exception",
                             description: "L'immersion totale. Tirage contrecollé flottant dans une Caisse Américaine en bois noir.",
                             features: {
                                 "0": "Caisse Américaine Bois",
@@ -247,6 +219,44 @@ i18n
                     guarantee: {
                         title: "Garantie & Authenticité",
                         text: "Chaque tirage est une œuvre originale, numérotée et signée (limite de 30 exemplaires). Certificat d'authenticité inclus."
+                    },
+                    acquisition: {
+                        selected_work: "Œuvre sélectionnée",
+                        limited_edition: "Édition limitée, signée et numérotée. Produite artisanalement par Picto Paris.",
+                        custom_request_label: "Une demande spécifique ?",
+                        custom_request_btn: "Demander un devis sur mesure",
+                        cert_note: "* Votre commande inclut le certificat d'authenticité et la signature de l'artiste.",
+                        choose_format: "Configurer le Tirage",
+                        view_wall: "Voir en situation",
+                        proceed_payment: "Commander en ligne",
+                        secure_payment: "Paiement 100% sécurisé via Stripe",
+                        encrypted: "Transaction cryptée SSL",
+                        variants: {
+                            "20x30": "20x30 cm",
+                            "30x45": "30x45 cm",
+                            "40x60": "40x60 cm",
+                            "60x90": "60x90 cm",
+                            "70x100": "70x100 cm",
+                            "frame_30x40": "Encadré 30x40 cm",
+                            "frame_40x60": "Encadré 40x60 cm",
+                            "frame_70x100": "Encadré 70x100 cm",
+                            "img_20x30": "(Format Image 20x30)",
+                            "full_frame": "(Plein Cadre)",
+                            "img_60x90": "(Format Image 60x90)",
+                            "masterpiece": "(Édition Prestige)"
+                        }
+                    },
+                    prints: {
+                        seo_title: 'Atelier & Collection',
+                        seo_desc: 'Tirages d\'art en édition limitée. Signés et numérotés.',
+                        title: "L'Atelier",
+                        subtitle: "Chaque tirage est une pièce unique, produite artisanalement pour sublimer l'image.",
+                        craft_title: "Savoir-Faire",
+                        craft_text: "Impression Fine Art sur papier <1>Canson Infinity Platine Fibre Rag 310g</1>. Un rendu argentique exceptionnel et une longévité muséale.",
+                        explore_series: "Parcourir la collection",
+                        visualize: "Mise en situation",
+                        compare_finish: "Visualiser les formats et finitions",
+                        pricing_grid: "Tarifs & Finitions"
                     },
 
                 },
@@ -365,35 +375,6 @@ i18n
                         rights: 'Born Too Late',
                         prints: "The Workshop"
                     },
-                    prints: {
-                        seo_title: 'Workshop & Collection',
-                        seo_desc: 'Acquire an original Born Too Late print. Limited editions.',
-                        title: "The Workshop",
-                        subtitle: "Space dedicated to acquiring fine art prints. Each piece is produced on demand, ensuring particular attention to every detail.",
-                        signature_title: "Signature",
-                        signature_text: "<1>Signed and numbered</1> prints (Limited to 30 copies). Certificate of authenticity included.",
-                        fine_art_title: "Fine Art",
-                        fine_art_text: "Prints made on <1>Fine Art Hahnemühle</1> paper (Baryta or Photo Rag). These archival papers ensure exceptional black depth, absolute chromatic fidelity, and conservation > 100 years.",
-                        finish_title: "Finishes",
-                        finish_text: "Print only, Dibond mounting, or American Box. From A4 to 90x60cm format.",
-                        cta_title: "Acquire a Print",
-                        cta_text_price: "Collection accessible <1>from 90€</1> (Paper print only).",
-                        cta_text_custom: "As each project is unique, sales are made on a custom quote basis.",
-                        cta_button: "Finalize my order",
-                        view_on_wall: "View on wall",
-                        finishes_title: "The Finishes",
-                        currency: "Currency",
-                        pricing_grid_title: "Complete Pricing Grid",
-                        table_format: "Format",
-                        table_collection: "Collection",
-                        table_elegance: "Elegance",
-                        table_galerie: "Gallery",
-                        starting_from: "Starting from",
-                        shipping_france: "France",
-                        shipping_europe: "Europe",
-                        shipping_world: "World",
-                        shipping_quote: "On Quote (Large Formats)",
-                    },
                     wall: {
                         simulated_size: "Simulation",
                         close: "Close"
@@ -455,38 +436,79 @@ i18n
                     pricing: {
                         collection: {
                             label: "The Collection",
-                            description: "The pure artwork. Fine Art print on Canson Infinity Baryta paper. Delivered rolled, ready to frame.",
-                            features: {
-                                "0": "Canson Baryta Paper",
-                                "1": "Museum Quality",
-                                "2": "Signed & Numbered",
-                                "3": "Delivered rolled"
-                            }
+                            description: "The pure artwork. Fine Art print on Canson Infinity Platine Fibre Rag 310g. The purist's choice for an authentic analog look.",
+                            shipping: "Free Shipping (France)",
+                            features: [
+                                "Canson Platine 310g Paper",
+                                "Museum Quality & Satin",
+                                "Signed & Numbered (30 copies)",
+                                "Certificate of Authenticity"
+                            ]
                         },
                         elegance: {
-                            label: "The Elegance",
-                            description: "Timeless sobriety. Matte black aluminum framing by Nielsen Alpha.",
-                            features: {
-                                "0": "Nielsen Alpha Frame",
-                                "1": "Matte Black Aluminum",
-                                "2": "Ready to hang",
-                                "3": "Europe Shipping Only"
-                            }
+                            label: "The Elegance (Framed)",
+                            description: "The Gallery Look. Centered print with white margin (or full frame) in a Matte Black Aluminum Frame (Nielsen Alpha).",
+                            shipping: "Shipping Included (France)",
+                            features: [
+                                "Nielsen Alpha Black Frame",
+                                "Passe-partout / White Margin",
+                                "Ready to hang",
+                                "Glass Protection"
+                            ]
                         },
-                        galerie: {
-                            label: "The Gallery",
-                            description: "Total immersion. Mounted print floating in a black wooden American Box.",
-                            features: {
-                                "0": "Wooden American Box",
-                                "1": "Floating Effect",
-                                "2": "Luxury Finish",
-                                "3": "No Glass (0 Reflections)"
-                            }
+                        exception: {
+                            label: "The Exception (Shadow Box)",
+                            description: "The ultimate showcase. Mounted print floating in a black wooden American Box (Shadow Box). No glass for total immersion without reflections.",
+                            shipping: "Shipping Included (France)",
+                            features: [
+                                "Black Wood American Box",
+                                "Floating Effect (Mounted)",
+                                "No Glass (Zero Reflection)",
+                                "Luxury Finish"
+                            ]
                         }
                     },
-                    guarantee: {
-                        title: "Guarantee & Authenticity",
-                        text: "Each print is an original work, numbered and signed (limited to 30 copies). Certificate of authenticity included."
+                    acquisition: {
+                        selected_work: "Selected Work",
+                        limited_edition: "Limited edition, signed and numbered. Handcrafted by Picto Paris.",
+                        custom_request_label: "Specific request?",
+                        custom_request_btn: "Request a custom quote",
+                        cert_note: "* Your order includes the certificate of authenticity and the artist's signature.",
+                        choose_format: "Configure Print",
+                        view_wall: "View in room",
+                        proceed_payment: "Order Online",
+                        secure_payment: "100% Secure via Stripe",
+                        encrypted: "SSL Encrypted Transaction",
+                        variants: {
+                            "20x30": "20x30 cm",
+                            "30x45": "30x45 cm",
+                            "40x60": "40x60 cm",
+                            "60x90": "60x90 cm",
+                            "70x105": "70x105 cm",
+                            
+                            "30x40": "Framed 30x40 cm",
+                            "60x80": "Framed 60x80 cm",
+                            
+                            "24x36": "Shadow Box 24x36 cm",
+                            "50x75": "Shadow Box 50x75 cm",
+
+                            "detail_20x30": "(Image 20x30 cm)",
+                            "detail_24x36": "(Image 24x36 cm)",
+                            "detail_47x70": "(Image 47x70 cm)",
+                            "detail_full": "(Full Frame)",
+                        }
+                    },
+                    prints: {
+                        seo_title: 'Workshop & Collection',
+                        seo_desc: 'Acquire an original Born Too Late print. Limited editions.',
+                        title: "The Workshop",
+                        subtitle: "The print is the culmination of the photographic process. It is the moment when the virtual image becomes matter.",
+                        craft_title: "The Artisanal Gesture",
+                        craft_text: "Each print is made to order by our partner laboratory Picto Paris. We exclusively use <1>Canson Infinity Platine Fibre Rag 310g</1> paper.",
+                        explore_series: "Explore Series",
+                        visualize: "Visualize Formats",
+                        compare_finish: "Compare Nielsen Frame and Shadow Box",
+                        pricing_grid: "Pricing Grid & Finishes"
                     },
 
                 },

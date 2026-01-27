@@ -1,9 +1,9 @@
 import { useEffect, useCallback, useState, useRef } from 'react';
 import { motion, useAnimation, type PanInfo } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import type { Photo } from '../data/photos';
 import { useTranslation } from 'react-i18next';
+import AcquisitionModal from './AcquisitionModal';
 
 interface LightboxProps {
     photo: Photo;
@@ -14,13 +14,13 @@ interface LightboxProps {
 
 const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
     const { t, i18n } = useTranslation();
-    const navigate = useNavigate();
     const currentLang = i18n.language.split('-')[0] as 'fr' | 'en';
     const controls = useAnimation();
 
     // --- FIX 1: UseRef pour un verrouillage immédiat (Synchrone) ---
     const isNavigatingRef = useRef(false);
     const [showInfo, setShowInfo] = useState(false);
+    const [isAcquisitionOpen, setIsAcquisitionOpen] = useState(false);
 
     const handleNavigate = useCallback((direction: 'next' | 'prev') => {
         // Si déjà en cours de navigation, on bloque immédiatement
@@ -155,13 +155,11 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                     )}
 
                     {/* Acquisition Link */}
+                    {/* Acquisition Link */}
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
-                            onClose();
-                            // Utilisation de window.location pour forcer la navigation si besoin, ou useNavigate si disponible.
-                            // Ici on navigue via window.location pour simplicité immédiate ou via un callback si on avait useNavigate.
-                            navigate(`/contact?subject=acquisition&photo=${encodeURIComponent(photo.title)}`);
+                            setIsAcquisitionOpen(true);
                         }}
                         className="mt-8 text-xs font-space-mono text-silver/50 hover:text-darkroom-red transition-colors uppercase tracking-widest underline decoration-1 underline-offset-4 py-2"
                     >
@@ -212,10 +210,9 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                                     <button
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            onClose();
-                                            navigate(`/contact?subject=acquisition&photo=${encodeURIComponent(photo.title)}`);
+                                            setIsAcquisitionOpen(true);
                                         }}
-                                        className="text-xs font-space-mono text-silver/50 hover:text-darkroom-red transition-colors uppercase tracking-widest underline decoration-1 underline-offset-4 py-3 px-4"
+                                        className="bg-white text-black px-8 py-3 rounded-full font-medium hover:bg-gray-200 transition-colors uppercase tracking-widest text-xs"
                                     >
                                         {t('lightbox.collect_button')}
                                     </button>
@@ -227,6 +224,13 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                 </div>
 
             </div>
+
+            <AcquisitionModal
+                isOpen={isAcquisitionOpen}
+                onClose={() => setIsAcquisitionOpen(false)}
+                photoTitle={photo.title || "Tirage d'Art"}
+                imageSrc={photo.url}
+            />
         </motion.div>
     );
 };
