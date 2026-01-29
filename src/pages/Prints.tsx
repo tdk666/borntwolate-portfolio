@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +10,12 @@ import WallPreview from '../components/WallPreview';
 export default function Prints() {
     const { t } = useTranslation();
     const [isWallPreviewOpen, setIsWallPreviewOpen] = useState(false);
+
+    // Safety unlock for scrolling
+    useEffect(() => {
+        document.body.style.overflow = '';
+        return () => { document.body.style.overflow = ''; };
+    }, []);
 
     // Helper to translate dynamic keys
     const getTranslatedRange = (key: string) => {
