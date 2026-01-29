@@ -35,13 +35,13 @@ const PhotographeArgentique = () => {
                 "@type": "Product",
                 "name": "Tirage d'Art Argentique Borntwolate",
                 "brand": { "@type": "Brand", "name": "Borntwolate" },
-                "description": "Tirage d'art issu de négatif argentique sur papier Canson Infinity Baryta. Édition limitée.",
+                "description": "Tirage d'art issu de négatif argentique sur papier Canson Infinity Platine Fibre Rag. Édition limitée.",
                 "image": "https://borntwolate.com/images/puglia/vespa.jpg",
-                "material": "Canson Infinity Baryta 310g",
+                "material": "Canson Infinity Platine Fibre Rag 310g",
                 "offers": {
                     "@type": "Offer",
                     "availability": "https://schema.org/InStock",
-                    "price": "90.00",
+                    "price": "45.00",
                     "priceCurrency": "EUR"
                 }
             }

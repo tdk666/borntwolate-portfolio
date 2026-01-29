@@ -47,7 +47,7 @@ export const photographeArgentiqueData = {
             items: [
                 { label: "La Collection", desc: "L'œuvre pure sur papier d'art, livrée roulée." },
                 { label: "L'Élégance", desc: "Encadrement aluminium Nielsen Alpha, sobre et moderne." },
-                { label: "La Galerie", desc: "La finition ultime en Caisse Américaine, pour une présentation digne des musées." }
+                { label: "L'Exception", desc: "La finition ultime en Caisse Américaine, pour une présentation digne des musées." }
             ],
             details: [
                 {
@@ -55,8 +55,8 @@ export const photographeArgentiqueData = {
                     text: "La confusion est fréquente. Ces images naissent de la chimie (le négatif argentique), mais sont magnifiées par la technologie moderne. Le photographe pratique un flux hybride : le négatif est scanné en très haute définition pour préserver son grain originel, puis tiré en jet d'encre pigmentaire (Giclée print). Cette technique, validée par les galeries, permet d'obtenir une précision colorimétrique absolue tout en gardant l'âme de la pellicule. C'est l'alliance parfaite entre le charme de l'ancien et la précision contemporaine."
                 },
                 {
-                    title: "Le choix du papier Canson Infinity Baryta",
-                    text: "Pour garantir une qualité muséale, le choix s'est porté exclusivement sur le papier Canson Infinity Baryta. Ce support prestigieux offre des noirs profonds, une main exceptionnelle et une texture qui rappelle les papiers barytés traditionnels de la chambre noire. Pourquoi ce choix ? Pour la pérennité. Un tirage pigmentaire sur ce papier, réalisé par les artisans de chez Picto, offre une garantie de conservation supérieure à 100 ans (norme ISO 9706). C'est le support par excellence pour la collection et l'investissement artistique."
+                    title: "Le choix du papier Canson Infinity Platine Fibre Rag",
+                    text: "Pour garantir une qualité muséale, le choix s'est porté exclusivement sur le papier Canson Infinity Platine Fibre Rag 310g. Ce support prestigieux offre des noirs profonds, une main exceptionnelle et une texture qui rappelle les papiers barytés traditionnels de la chambre noire. Pourquoi ce choix ? Pour la pérennité. Un tirage pigmentaire sur ce papier, réalisé par les artisans de chez Picto, offre une garantie de conservation supérieure à 100 ans (norme ISO 9706). C'est le support par excellence pour la collection et l'investissement artistique."
                 }
             ]
         },
@@ -78,7 +78,7 @@ export const photographeArgentiqueData = {
             items: [
                 {
                     q: "Est-il possible de commander un format sur mesure ?",
-                    a: "Oui. La boutique propose les standards (30x45, 40x60, 60x90), mais des formats personnalisés peuvent être réalisés sur demande via le formulaire de contact, toujours sur papier Canson Infinity Baryta."
+                    a: "Oui. La boutique propose les standards (20x30, 30x45, 40x60, 60x90, 70x105), mais des formats personnalisés peuvent être réalisés sur demande via le formulaire de contact, toujours sur papier Canson Infinity Platine Fibre Rag."
                 },
                 {
                     q: "Quels sont les délais pour recevoir une œuvre ?",
@@ -150,7 +150,7 @@ export const photographeArgentiqueData = {
             items: [
                 { label: "The Collection", desc: "Pure work on art paper, delivered rolled." },
                 { label: "The Elegance", desc: "Nielsen Alpha aluminum framing, sober and modern." },
-                { label: "The Gallery", desc: "The ultimate American Box finish, for a presentation worthy of museums." }
+                { label: "The Exception", desc: "The ultimate American Box finish, for a presentation worthy of museums." }
             ],
             details: [
                 {
@@ -158,8 +158,8 @@ export const photographeArgentiqueData = {
                     text: "Confusion is common. The images are born from chemistry (the analog negative) but are magnified by modern technology. The photographer practices a hybrid flow: the negative is scanned in very high definition to preserve its original grain, then printed in pigment inkjet (Giclée print). This technique, validated by galleries, allows absolute colorimetric precision while keeping the film's soul. It is the perfect alliance between the charm of the old and temporary precision."
                 },
                 {
-                    title: "The choice of Canson Infinity Baryta paper",
-                    text: "To guarantee museum quality, Borntwolate exclusively selected Canson Infinity Baryta paper. This prestigious support offers deep blacks, exceptional handle, and a texture recalling traditional darkroom baryta papers. Why this choice? For longevity. A pigment print on this paper, made by Picto artisans, offers a conservation guarantee superior to 100 years (ISO 9706 standard). It is the support par excellence for collection and artistic investment."
+                    title: "The choice of Canson Infinity Platine Fibre Rag paper",
+                    text: "To guarantee museum quality, Borntwolate exclusively selected Canson Infinity Platine Fibre Rag 310g paper. This prestigious support offers deep blacks, exceptional handle, and a texture recalling traditional darkroom baryta papers. Why this choice? For longevity. A pigment print on this paper, made by Picto artisans, offers a conservation guarantee superior to 100 years (ISO 9706 standard). It is the support par excellence for collection and artistic investment."
                 }
             ]
         },
@@ -181,7 +181,7 @@ export const photographeArgentiqueData = {
             items: [
                 {
                     q: "Is it possible to order a custom size?",
-                    a: "Yes. The shop offers standards (30x45, 40x60, 60x90), but custom sizes can be created on request via the contact form, always on Canson Infinity Baryta paper."
+                    a: "Yes. The shop offers standards (20x30, 30x45, 40x60, 60x90, 70x105), but custom sizes can be created on request via the contact form, always on Canson Infinity Platine Fibre Rag paper."
                 },
                 {
                     q: "What are the lead times to receive a work?",
