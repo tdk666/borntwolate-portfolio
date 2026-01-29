@@ -1,18 +1,25 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
-import { useState, useEffect } from 'react';
-import { Menu, X, Instagram, Moon, Sun } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Menu, X, Instagram, Moon, Sun, Search } from 'lucide-react';
+import { useSearch } from '../context/SearchContext';
 import { useDarkroom } from '../context/DarkroomContext';
 import { useSound } from '../hooks/useSound';
+// ... previous imports
 
 const Navbar = () => {
     const location = useLocation();
     const { t, i18n } = useTranslation();
     const { isDarkroom, toggleDarkroom } = useDarkroom();
+    const { openSearch } = useSearch();
     const [isOpen, setIsOpen] = useState(false);
     const { scrollY } = useScroll();
     const [hidden, setHidden] = useState(false);
+
+    // Search State
+    const [isSearchVisible, setIsSearchVisible] = useState(false);
+    const searchInputRef = useRef<HTMLInputElement>(null);
 
     useMotionValueEvent(scrollY, "change", (latest) => {
         const previous = scrollY.getPrevious() || 0;
@@ -25,6 +32,16 @@ const Navbar = () => {
     useEffect(() => { document.body.style.overflow = isOpen ? 'hidden' : 'unset'; }, [isOpen]);
 
     const toggleLang = () => i18n.changeLanguage(i18n.language === 'fr' ? 'en' : 'fr');
+
+    // Search Handler
+    const handleSearchSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (searchInputRef.current?.value) {
+            openSearch(searchInputRef.current.value);
+            searchInputRef.current.value = '';
+            setIsSearchVisible(false); // Close input after search
+        }
+    };
 
     // SOUND DESIGN
     // SFX for navigation interaction
@@ -57,6 +74,42 @@ const Navbar = () => {
 
                 {/* DESKTOP NAVIGATION */}
                 <div className="hidden md:flex items-center gap-6 font-space-mono text-sm tracking-widest uppercase drop-shadow-lg">
+                    {/* Search Input Transition */}
+                    <div className="relative flex items-center">
+                        <AnimatePresence>
+                            {isSearchVisible && (
+                                <motion.form
+                                    initial={{ width: 0, opacity: 0 }}
+                                    animate={{ width: 200, opacity: 1 }}
+                                    exit={{ width: 0, opacity: 0 }}
+                                    onSubmit={handleSearchSubmit}
+                                    className="overflow-hidden mr-2"
+                                >
+                                    <input
+                                        ref={searchInputRef}
+                                        type="text"
+                                        placeholder="Search..."
+                                        className="w-full bg-white/10 border border-white/20 rounded-full px-4 py-1 text-xs text-white placeholder:text-white/50 focus:outline-none focus:border-white/50"
+                                        autoFocus
+                                        onBlur={() => !searchInputRef.current?.value && setIsSearchVisible(false)}
+                                    />
+                                </motion.form>
+                            )}
+                        </AnimatePresence>
+                        <button
+                            onClick={() => {
+                                setIsSearchVisible(!isSearchVisible);
+                                if (!isSearchVisible) setTimeout(() => searchInputRef.current?.focus(), 100);
+                            }}
+                            className="hover:text-warm-sepia transition-colors drop-shadow-lg"
+                            aria-label="Rechercher"
+                        >
+                            <Search size={20} />
+                        </button>
+                    </div>
+
+                    <div className="w-px h-6 bg-white/20 mx-2" />
+
                     {links.map((link) => {
                         const isActive = location.pathname === link.path;
                         return (
