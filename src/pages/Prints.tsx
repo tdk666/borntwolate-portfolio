@@ -24,15 +24,22 @@ export default function Prints() {
         style.innerHTML = `
             html, body {
                 overflow-y: auto !important;
-                overflow-x: hidden !important;
-                position: static !important;
+                overflow-x: hidden; /* Keep x hidden for design */
                 height: auto !important;
                 min-height: 100% !important;
+                position: static !important;
+            }
+            #root {
+                height: auto !important;
+                overflow: visible !important;
+                min-height: 100vh;
             }
         `;
         document.head.appendChild(style);
 
         return () => {
+            // Cleanup if needed, but for this critical fix we might leave it if user navigates away? 
+            // No, always clean up to avoid breaking other pages.
             if (document.head.contains(style)) {
                 document.head.removeChild(style);
             }
