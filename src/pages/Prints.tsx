@@ -11,11 +11,29 @@ export default function Prints() {
     const { t } = useTranslation();
     const [isWallPreviewOpen, setIsWallPreviewOpen] = useState(false);
 
-    // Safety unlock for scrolling
+    // Force unlock scrolling using a style tag (only when modal is closed)
     useEffect(() => {
+        if (isWallPreviewOpen) return;
+
+        // Immediate clean
         document.body.style.overflow = '';
-        return () => { document.body.style.overflow = ''; };
-    }, []);
+
+        // Persistent enforcement
+        const style = document.createElement('style');
+        style.innerHTML = `
+            body {
+                overflow-y: auto !important;
+                position: static !important;
+            }
+        `;
+        document.head.appendChild(style);
+
+        return () => {
+            if (document.head.contains(style)) {
+                document.head.removeChild(style);
+            }
+        };
+    }, [isWallPreviewOpen]);
 
     // Helper to translate dynamic keys
     const getTranslatedRange = (key: string) => {
