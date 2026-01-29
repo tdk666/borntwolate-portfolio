@@ -17,13 +17,17 @@ export default function Prints() {
 
         // Immediate clean
         document.body.style.overflow = '';
+        document.documentElement.style.overflow = ''; // Also clean html tag
 
         // Persistent enforcement
         const style = document.createElement('style');
         style.innerHTML = `
-            body {
+            html, body {
                 overflow-y: auto !important;
+                overflow-x: hidden !important;
                 position: static !important;
+                height: auto !important;
+                min-height: 100% !important;
             }
         `;
         document.head.appendChild(style);
