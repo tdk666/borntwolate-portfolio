@@ -162,7 +162,7 @@ i18n
                             subtitle: "Applicables aux ventes de tirages d'art.",
                             article1: {
                                 title: "4.1 Commande",
-                                text: "Les produits sont des œuvres photographiques originales. La vente se fait \"sur devis\". Le contrat est conclu à l'acceptation du devis et réception du paiement."
+                                text: "Les produits sont des œuvres photographiques originales. La commande s'effectue soit par paiement direct via lien sécurisé (pour la Collection), soit sur devis (pour les formats spécifiques). Le contrat est conclu à la réception du paiement."
                             },
                             article2: {
                                 title: "4.2 Droit de Rétractation",
@@ -412,7 +412,7 @@ i18n
                             subtitle: "Applicable to art print sales.",
                             article1: {
                                 title: "4.1 Order",
-                                text: "Products are original photographic works. Sales are 'by quote'. The contract is concluded upon acceptance of the quote and receipt of payment."
+                                text: "Products are original photographic works. Orders are made either via direct secure payment link (for The Collection) or by quote (for specific formats). The contract is concluded upon receipt of payment."
                             },
                             article2: {
                                 title: "4.2 Right of Withdrawal",
