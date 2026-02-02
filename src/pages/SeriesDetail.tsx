@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import SeriesNavigation from '../components/SeriesNavigation';
 import { useDarkroom } from '../context/DarkroomContext';
 import { FadeIn } from '../components/animations/FadeIn';
+import { generateSeriesSchema } from '../utils/schemaGenerator';
 
 const SeriesDetail = () => {
     const { id } = useParams<{ id: string }>();
@@ -78,21 +79,8 @@ const SeriesDetail = () => {
     const mobileFactor = 120;
     const mobileSize = `${mobileFactor / longestLineChars}vw`;
 
-    // Création du Schema.org "ImageGallery" dynamique
-    const gallerySchema = {
-        "@type": "ImageGallery",
-        "name": series.title,
-        "description": series.description[currentLang],
-        "author": { "@type": "Person", "name": "Théophile Dequecker" },
-        "locationCreated": { "@type": "Place", "name": series.title }, // Fallback to title as location is not in data
-        "image": series.photos.map(photo => ({
-            "@type": "ImageObject",
-            "contentUrl": `https://borntwolate.com${photo.url}`,
-            "name": photo.alt_accessible?.[currentLang] || photo.title,
-            "description": photo.caption_artistic?.[currentLang] || photo.title,
-            "author": "Théophile Dequecker"
-        }))
-    };
+    // Génération du Schema.org via Factory
+    const seriesSchema = generateSeriesSchema(series, currentLang);
 
     return (
         <div key={id} className="min-h-screen pt-24 px-4 md:px-8 pb-12 transition-colors duration-1000 ease-in-out">
@@ -102,7 +90,7 @@ const SeriesDetail = () => {
                 image={series.coverImage}
                 url={`/series/${series.id}`}
                 type="article"
-                schema={gallerySchema}
+                structuredData={seriesSchema}
             />
 
             {/* LATERAL NAVIGATION (Disabled when Lightbox is open) */}

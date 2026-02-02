@@ -9,6 +9,7 @@ interface SEOProps {
     schema?: object;
     robots?: string;
     keywords?: string;
+    structuredData?: object;
 }
 
 export const SEO = ({
@@ -19,7 +20,8 @@ export const SEO = ({
     type = 'website',
     schema,
     robots = 'index, follow',
-    keywords
+    keywords,
+    structuredData
 }: SEOProps) => {
     const siteTitle = 'Born Too Late';
     const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
@@ -59,12 +61,14 @@ export const SEO = ({
         ]
     };
 
-    const finalSchema = schema
+    const combinedSchema = structuredData || schema;
+
+    const finalSchema = combinedSchema
         ? {
             "@context": "https://schema.org",
             "@graph": [
                 ...baseSchema["@graph"],
-                ...((schema as { "@graph"?: unknown[] })["@graph"] || [schema])
+                ...((combinedSchema as { "@graph"?: unknown[] })["@graph"] || [combinedSchema])
             ]
         }
         : baseSchema;
