@@ -61,7 +61,7 @@ function App() {
       <div
         className={`min-h-screen transition-colors duration-700 font-sans selection:bg-darkroom-red selection:text-off-white ${isDarkroom ? 'darkroom-mode' : ''} flex flex-col`}
       >
-        <div className="film-grain"></div>
+        <div className="film-grain" style={{ backgroundImage: 'url("/assets/noise.svg")' }}></div>
         <ScrollToTop />
         <Navbar />
         <main className="flex-grow">

@@ -8,6 +8,7 @@ interface SEOProps {
     type?: string;
     schema?: object;
     robots?: string;
+    keywords?: string;
 }
 
 export const SEO = ({
@@ -17,7 +18,8 @@ export const SEO = ({
     url = '/',
     type = 'website',
     schema,
-    robots = 'index, follow'
+    robots = 'index, follow',
+    keywords
 }: SEOProps) => {
     const siteTitle = 'Born Too Late';
     const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
@@ -75,6 +77,7 @@ export const SEO = ({
             <meta name="author" content="Théophile Dequecker" />
             <link rel="canonical" href={absoluteUrl} />
             <meta name="robots" content={robots} />
+            {keywords && <meta name="keywords" content={keywords} />}
 
             {/* --- FACEBOOK / OPEN GRAPH --- */}
             <meta property="og:site_name" content="Born Too Late" />

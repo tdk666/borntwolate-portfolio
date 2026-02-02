@@ -20,17 +20,30 @@ const pages = [
   '/photographe-argentique'
 ];
 
-// 2. Liste manuelle des IDs de séries
-const seriesIds = [
-  'polish-hike',
-  'white-mounts',
-  'puglia-famiglia',
-  'retro-mountain',
-  'winter-in-the-fruit',
-  'psychadelic-mtl',
-  'canadian-evasion',
-  'mauvais-garcons'
-];
+// 2. Extraction dynamique des IDs de séries depuis src/data/photos.ts
+const photosFilePath = path.join(__dirname, '../src/data/photos.ts');
+let seriesIds = [];
+
+try {
+  const fileContent = fs.readFileSync(photosFilePath, 'utf-8');
+  // Regex pour trouver les IDs de séries (format: id: 'nom-serie')
+  // On cherche spécifiquement les IDs qui sont des chaînes de caractères (les IDs de photos sont des nombres)
+  const regex = /id:\s*'([a-z0-9-]+)'/g;
+  let match;
+  while ((match = regex.exec(fileContent)) !== null) {
+    // On évite les doublons si jamais
+    if (!seriesIds.includes(match[1])) {
+      seriesIds.push(match[1]);
+    }
+  }
+} catch (error) {
+  console.error('❌ Erreur lors de la lecture de photos.ts:', error);
+  // Fallback si échec
+  seriesIds = [
+    'polish-hike', 'white-mounts', 'puglia-famiglia', 'retro-mountain',
+    'winter-in-the-fruit', 'psychadelic-mtl', 'canadian-evasion', 'mauvais-garcons'
+  ];
+}
 
 // Génération du XML
 const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
