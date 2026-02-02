@@ -5,6 +5,7 @@ import './i18n';
 import App from './App.tsx'
 import { DarkroomProvider } from './context/DarkroomContext';
 import { CurrencyProvider } from './context/CurrencyContext';
+import { SearchProvider } from './context/SearchContext';
 import { HelmetProvider } from 'react-helmet-async';
 
 if (import.meta.env.PROD) {
@@ -20,7 +21,9 @@ createRoot(document.getElementById('root')!).render(
     <HelmetProvider>
       <DarkroomProvider>
         <CurrencyProvider>
-          <App />
+          <SearchProvider>
+            <App />
+          </SearchProvider>
         </CurrencyProvider>
       </DarkroomProvider>
     </HelmetProvider>

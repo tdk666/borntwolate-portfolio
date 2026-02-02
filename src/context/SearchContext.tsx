@@ -15,6 +15,16 @@ interface SearchContextType {
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
+// Fonction utilitaire pour ignorer les accents et la casse
+// Ex: "Montréal" -> "montreal"
+const normalizeText = (text: string) => {
+    return text
+        .normalize("NFD") // Décompose les caractères (é -> e + ´)
+        .replace(/[\u0300-\u036f]/g, "") // Supprime les diacritiques (accents)
+        .toLowerCase()
+        .trim();
+};
+
 export const SearchProvider = ({ children }: { children: ReactNode }) => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchResults, setSearchResults] = useState<Photo[]>([]);
@@ -40,12 +50,12 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
     const openSearch = (query: string) => {
         if (!query.trim()) return;
 
-        const q = query.toLowerCase().trim();
+        const q = normalizeText(query);
         const results = enrichedPhotos.filter(photo => {
-            const titleMatch = photo.title.toLowerCase().includes(q);
-            const seriesMatch = photo._meta.seriesTitle.toLowerCase().includes(q);
-            const yearMatch = photo._meta.year.toLowerCase().includes(q);
-            const locMatch = photo._meta.location.toLowerCase().includes(q);
+            const titleMatch = normalizeText(photo.title).includes(q);
+            const seriesMatch = normalizeText(photo._meta.seriesTitle).includes(q);
+            const yearMatch = normalizeText(photo._meta.year).includes(q);
+            const locMatch = normalizeText(photo._meta.location).includes(q);
             // Optional: Search in description/captions if needed, keeping it focused for now
 
             return titleMatch || seriesMatch || yearMatch || locMatch;
