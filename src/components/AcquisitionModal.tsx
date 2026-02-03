@@ -103,7 +103,7 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
           </div>
 
           {/* DROITE : Configurateur */}
-          <div className="w-full md:w-2/3 flex flex-col h-full bg-[#0a0a0a] relative">
+          <div className="w-full md:w-2/3 flex flex-col flex-1 md:h-full bg-[#0a0a0a] relative min-h-0">
 
             {/* Scrollable Content Area */}
             <div className="flex-1 overflow-y-auto p-6 md:p-8 overscroll-contain">
