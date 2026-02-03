@@ -167,61 +167,64 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                     </button>
                 </div>
 
-                <div className="md:hidden absolute bottom-0 left-0 w-full z-[80] pointer-events-none">
-                    <motion.div
-                        drag="y"
-                        dragConstraints={{ top: -300, bottom: 0 }}
-                        dragElastic={0.2}
-                        onDragEnd={(_, info) => {
-                            if (info.offset.y < -50) setShowInfo(true);
-                            else if (info.offset.y > 50) setShowInfo(false);
-                        }}
-                        animate={{ y: showInfo ? -20 : 0 }}
-                        className="pointer-events-auto"
-                    >
-                        <div
-                            className="bg-gradient-to-t from-black via-black/80 to-transparent pt-16 pb-6 px-6 cursor-pointer flex flex-col items-center"
-                            onClick={() => setShowInfo(!showInfo)}
-                        >
-                            {!showInfo && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                                    className="flex flex-col items-center gap-2 mb-2"
-                                >
-                                    <div className="w-12 h-1 bg-white/30 rounded-full" />
-                                    <span className="text-[10px] text-white/50 uppercase tracking-widest font-space-mono">{t('lightbox.scan')}</span>
-                                </motion.div>
-                            )}
-                            <div className="w-full flex justify-between items-end">
-                                <h3 className="text-xl font-mono text-off-white uppercase tracking-widest leading-none drop-shadow-md">{photo.title}</h3>
-                            </div>
-                        </div>
-
+                {/* Hide mobile info when Acquisition Modal is open to prevent scroll conflict */}
+                {!isAcquisitionOpen && (
+                    <div className="md:hidden absolute bottom-0 left-0 w-full z-[80] pointer-events-none">
                         <motion.div
-                            initial={false}
-                            animate={{ height: showInfo ? 'auto' : 0, opacity: showInfo ? 1 : 0 }}
-                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                            className="bg-black/95 backdrop-blur-xl px-6 overflow-hidden border-t border-white/10 pb-12"
+                            drag="y"
+                            dragConstraints={{ top: -300, bottom: 0 }}
+                            dragElastic={0.2}
+                            onDragEnd={(_, info) => {
+                                if (info.offset.y < -50) setShowInfo(true);
+                                else if (info.offset.y > 50) setShowInfo(false);
+                            }}
+                            animate={{ y: showInfo ? -20 : 0 }}
+                            className="pointer-events-auto"
                         >
-                            <div className="py-8 space-y-6">
-                                {photo.technical_info && <p className="font-mono text-xs text-darkroom-red uppercase tracking-widest">{photo.technical_info}</p>}
-                                {photo.caption_artistic && <p className="font-inter font-light text-sm text-silver leading-relaxed text-justify whitespace-pre-line">{getLocalizedText(photo.caption_artistic)}</p>}
-                                <div className="pt-4 flex flex-col items-center gap-4">
-                                    <button
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            setIsAcquisitionOpen(true);
-                                        }}
-                                        className="bg-white text-black px-8 py-3 rounded-full font-medium hover:bg-gray-200 transition-colors uppercase tracking-widest text-xs"
+                            <div
+                                className="bg-gradient-to-t from-black via-black/80 to-transparent pt-16 pb-6 px-6 cursor-pointer flex flex-col items-center"
+                                onClick={() => setShowInfo(!showInfo)}
+                            >
+                                {!showInfo && (
+                                    <motion.div
+                                        initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                                        className="flex flex-col items-center gap-2 mb-2"
                                     >
-                                        {t('lightbox.collect_button')}
-                                    </button>
-                                    <button onClick={() => setShowInfo(false)} className="text-xs text-white/30 uppercase tracking-widest hover:text-white py-2 px-4">{t('lightbox.close')}</button>
+                                        <div className="w-12 h-1 bg-white/30 rounded-full" />
+                                        <span className="text-[10px] text-white/50 uppercase tracking-widest font-space-mono">{t('lightbox.scan')}</span>
+                                    </motion.div>
+                                )}
+                                <div className="w-full flex justify-between items-end">
+                                    <h3 className="text-xl font-mono text-off-white uppercase tracking-widest leading-none drop-shadow-md">{photo.title}</h3>
                                 </div>
                             </div>
+
+                            <motion.div
+                                initial={false}
+                                animate={{ height: showInfo ? 'auto' : 0, opacity: showInfo ? 1 : 0 }}
+                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                                className="bg-black/95 backdrop-blur-xl px-6 overflow-hidden border-t border-white/10 pb-12"
+                            >
+                                <div className="py-8 space-y-6">
+                                    {photo.technical_info && <p className="font-mono text-xs text-darkroom-red uppercase tracking-widest">{photo.technical_info}</p>}
+                                    {photo.caption_artistic && <p className="font-inter font-light text-sm text-silver leading-relaxed text-justify whitespace-pre-line">{getLocalizedText(photo.caption_artistic)}</p>}
+                                    <div className="pt-4 flex flex-col items-center gap-4">
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                setIsAcquisitionOpen(true);
+                                            }}
+                                            className="bg-white text-black px-8 py-3 rounded-full font-medium hover:bg-gray-200 transition-colors uppercase tracking-widest text-xs"
+                                        >
+                                            {t('lightbox.collect_button')}
+                                        </button>
+                                        <button onClick={() => setShowInfo(false)} className="text-xs text-white/30 uppercase tracking-widest hover:text-white py-2 px-4">{t('lightbox.close')}</button>
+                                    </div>
+                                </div>
+                            </motion.div>
                         </motion.div>
-                    </motion.div>
-                </div>
+                    </div>
+                )}
 
             </div>
 
