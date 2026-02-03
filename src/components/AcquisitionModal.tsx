@@ -62,7 +62,7 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
         <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={onClose} />
 
         <FadeIn
-          className="relative w-full md:max-w-4xl bg-[#0a0a0a] md:border border-white/10 md:rounded-2xl shadow-2xl flex flex-col md:flex-row h-[100dvh] md:h-auto md:max-h-[85vh] overflow-hidden"
+          className="relative w-full md:max-w-4xl bg-[#0a0a0a] md:border border-white/10 md:rounded-2xl shadow-2xl flex flex-col md:flex-row h-full md:h-auto md:max-h-[85vh] overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
 
@@ -174,25 +174,27 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
             </div>
 
             {/* STICKY FOOTER ACTION */}
-            <div className="border-t border-white/10 p-4 md:p-8 bg-[#0a0a0a]/95 backdrop-blur-sm z-20 pb-safe md:pb-8">
+            <div className="border-t border-white/10 p-4 md:p-8 bg-[#0a0a0a] z-50 pb-8 md:pb-8 flex-shrink-0">
 
-              <div className="flex justify-between items-center mb-4">
-                <span className="text-white/50 text-xs hidden md:inline">{translatedCurrentRange.shipping || currentRange.shipping_text}</span>
+              <div className="flex flex-col gap-3 mb-4">
 
-                <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
-                  {/* Mobile Shipping Info (Compact) */}
-                  <div className="flex gap-2 items-center flex-1 md:hidden">
-                    <ShieldCheck className="w-4 h-4 text-white/40" />
-                    <span className="text-[10px] text-white/40 truncate">{t('acquisition.secure_payment')}</span>
+                {/* Top Row: Shipping & Secure (Mobile Combined) */}
+                <div className="flex justify-between items-center w-full">
+                  <div className="flex items-center gap-2 text-white/50 text-xs">
+                    <ShieldCheck className="w-4 h-4" />
+                    <span className="truncate">{translatedCurrentRange.shipping || currentRange.shipping_text}</span>
                   </div>
+                </div>
 
+                {/* Second Row: Currency & Price */}
+                <div className="flex justify-between items-end w-full">
                   {/* Currency Toggles */}
-                  <div className="flex gap-1 bg-white/5 rounded-lg p-1 h-fit">
+                  <div className="flex gap-1 bg-white/10 rounded-lg p-1 h-fit">
                     {(['EUR', 'USD', 'GBP'] as const).map((curr) => (
                       <button
                         key={curr}
                         onClick={() => setCurrency(curr)}
-                        className={`px-2 py-1 rounded text-[10px] font-medium transition-colors ${currency === curr
+                        className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${currency === curr
                           ? 'bg-white text-black'
                           : 'text-white/40 hover:text-white'
                           }`}
@@ -201,7 +203,17 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
                       </button>
                     ))}
                   </div>
+
+                  <div className="text-right">
+                    <span className="text-3xl font-serif text-white block leading-none">{formatPrice(currentVariant.price)}</span>
+                    {currency !== 'EUR' && (
+                      <span className="text-[10px] text-white/40 block mt-1">
+                        ≈ {currentVariant.price} €
+                      </span>
+                    )}
+                  </div>
                 </div>
+
               </div>
 
               <a
@@ -224,7 +236,6 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
                 }}
               >
                 <span>{isLoading ? t('acquisition.redirecting') : t('acquisition.proceed_payment')}</span>
-                {!isLoading && <span className="text-base font-normal opacity-80 ml-1"> | {formatPrice(currentVariant.price)}</span>}
                 {!isLoading && <ArrowRight className="w-5 h-5 ml-1" />}
               </a>
             </div>
