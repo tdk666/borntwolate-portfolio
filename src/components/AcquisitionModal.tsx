@@ -62,7 +62,7 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
         <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={onClose} />
 
         <FadeIn
-          className="relative w-full md:max-w-4xl bg-[#0a0a0a] md:border border-white/10 md:rounded-2xl shadow-2xl flex flex-col md:flex-row h-full md:h-auto md:max-h-[85vh] overflow-hidden"
+          className="relative w-full md:max-w-4xl bg-[#0a0a0a] md:border border-white/10 md:rounded-2xl shadow-2xl flex flex-col md:flex-row h-[100dvh] md:h-auto md:max-h-[85vh] overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
 
@@ -174,7 +174,7 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
             </div>
 
             {/* STICKY FOOTER ACTION */}
-            <div className="border-t border-white/10 p-4 md:p-8 bg-[#0a0a0a] z-50 pb-8 md:pb-8 flex-shrink-0">
+            <div className="border-t border-white/10 p-4 md:p-8 bg-[#0a0a0a] z-50 pb-[calc(1rem+env(safe-area-inset-bottom,20px))] md:pb-8 flex-shrink-0">
 
               <div className="flex flex-col gap-3 mb-4">
 
