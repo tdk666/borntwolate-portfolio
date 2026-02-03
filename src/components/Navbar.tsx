@@ -20,6 +20,7 @@ const Navbar = () => {
     // Search State
     const [isSearchVisible, setIsSearchVisible] = useState(false);
     const searchInputRef = useRef<HTMLInputElement>(null);
+    const mobileSearchInputRef = useRef<HTMLInputElement>(null);
 
     useMotionValueEvent(scrollY, "change", (latest) => {
         const previous = scrollY.getPrevious() || 0;
@@ -36,9 +37,11 @@ const Navbar = () => {
     // Search Handler
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (searchInputRef.current?.value) {
-            openSearch(searchInputRef.current.value);
-            searchInputRef.current.value = '';
+        const term = searchInputRef.current?.value || mobileSearchInputRef.current?.value;
+        if (term) {
+            openSearch(term);
+            if (searchInputRef.current) searchInputRef.current.value = '';
+            if (mobileSearchInputRef.current) mobileSearchInputRef.current.value = '';
             setIsSearchVisible(false); // Close input after search
         }
     };
@@ -149,9 +152,45 @@ const Navbar = () => {
                     </button>
                 </div>
 
-                <button onClick={() => setIsOpen(!isOpen)} aria-label="Ouvrir le menu de navigation" className="md:hidden z-50 p-2 -mr-2 text-off-white drop-shadow-lg">
-                    {isOpen ? <X size={28} /> : <Menu size={28} />}
-                </button>
+                {/* MOBILE NAVIGATION CONTROLS */}
+                <div className="flex items-center gap-4 md:hidden z-50">
+                    {/* Mobile Search */}
+                    <div className="relative flex items-center">
+                        <AnimatePresence>
+                            {isSearchVisible && (
+                                <motion.form
+                                    initial={{ width: 0, opacity: 0 }}
+                                    animate={{ width: 140, opacity: 1 }}
+                                    exit={{ width: 0, opacity: 0 }}
+                                    onSubmit={handleSearchSubmit}
+                                    className="overflow-hidden mr-2"
+                                >
+                                    <input
+                                        ref={mobileSearchInputRef}
+                                        type="text"
+                                        placeholder="Search..."
+                                        className="w-full bg-black/50 backdrop-blur-md border border-white/20 rounded-full px-3 py-1 text-xs text-white placeholder:text-white/50 focus:outline-none focus:border-white/50"
+                                        onBlur={() => !mobileSearchInputRef.current?.value && setIsSearchVisible(false)}
+                                    />
+                                </motion.form>
+                            )}
+                        </AnimatePresence>
+                        <button
+                            onClick={() => {
+                                setIsSearchVisible(!isSearchVisible);
+                                if (!isSearchVisible) setTimeout(() => mobileSearchInputRef.current?.focus(), 100);
+                            }}
+                            className="text-off-white drop-shadow-lg p-1"
+                            aria-label="Rechercher"
+                        >
+                            <Search size={24} />
+                        </button>
+                    </div>
+
+                    <button onClick={() => setIsOpen(!isOpen)} aria-label="Ouvrir le menu de navigation" className="text-off-white drop-shadow-lg -mr-2 p-2">
+                        {isOpen ? <X size={28} /> : <Menu size={28} />}
+                    </button>
+                </div>
             </motion.nav>
 
             <AnimatePresence>
