@@ -1,4 +1,5 @@
 import { useEffect, Suspense, lazy } from 'react';
+import { Toaster, toast } from 'react-hot-toast';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
@@ -56,8 +57,28 @@ function App() {
     return () => document.removeEventListener('contextmenu', handleContextMenu);
   }, []);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const source = params.get('utm_source');
+
+    if (source === 'moltbook') {
+      setTimeout(() => {
+        toast("👋 Bienvenue, visiteur du futur.", {
+          icon: '🤖',
+          style: {
+            background: '#333',
+            color: '#fff',
+            border: '1px solid rgba(255,255,255,0.2)',
+          },
+          duration: 6000,
+        });
+      }, 1500);
+    }
+  }, []);
+
   return (
     <Router>
+      <Toaster position="bottom-right" />
       <div
         className={`min-h-screen transition-colors duration-700 font-sans selection:bg-darkroom-red selection:text-off-white ${isDarkroom ? 'darkroom-mode' : ''} flex flex-col`}
       >
