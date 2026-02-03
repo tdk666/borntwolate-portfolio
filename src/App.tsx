@@ -1,9 +1,8 @@
 import { useEffect, Suspense, lazy } from 'react';
-import { Toaster } from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import Navbar from './components/Navbar';
-import { EasterEgg } from './components/EasterEgg';
 import Home from './pages/Home';
 import Portfolio from './pages/Portfolio';
 import Series from './pages/Series';
@@ -54,6 +53,7 @@ function AnimatedRoutes() {
 function App() {
   const { isDarkroom } = useDarkroom();
 
+  // PREVENT RIGHT CLICK
   useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
@@ -62,9 +62,30 @@ function App() {
     return () => document.removeEventListener('contextmenu', handleContextMenu);
   }, []);
 
+  // EASTER EGG: MOLTBOOK
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const source = params.get('utm_source');
+
+    if (source === 'moltbook') {
+      setTimeout(() => {
+        toast("👋 Bienvenue, visiteur du futur.", {
+          icon: '🤖',
+          style: {
+            background: '#1a1a1a',
+            color: '#fff',
+            border: '1px solid rgba(255,255,255,0.2)',
+            fontFamily: 'serif',
+            zIndex: 99999, // Keeping z-index to ensure visibility
+          },
+          duration: 5000,
+        });
+      }, 1500);
+    }
+  }, []);
+
   return (
     <Router>
-      <EasterEgg />
       <Toaster
         position="bottom-right"
         containerStyle={{
