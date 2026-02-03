@@ -24,7 +24,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
 
     const handleNavigate = useCallback((direction: 'next' | 'prev') => {
         // Si déjà en cours de navigation, on bloque immédiatement
-        if (isNavigatingRef.current) return;
+        if (isNavigatingRef.current || isAcquisitionOpen) return;
 
         isNavigatingRef.current = true;
 
@@ -38,10 +38,11 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
     }, [onNext, onPrev]);
 
     const handleKeyDown = useCallback((e: KeyboardEvent) => {
+        if (isAcquisitionOpen) return; // Disable keyboard navigation when modal is open
         if (e.key === 'Escape') onClose();
         if (e.key === 'ArrowRight') handleNavigate('next');
         if (e.key === 'ArrowLeft') handleNavigate('prev');
-    }, [onClose, handleNavigate]);
+    }, [onClose, handleNavigate, isAcquisitionOpen]);
 
     useEffect(() => {
         document.addEventListener('keydown', handleKeyDown);
@@ -67,7 +68,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
     };
 
     const onTouchEnd = () => {
-        if (!touchStart || !touchEnd) return;
+        if (!touchStart || !touchEnd || isAcquisitionOpen) return; // Disable swipe when modal is open
 
         const distanceX = touchStart.x - touchEnd.x;
         const distanceY = touchStart.y - touchEnd.y;
@@ -92,6 +93,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
     };
 
     const handleDragEnd = (_: unknown, info: PanInfo) => {
+        if (isAcquisitionOpen) return;
         const threshold = 50;
         if (info.offset.x > threshold) handleNavigate('prev');
         else if (info.offset.x < -threshold) handleNavigate('next');
@@ -172,11 +174,17 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                     <div className="md:hidden absolute bottom-0 left-0 w-full z-[80] pointer-events-none">
                         <motion.div
                             drag="y"
-                            dragConstraints={{ top: -300, bottom: 0 }}
+                            // Prevent swiping UP when already open
+                            dragConstraints={{ top: showInfo ? 0 : -300, bottom: showInfo ? 300 : 0 }}
                             dragElastic={0.2}
                             onDragEnd={(_, info) => {
-                                if (info.offset.y < -50) setShowInfo(true);
-                                else if (info.offset.y > 50) setShowInfo(false);
+                                // If open, closing needs positive Y offset (drag down)
+                                if (showInfo) {
+                                    if (info.offset.y > 50) setShowInfo(false);
+                                } else {
+                                    // If closed, opening needs negative Y offset (drag up)
+                                    if (info.offset.y < -50) setShowInfo(true);
+                                }
                             }}
                             animate={{ y: showInfo ? -20 : 0 }}
                             className="pointer-events-auto"
