@@ -58,11 +58,11 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
 
   return (
     <>
-      <div className="fixed inset-0 z-[60] flex items-center justify-center p-0 md:p-4">
+      <div className="fixed inset-0 z-[60] flex flex-col items-center justify-end md:justify-center p-0 md:p-4">
         <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={onClose} />
 
         <FadeIn
-          className="relative w-full md:max-w-4xl bg-[#0a0a0a] md:border border-white/10 md:rounded-2xl shadow-2xl flex flex-col md:flex-row h-[100dvh] md:h-auto md:max-h-[85vh] overflow-hidden"
+          className="relative w-full md:max-w-4xl bg-[#0a0a0a] md:border border-white/10 md:rounded-2xl shadow-2xl flex flex-col md:flex-row h-full md:h-auto md:max-h-[85vh] overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
 
@@ -78,7 +78,7 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
           </div>
 
           {/* GAUCHE : Info Photo & Image */}
-          <div className="w-full md:w-1/3 bg-white/5 relative flex-shrink-0 min-h-[160px] md:min-h-0 md:h-auto">
+          <div className="w-full md:w-1/3 bg-white/5 relative flex-shrink-0 min-h-[120px] md:min-h-0 md:h-auto">
             {imageSrc && (
               <div className="absolute inset-0">
                 <img
