@@ -75,6 +75,7 @@ export const generatePhotoProductSchema = (photo: Photo, lang: 'fr' | 'en' = 'fr
             "lowPrice": Math.min(...offers.map(o => o.price)),
             "highPrice": Math.max(...offers.map(o => o.price)),
             "priceCurrency": "EUR",
+            "offerCount": offers.length.toString(),
             "offers": offers
         },
         "creator": {
