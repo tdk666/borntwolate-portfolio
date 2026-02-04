@@ -64,6 +64,8 @@ export const generatePhotoProductSchema = (photo: Photo, lang: 'fr' | 'en' = 'fr
         "description": description,
         "image": imageUrl,
         "contentUrl": imageUrl, // For ImageObject
+        "license": "https://www.borntwolate.com/legals",
+        "acquireLicensePage": "https://www.borntwolate.com/contact",
         "brand": {
             "@type": "Brand",
             "name": BRAND_NAME
@@ -77,10 +79,10 @@ export const generatePhotoProductSchema = (photo: Photo, lang: 'fr' | 'en' = 'fr
         },
         "creator": {
             "@type": "Person",
-            "name": "Théophile Dequecker"
+            "name": "Borntwolate"
         },
         "creditText": "Born Too Late Photography",
-        "copyrightNotice": "© Théophile Dequecker"
+        "copyrightNotice": "© Borntwolate"
     };
 };
 
