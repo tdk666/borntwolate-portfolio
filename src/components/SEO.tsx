@@ -1,12 +1,11 @@
 import { Helmet } from 'react-helmet-async';
 
-interface SEOProps {
+export interface SEOProps {
     title: string;
     description: string;
     image?: string;
     url?: string;
-    type?: string;
-    schema?: object;
+    type?: 'website' | 'article';
     robots?: string;
     keywords?: string;
     structuredData?: object;
@@ -18,7 +17,6 @@ export const SEO = ({
     image,
     url = '/',
     type = 'website',
-    schema,
     robots = 'index, follow',
     keywords,
     structuredData
@@ -28,18 +26,18 @@ export const SEO = ({
     const baseUrl = 'https://borntwolate.com';
 
     // URL Canonique propre
-    const absoluteUrl = url.startsWith('http') ? url : `${baseUrl}${url}`;
+    const relativeUrl = url.startsWith('/') ? url : `/${url}`;
+    const absoluteUrl = `${baseUrl}${relativeUrl === '/' ? '' : relativeUrl}`;
 
     // Gestion Intelligente de l'Image
     // 1. Si une image spécifique est fournie, on l'utilise.
     // 2. Sinon, on utilise la "Social Card" par défaut (1200x630px).
-    // Note pour l'user: Il faudra créer une image 'public/social-card.jpg' (1200x630px)
     let imageUrl = image;
     if (!imageUrl) {
         imageUrl = '/social-card.jpg';
     }
-    // Assure l'URL absolue
-    const absoluteImage = imageUrl.startsWith('http') ? imageUrl : `${baseUrl}${imageUrl}`;
+    // Assure l'URL absolue pour l'image
+    const absoluteImage = imageUrl.startsWith('http') ? imageUrl : `${baseUrl}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
 
     // Schéma JSON-LD de base (Identité)
     const baseSchema = {
@@ -61,14 +59,12 @@ export const SEO = ({
         ]
     };
 
-    const combinedSchema = structuredData || schema;
-
-    const finalSchema = combinedSchema
+    const finalSchema = structuredData
         ? {
             "@context": "https://schema.org",
             "@graph": [
                 ...baseSchema["@graph"],
-                ...((combinedSchema as { "@graph"?: unknown[] })["@graph"] || [combinedSchema])
+                ...((structuredData as { "@graph"?: unknown[] })["@graph"] || [structuredData])
             ]
         }
         : baseSchema;
@@ -92,8 +88,6 @@ export const SEO = ({
             <meta property="og:url" content={absoluteUrl} />
             <meta property="og:image" content={absoluteImage} />
             <meta property="og:image:alt" content={title} />
-
-            {/* Taille idéale pour les réseaux (Indicatif, aide l'affichage) */}
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />
 

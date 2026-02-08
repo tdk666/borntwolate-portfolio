@@ -18,6 +18,7 @@ import Footer from './components/Footer';
 import NotFound from './pages/NotFound';
 import Legals from './pages/Legals';
 import ScrollToTop from './components/ScrollToTop';
+import { GoogleAnalytics } from './components/GoogleAnalytics';
 
 // LAZY LOAD CHATBOT
 const Chatbot = lazy(() => import('./components/chatbot/Chatbot').then(module => ({ default: module.Chatbot })));
@@ -96,6 +97,7 @@ function App() {
         className={`min-h-screen transition-colors duration-700 font-sans selection:bg-darkroom-red selection:text-off-white ${isDarkroom ? 'darkroom-mode' : ''} flex flex-col`}
       >
         <div className="film-grain" style={{ backgroundImage: 'url("/assets/noise.svg")' }}></div>
+        <GoogleAnalytics />
         <ScrollToTop />
         <Navbar />
         <main className="flex-grow">

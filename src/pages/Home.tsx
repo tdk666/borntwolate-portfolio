@@ -22,7 +22,7 @@ const Home = () => {
                 title="Théophile Dequecker | Photographe Argentique & Directeur Artistique"
                 description={t('home.seo_desc')}
                 url="/"
-                schema={personSchema}
+                structuredData={personSchema}
             />
             <Hero />
         </>

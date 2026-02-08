@@ -6,6 +6,7 @@ import { Trans } from 'react-i18next';
 import { PRICING_CATALOG } from '../data/pricing';
 import { FadeIn } from '../components/animations/FadeIn';
 import WallPreview from '../components/WallPreview';
+import { SEO } from '../components/SEO';
 
 export default function Prints() {
     const { t } = useTranslation();
@@ -58,6 +59,12 @@ export default function Prints() {
 
     return (
         <div className="pt-24 pb-20 px-6 max-w-7xl mx-auto">
+            <SEO
+                title={t('prints.title')}
+                description={t('prints.subtitle')}
+                url="/prints"
+                type="website"
+            />
             <FadeIn>
                 {/* HERO SECTION */}
                 <header className="text-center mb-20">
