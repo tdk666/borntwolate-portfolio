@@ -91,7 +91,7 @@ const CertificateGenerator = () => {
 
         if (!finishId) return;
 
-        const range = PRICING_CATALOG[finishId];
+        // const range = PRICING_CATALOG[finishId]; // Unused variable removed
         let paperDetails = "";
 
         // Auto-Fill Logic based on Pricing Catalog
