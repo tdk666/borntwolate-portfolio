@@ -12,6 +12,9 @@ const PhotographeArgentique = () => {
     const currentLang = (i18n.language && i18n.language.startsWith('en')) ? 'en' : 'fr';
     const content = photographeArgentiqueData[currentLang];
 
+    // Robustness Check: Prevent crash if data is missing for current language
+    if (!content) return null;
+
     // FAQ Accordion State
     const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
 
@@ -53,7 +56,7 @@ const PhotographeArgentique = () => {
             <SEO
                 title={content.seo.title}
                 description={content.seo.description}
-                schema={jsonLdSchema}
+                structuredData={jsonLdSchema}
                 url="/photographe-argentique"
             />
 

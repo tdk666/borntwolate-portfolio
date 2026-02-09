@@ -1,5 +1,6 @@
-import { useParams, Link, Navigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { SEO } from '../components/SEO';
+import NotFound from './NotFound';
 import { motion, AnimatePresence } from 'framer-motion';
 import { seriesData } from '../data/photos';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
@@ -18,8 +19,15 @@ const SeriesDetail = () => {
     const { t, i18n } = useTranslation();
     const currentLang = i18n.language.split('-')[0] as 'fr' | 'en';
 
+    const currentSeries = seriesData.find((s) => s.id === id);
     const seriesIndex = seriesData.findIndex((s) => s.id === id);
-    const series = seriesData[seriesIndex];
+
+    // Robust Check: Redirect if series not found
+    if (!currentSeries) {
+        return <NotFound />;
+    }
+
+    const series = currentSeries;
     const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
 
     useEffect(() => {
@@ -36,9 +44,6 @@ const SeriesDetail = () => {
         };
     }, [series, id, isDarkroom]);
 
-    if (!series) {
-        return <Navigate to="/404" replace />;
-    }
 
     const nextSeries = seriesData[(seriesIndex + 1) % seriesData.length];
     const prevSeries = seriesData[(seriesIndex - 1 + seriesData.length) % seriesData.length];

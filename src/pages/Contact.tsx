@@ -25,6 +25,8 @@ const Contact = () => {
         url: string;
     }
     const [selectedPhotos, setSelectedPhotos] = useState<SelectedPhoto[]>([]);
+    const [initialFormat, setInitialFormat] = useState("Non défini");
+    const [initialFinition, setInitialFinition] = useState("Non définie");
     const initialParamsProcessed = useRef(false);
 
     // Helper to get all photos for the selector
@@ -47,6 +49,8 @@ const Contact = () => {
         if (subj === 'acquisition') {
             setSubject('acquisition');
             const photoTitleParam = params.get('photo');
+            const formatParam = params.get('format');
+            const finitionParam = params.get('finition');
 
             if (photoTitleParam) {
                 // Find the photo in our flattened list
@@ -59,6 +63,9 @@ const Contact = () => {
             } else {
                 setMessage(t('contact.acquisition_body_single'));
             }
+
+            if (formatParam) setInitialFormat(formatParam);
+            if (finitionParam) setInitialFinition(finitionParam);
         }
         initialParamsProcessed.current = true;
     }, [location, t, allPhotosOptions]);
@@ -139,6 +146,14 @@ const Contact = () => {
             const templateID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
             const clientTemplateID = import.meta.env.VITE_EMAILJS_TEMPLATE_CLIENT_ID || 'template_l8azy4r';
 
+            // Robustness Check: Ensure Env Vars are present
+            if (!serviceID || !publicKey || !templateID) {
+                console.error("Critical Error: Missing EmailJS Environment Variables.");
+                alert("Erreur de configuration du formulaire. Veuillez me contacter directement par email.");
+                setStatus('error');
+                return;
+            }
+
             // Extract values for template mapping
             const userName = formData.get('user_name') as string;
             const userEmail = formData.get('user_email') as string;
@@ -151,14 +166,15 @@ const Contact = () => {
                 user_name: userName,
                 user_email: userEmail,
                 message: finalMessage,
-                subject: subj,
+                subject: (subj === 'acquisition' || selectedPhotos.length > 0) ? "NOUVELLE ACQUISITION" : (subj || "Nouveau Message Contact"),
                 selection: sel,
 
-                // Artwork Specifics (Admin Template)
-                artwork_title: artworkTitle,
-                series_title: seriesTitle,
-                format: formatSelected,
-                finition: finitionSelected,
+                // Artwork Specifics (Admin Template) - EXPLICIT PLACEHOLDERS FOR GENERAL CONTACT
+                artwork_title: artworkTitle || "Demande de Contact / Collaboration",
+                series_title: seriesTitle || "Aucune (Message Général)",
+                format: (formatSelected && formatSelected !== "Non défini") ? formatSelected : "N/A",
+                finition: (finitionSelected && finitionSelected !== "Non définie") ? finitionSelected : "-",
+                price: "-", // General contact doesn't have a price
                 artwork_list: artworkList,
 
                 // Provenance
@@ -250,7 +266,7 @@ const Contact = () => {
                 />
                 <FadeIn className="space-y-8">
                     <h1 className="text-4xl md:text-5xl font-space-mono text-off-white uppercase tracking-tighter">
-                        Merci !
+                        Message envoyé
                     </h1>
                     <div className="w-16 h-px bg-darkroom-red mx-auto" />
                     <p className="text-silver font-inter text-lg leading-relaxed max-w-lg mx-auto">
@@ -409,6 +425,8 @@ const Contact = () => {
                                 <select
                                     id="format"
                                     name="format"
+                                    defaultValue={initialFormat}
+                                    key={`format-${initialFormat}`} // Force re-render if initial changes
                                     className="w-full bg-black/50 border-b border-white/20 py-2 text-off-white font-inter focus:outline-none focus:border-darkroom-red transition-colors appearance-none"
                                 >
                                     <option value="Non défini" className="bg-black text-silver">{t('contact.options.unknown')}</option>
@@ -427,6 +445,8 @@ const Contact = () => {
                                 <select
                                     id="finition"
                                     name="finition"
+                                    defaultValue={initialFinition}
+                                    key={`finition-${initialFinition}`} // Force re-render
                                     className="w-full bg-black/50 border-b border-white/20 py-2 text-off-white font-inter focus:outline-none focus:border-darkroom-red transition-colors appearance-none"
                                 >
                                     <option value="Non définie" className="bg-black text-silver">{t('contact.options.unknown')}</option>

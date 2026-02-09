@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { X, ShieldCheck, ArrowRight, Eye } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { PRICING_CATALOG } from '../data/pricing';
@@ -14,6 +15,7 @@ interface AcquisitionModalProps {
 
 export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc }: AcquisitionModalProps) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<keyof typeof PRICING_CATALOG>('collection');
   const [selectedVariantId, setSelectedVariantId] = useState<string>(PRICING_CATALOG['collection'].variants[0].id);
   const [isWallPreviewOpen, setIsWallPreviewOpen] = useState(false);
@@ -238,6 +240,31 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
                 <span>{isLoading ? t('acquisition.redirecting') : t('acquisition.proceed_payment')}</span>
                 {!isLoading && <ArrowRight className="w-5 h-5 ml-1" />}
               </a>
+
+              {/* Manual Transfer Option */}
+              <button
+                onClick={() => {
+                  const finitionMapping: Record<string, string> = {
+                    collection: "Tirage Seul",
+                    elegance: "Encadré Nielsen",
+                    exception: "Caisse Américaine",
+                    galerie: "Caisse Américaine"
+                  };
+
+                  const params = new URLSearchParams({
+                    subject: 'acquisition',
+                    photo: photoTitle,
+                    format: currentVariant.label,
+                    finition: finitionMapping[activeTab] || "Non définie"
+                  });
+
+                  navigate(`/contact?${params.toString()}`);
+                  onClose();
+                }}
+                className="w-full mt-3 py-3 text-xs text-white/40 hover:text-white underline decoration-white/20 underline-offset-4 transition-colors uppercase tracking-widest"
+              >
+                Je préfère payer par Virement Bancaire
+              </button>
             </div>
 
           </div>

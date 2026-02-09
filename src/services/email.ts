@@ -4,17 +4,22 @@ import emailjs from '@emailjs/browser';
 interface OrderData {
     user_name: string;
     user_email: string;
+
+    // Artwork Details (Optional/Overridable)
     artwork_title?: string;
     series_title?: string;
     format?: string;
-    price?: string;
+    finition?: string; // Added missing field
+    price?: string | number; // Allow number
+
+    // Contact / Order Details
     address?: string;
     ai_summary?: string;
     message?: string;
     subject?: string;
     selection?: string;
-    artwork_list?: string; // NEW: Liste propre pour le mail client
-    source?: string; // NEW: Provenance (e.g. "Chatbot", "Formulaire Contact")
+    artwork_list?: string;
+    source?: string;
 }
 
 export const sendOrderToArtist = async (data: OrderData) => {
@@ -24,13 +29,28 @@ export const sendOrderToArtist = async (data: OrderData) => {
         const adminTemplateID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
         const clientTemplateID = import.meta.env.VITE_EMAILJS_TEMPLATE_CLIENT_ID;
 
+        // Fallback Defaults to prevent "undefined" in emails
+        const defaults = {
+            artwork_title: "Non spécifié",
+            series_title: "-",
+            format: "Non défini",
+            finition: "Non définie",
+            price: "-",
+            subject: "Nouvelle Demande Borntwolate",
+            source: "Site Web Inconnu"
+        };
+
         // SUPERSET OF PARAMS: Send everything possible to cover all template variable names
         const templateParams = {
-            // Core Data
+            // Merge defaults with provided data
+            ...defaults,
             ...data,
 
+            // Explicit overrides if needed (e.g. if data.price is a number, convert to string here if needed)
+            price: data.price?.toString() || defaults.price,
+
             // Provenance
-            source: data.source || "Inconnue",
+            source: data.source || defaults.source,
 
             // Name aliases
             user_name: data.user_name,
