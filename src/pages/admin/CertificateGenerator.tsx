@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { jsPDF } from 'jspdf';
-import { photos } from '../../data/photos'; // On importe ton catalogue officiel
+import { photos, seriesData } from '../../data/photos'; // On importe ton catalogue officiel
 import { stockService } from '../../services/stock';
 
 const CertificateGenerator = () => {
@@ -9,14 +9,23 @@ const CertificateGenerator = () => {
 
     const [clientName, setClientName] = useState('');
     const [editionNumber, setEditionNumber] = useState('');
-    const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [date] = useState(new Date().toISOString().split('T')[0]);
     const [feedback, setFeedback] = useState<{ msg: string, type: 'success' | 'error' } | null>(null);
     const [loading, setLoading] = useState(false);
 
     // Fonction pour trouver la photo sélectionnée
     const currentPhoto = photos.find(p => p.id === Number(selectedPhotoId)) || photos.find(p => p.title === selectedPhotoId);
 
+    // Helper to get series title from ID
+    const getSeriesTitle = (seriesId?: string) => {
+        if (!seriesId) return "Série Inconnue";
+        const series = seriesData.find(s => s.id === seriesId);
+        return series ? series.title : "Série Inconnue";
+    };
+
     // Fonction utilitaire pour retrouver le slug (MÊME LOGIQUE QUE SUPABASE)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const getSlug = (photo: any) => {
         // Si tu as ajouté une propriété slug dans photos.ts, utilise-la.
         // Sinon, on la génère à la volée comme dans le script SQL :
@@ -79,7 +88,7 @@ const CertificateGenerator = () => {
 
         doc.setFontSize(12);
         doc.setFont("helvetica", "normal");
-        doc.text(`Série : ${currentPhoto.series}`, 148, 95, { align: 'center' });
+        doc.text(`Série : ${getSeriesTitle(currentPhoto.seriesId)}`, 148, 95, { align: 'center' });
 
         // Détails techniques
         doc.text(`Format & Finition : _________________________________`, 148, 120, { align: 'center' });
@@ -118,7 +127,7 @@ const CertificateGenerator = () => {
                             <option value="">-- Choisir une photo --</option>
                             {photos.map((p) => (
                                 <option key={p.id} value={p.id}>
-                                    {p.title} ({p.series})
+                                    {p.title} ({getSeriesTitle(p.seriesId)})
                                 </option>
                             ))}
                         </select>
