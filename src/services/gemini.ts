@@ -35,9 +35,29 @@ PROTOCOLE :
 
 // --- INITIALISATION ---
 // Initialize lazily or check for key
-const getGenAI = () => {
-  if (!API_KEY) return null;
-  return new GoogleGenerativeAI(API_KEY);
+if (!API_KEY) return null;
+return new GoogleGenerativeAI(API_KEY);
+}
+
+export const debugModels = async () => {
+  const genAI = getGenAI();
+  if (!genAI) {
+    console.log("Chatbot: No API Key for debug");
+    return;
+  }
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // Dummy init to get client
+    // Actually we need the model-agnostic client to list models? 
+    // The SDK doesn't expose listModels directly on the instance easily without complex setup usually?
+    // Wait, genAI.getGenerativeModel is for a specific model.
+    // We can try to use the REST API for debugging if SDK fails?
+    // Or just try a simple generateContent to see if it works with *any* model?
+
+    // Let's just log that we are trying gemini-1.5-flash
+    console.log("Chatbot: Attempting to use model 'gemini-1.5-flash'...");
+  } catch (e) {
+    console.error("Chatbot Debug Error:", e);
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -76,7 +96,7 @@ export const sendMessageToGemini = async (message: string, history: { role: 'use
 
     // 3. On lance le chat avec le nouveau contexte
     const model = genAI.getGenerativeModel({
-      model: "gemini-pro", // Fallback to stable legacy model
+      model: "gemini-1.5-flash", // Revert to standard correct model
       systemInstruction: finalSystemPrompt
     });
 

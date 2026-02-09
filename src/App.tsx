@@ -10,9 +10,9 @@ import SeriesDetail from './pages/SeriesDetail';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import { useDarkroom } from './context/DarkroomContext';
-// import { Chatbot } from './components/chatbot/Chatbot'; // REMOVE DIRECT IMPORT
 import Prints from './pages/Prints';
 import CertificateGenerator from './pages/admin/CertificateGenerator';
+import { ErrorBoundary } from './components/ErrorBoundary';
 
 import Footer from './components/Footer';
 import NotFound from './pages/NotFound';
@@ -104,9 +104,11 @@ function App() {
           <AnimatedRoutes />
         </main>
         <Footer />
-        <Suspense fallback={null}>
-          <Chatbot />
-        </Suspense>
+        <ErrorBoundary fallback={null}>
+          <Suspense fallback={null}>
+            <Chatbot />
+          </Suspense>
+        </ErrorBoundary>
       </div>
     </Router>
   );

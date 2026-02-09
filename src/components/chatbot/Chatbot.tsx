@@ -20,6 +20,8 @@ export const Chatbot = () => {
 
     useEffect(() => {
         console.log("Chatbot mounted. VITE_GEMINI_API_KEY present:", !!import.meta.env.VITE_GEMINI_API_KEY);
+        // Debug models
+        import('../../services/gemini').then(({ debugModels }) => debugModels());
         scrollToBottom();
     }, [messages]);
 
