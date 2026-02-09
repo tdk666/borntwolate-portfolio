@@ -35,8 +35,9 @@ PROTOCOLE :
 
 // --- INITIALISATION ---
 // Initialize lazily or check for key
-if (!API_KEY) return null;
-return new GoogleGenerativeAI(API_KEY);
+const getGenAI = () => {
+  if (!API_KEY) return null;
+  return new GoogleGenerativeAI(API_KEY);
 }
 
 export const debugModels = async () => {
