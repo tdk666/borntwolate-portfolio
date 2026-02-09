@@ -1,76 +1,62 @@
 import emailjs from '@emailjs/browser';
 
-// Interface loose enough to accept data, but strict on core needs
-interface OrderData {
+// --- CHAMELEON STRATEGY INTERFACE ---
+// All React components must conform to this strict structure.
+// WE generate the strings here, EmailJS just passes them through.
+export interface ChameleonEmailParams {
+    // 1. Who & Context
     user_name: string;
     user_email: string;
+    contact_type: "MESSAGE" | "COMMANDE" | "LABO_IA"; // Tag for filtering
 
-    // Artwork Details (Optional/Overridable)
-    artwork_title?: string;
-    series_title?: string;
-    format?: string;
-    finition?: string; // Added missing field
-    price?: string | number; // Allow number
+    // 2. Admin Notification (The email YOU receive)
+    admin_subject: string; // e.g., "Nouveau Lead : [Name]"
+    message_content: string; // The FULL body (Transcript, Order Summary, Question)
 
-    // Contact / Order Details
-    address?: string;
-    ai_summary?: string;
-    message?: string;
-    subject?: string;
-    selection?: string;
-    artwork_list?: string;
-    source?: string;
+    // 3. Client Auto-Reply (The email THEY receive)
+    reply_subject: string; // e.g., "Bien reçu - Born Too Late"
+    reply_message: string; // e.g., "Merci pour votre message..."
+    reply_details?: string; // Optional: Order specs, Chat recap, etc.
 }
 
-export const sendOrderToArtist = async (data: OrderData) => {
+export const sendEmail = async (data: ChameleonEmailParams) => {
     try {
         const serviceID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
         const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-        const adminTemplateID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-        const clientTemplateID = import.meta.env.VITE_EMAILJS_TEMPLATE_CLIENT_ID;
+        const adminTemplateID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID; // Generic Admin Template
+        const clientTemplateID = import.meta.env.VITE_EMAILJS_TEMPLATE_CLIENT_ID || 'template_l8azy4r'; // Generic Client Template
 
-        // Fallback Defaults to prevent "undefined" in emails
-        const defaults = {
-            artwork_title: "Non spécifié",
-            series_title: "-",
-            format: "Non défini",
-            finition: "Non définie",
-            price: "-",
-            subject: "Nouvelle Demande Borntwolate",
-            source: "Site Web Inconnu"
-        };
-
-        // SUPERSET OF PARAMS: Send everything possible to cover all template variable names
+        // MAPPING TO EMAILJS TEMPLATE VARIABLES
+        // Ensure your EmailJS template uses these exact variable names:
+        // {{contact_type}}, {{admin_subject}}, {{message_content}}, 
+        // {{reply_subject}}, {{reply_message}}, {{reply_details}},
+        // {{user_name}}, {{user_email}}
         const templateParams = {
-            // Merge defaults with provided data
-            ...defaults,
-            ...data,
+            // Context
+            contact_type: data.contact_type,
 
-            // Explicit overrides if needed (e.g. if data.price is a number, convert to string here if needed)
-            price: data.price?.toString() || defaults.price,
+            // Admin Content
+            admin_subject: data.admin_subject,
+            message_content: data.message_content,
 
-            // Provenance
-            source: data.source || defaults.source,
+            // Client Content
+            reply_subject: data.reply_subject,
+            reply_message: data.reply_message,
+            reply_details: data.reply_details || "", // Empty string if undefined to avoid "undefined" in email
 
-            // Name aliases
+            // Standard Identity
             user_name: data.user_name,
-            from_name: data.user_name,
-            client_name: data.user_name,
-            name: data.user_name,
-
-            // Email aliases (VERY IMPORTANT for auto-reply and "To" fields)
             user_email: data.user_email,
-            client_email: data.user_email,
-            reply_to: data.user_email,
-            email: data.user_email,
+            from_name: data.user_name, // Alias
+            reply_to: data.user_email, // Critical for direct reply
 
-            // Helpers
+            // Meta
             date: new Date().toLocaleString('fr-FR'),
         };
 
-        console.log("📨 Sending EmailJS with params:", templateParams);
+        console.log(`🦎 [Chameleon Email] Sending [${data.contact_type}]...`, templateParams);
 
-        // 1. Envoi du mail à l'Artiste
+        // 1. Admin Notification
         const adminResponse = await emailjs.send(
             serviceID,
             adminTemplateID,
@@ -78,7 +64,7 @@ export const sendOrderToArtist = async (data: OrderData) => {
             publicKey
         );
 
-        // 2. Envoi de l'accusé de réception au Client
+        // 2. Client Auto-Reply (Fire & Forget for speed, but await for safety)
         if (clientTemplateID) {
             await emailjs.send(
                 serviceID,
@@ -89,8 +75,9 @@ export const sendOrderToArtist = async (data: OrderData) => {
         }
 
         return { success: true, status: adminResponse.status };
+
     } catch (error) {
-        console.error("EmailJS Error:", error);
+        console.error("🦎 [Chameleon Email] Critical Error:", error);
         return { success: false, error };
     }
 };

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { FlaskConical, X, Send, Loader2 } from 'lucide-react';
 import { sendMessageToGemini } from '../../services/gemini';
-import { sendOrderToArtist } from '../../services/email';
+import { sendEmail } from '../../services/email';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { useTranslation } from 'react-i18next'; // IMPORT I18N
@@ -67,17 +67,24 @@ export const Chatbot = () => {
 
                     console.log("🛒 Action Détectée : Commande", orderData);
 
-                    // 2. Envoi de l'email
-                    const emailResult = await sendOrderToArtist({
-                        artwork_title: orderData.artwork_title || "Inconnue",
-                        series_title: orderData.series_title || "Inconnue",
-                        format: orderData.format || "Non spécifié",
-                        price: orderData.price || "Sur devis",
-                        address: orderData.address || "Non communiquée",
-                        user_email: orderData.client_email || "Non communiqué",
-                        user_name: orderData.client_name || "Non communiqué",
-                        ai_summary: orderData.ai_summary || "",
-                        source: "Chatbot (Le Labo)"
+                    // 2. Envoi de l'email (Chameleon Strategy)
+                    const emailResult = await sendEmail({
+                        contact_type: "LABO_IA",
+                        user_name: orderData.client_name || "Utilisateur Chatbot",
+                        user_email: orderData.client_email || "contact@borntoolate.com", // Fallback if AI didn't catch it
+
+                        admin_subject: `NOUVEAU LEAD VIA CHATBOT : ${orderData.client_name || "Anonyme"}`,
+                        message_content: `[LEAD CAPTURÉ VIA LE LABO IA]\n\n` +
+                            `Intention : ${orderData.artwork_title ? "Commande" : "Question"}\n` +
+                            `Œuvre citée : ${orderData.artwork_title || "N/A"}\n` +
+                            `Format : ${orderData.format || "N/A"}\n` +
+                            `Budget : ${orderData.price || "N/A"}\n\n` +
+                            `--- RÉSUMÉ IA ---\n${orderData.ai_summary || "Aucun résumé"}\n\n` +
+                            `--- TRANSCRIPT ---\n(Voir historique complet dans l'admin si nécessaire)`,
+
+                        reply_subject: "Copie de votre échange avec le Labo IA - Born Too Late",
+                        reply_message: "Voici une trace de notre échange dans le Labo. Je prends le relais sous 24h.",
+                        reply_details: `Resumé : ${orderData.ai_summary || "Echange sur l'œuvre " + (orderData.artwork_title || "...")}`
                     });
 
                     // 3. Gestion de la réponse UI selon le succès RÉEL

@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom';
 import { seriesData } from '../data/photos';
 import VisualSelector from '../components/VisualSelector';
 import { X, ArrowLeft } from 'lucide-react';
-import emailjs from '@emailjs/browser';
+import { sendEmail } from '../services/email';
 import { FadeIn } from '../components/animations/FadeIn';
 
 const Contact = () => {
@@ -141,61 +141,65 @@ const Contact = () => {
         }
 
         try {
-            const serviceID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-            const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-            const templateID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-            const clientTemplateID = import.meta.env.VITE_EMAILJS_TEMPLATE_CLIENT_ID || 'template_l8azy4r';
-
-            // Robustness Check: Ensure Env Vars are present
-            if (!serviceID || !publicKey || !templateID) {
-                console.error("Critical Error: Missing EmailJS Environment Variables.");
-                alert("Erreur de configuration du formulaire. Veuillez me contacter directement par email.");
-                setStatus('error');
-                return;
-            }
-
             // Extract values for template mapping
             const userName = formData.get('user_name') as string;
             const userEmail = formData.get('user_email') as string;
             const subj = formData.get('subject') as string;
-            const sel = formData.get('selection') as string;
+            // No longer reading specific fields like 'selection' or 'artwork_title' directly into params
+            // We construct ONE big string.
 
-            // SUPERSET PARAMS for Contact Form
-            const templateParams = {
-                // Core
-                user_name: userName,
-                user_email: userEmail,
-                message: finalMessage,
-                subject: (subj === 'acquisition' || selectedPhotos.length > 0) ? "NOUVELLE ACQUISITION" : (subj || "Nouveau Message Contact"),
-                selection: sel,
+            // --- BUILD MESSAGE CONTENT (The "Body") ---
+            let textBody = "";
 
-                // Artwork Specifics (Admin Template) - EXPLICIT PLACEHOLDERS FOR GENERAL CONTACT
-                artwork_title: artworkTitle || "Demande de Contact / Collaboration",
-                series_title: seriesTitle || "Aucune (Message Général)",
-                format: (formatSelected && formatSelected !== "Non défini") ? formatSelected : "N/A",
-                finition: (finitionSelected && finitionSelected !== "Non définie") ? finitionSelected : "-",
-                price: "-", // General contact doesn't have a price
-                artwork_list: artworkList,
+            // 1. Context Header
+            if (subject === 'acquisition') {
+                textBody += `[DEMANDE D'ACQUISITION]\n\n`;
+            } else {
+                textBody += `[MESSAGE CONTACT GENERAL]\n\n`;
+            }
 
-                // Provenance
-                source: (subj === 'acquisition' || sel) ? "Page Prints via Formulaire" : "Formulaire Contact",
+            // 2. Selection / Order Details
+            if (selectedPhotos.length > 0) {
+                textBody += `--- SÉLECTION D'ŒUVRES ---\n`;
+                selectedPhotos.forEach(p => {
+                    textBody += `- ${p.title} (${p.seriesTitle})\n`;
+                });
+                textBody += `\n`;
+            }
 
-                // Name aliases
-                from_name: userName,
-                client_name: userName,
-                name: userName,
+            // 3. Specs (if any)
+            if (formatSelected !== "Non défini" || finitionSelected !== "Non définie") {
+                textBody += `--- SPÉCIFICATIONS ---\n`;
+                textBody += `Format : ${formatSelected}\n`;
+                textBody += `Finition : ${finitionSelected}\n\n`;
+            }
 
-                // Email aliases
-                client_email: userEmail,
-                reply_to: userEmail,
-                email: userEmail,
-            };
+            // 4. User Message
+            textBody += `--- MESSAGE UTILISATEUR ---\n`;
+            textBody += `"${currentMsg}"\n\n`;
 
-            console.log("📨 Sending Form via EmailJS with params:", templateParams);
+            // 5. Technical Meta
+            textBody += `--------------------------------\n`;
+            textBody += `Source : Page Contact / Prints\n`;
+            textBody += `Date : ${new Date().toLocaleString('fr-FR')}`;
 
 
-            // 1. Prepare Promises
-            // Netlify (CRM Storage)
+            // --- BUILD REPLY DETAILS (For Client) ---
+            let replyDetails = "";
+            if (subject === 'acquisition') {
+                replyDetails += `Détail de votre demande :\n`;
+                if (selectedPhotos.length > 0) replyDetails += `- Œuvres : ${selectedPhotos.map(p => p.title).join(', ')}\n`;
+                if (formatSelected) replyDetails += `- Format souhaité : ${formatSelected}\n`;
+                if (finitionSelected) replyDetails += `- Finition souhaitée : ${finitionSelected}\n`;
+                replyDetails += `\nUn devis estimatif vous sera envoyé sous peu.`;
+            } else {
+                replyDetails += `Votre message :\n"${currentMsg.substring(0, 100)}${currentMsg.length > 100 ? '...' : ''}"`;
+            }
+
+
+            console.log("🦎 Sending via Chameleon Strategy...");
+
+            // 1. Netlify Storage (Keep this!)
             const netlifyPromise = fetch("/", {
                 method: "POST",
                 headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -203,43 +207,45 @@ const Contact = () => {
                 body: new URLSearchParams(formData as any).toString(),
             });
 
-            // EmailJS (Admin Notification)
-            const adminEmailPromise = emailjs.send(
-                serviceID,
-                templateID,
-                templateParams,
-                publicKey
-            );
+            // 2. EmailJS via Proxy Service
+            const emailPromise = sendEmail({
+                user_name: userName,
+                user_email: userEmail,
+                contact_type: (subject === 'acquisition') ? "COMMANDE" : "MESSAGE",
 
-            // EmailJS (Client Acknowledgement)
-            const clientEmailPromise = emailjs.send(
-                serviceID,
-                clientTemplateID,
-                templateParams,
-                publicKey
-            );
+                // Admin gets full details
+                admin_subject: (subject === 'acquisition') ?
+                    `NOUVELLE ACQUISITION : ${userName}` :
+                    `Nouveau Message Contact : ${userName}`,
+                message_content: textBody,
 
-            // 2. Wait for ALL (Netlify + Admin Email + Client Email) using allSettled for robustness
-            const results = await Promise.allSettled([netlifyPromise, adminEmailPromise, clientEmailPromise]);
+                // Client gets polite auto-reply
+                reply_subject: (subject === 'acquisition') ?
+                    "Confirmation de demande d'acquisition - Born Too Late" :
+                    "Bien reçu - Born Too Late",
+                reply_message: (subject === 'acquisition') ?
+                    "Nous avons bien reçu votre demande d'acquisition. Je reviens vers vous rapidement pour établir le devis." :
+                    "Merci pour votre message. Théophile reviendra vers vous sous 24h.",
+                reply_details: replyDetails
+            });
 
-            // Check results
+            // 3. Await Both
+            const results = await Promise.allSettled([netlifyPromise, emailPromise]);
+
             const netlifyResult = results[0];
-            const adminResult = results[1];
-            // clientResult is results[2] (optional, less critical)
+            const emailResult = results[1];
 
-            // Critical failure: If Netlify AND Admin Email fail, then it's a real error.
-            // If at least one works, we consider it a success for the user (we don't want to block them).
             const isNetlifySuccess = netlifyResult.status === 'fulfilled';
-            const isAdminSuccess = adminResult.status === 'fulfilled';
+            const isEmailSuccess = (emailResult.status === 'fulfilled' && emailResult.value.success);
 
-            if (!isNetlifySuccess && !isAdminSuccess) {
-                throw new Error("Both storage services failed.");
+            if (!isNetlifySuccess) console.error("Netlify Save Failed");
+            if (!isEmailSuccess) console.error("EmailJS Failed");
+
+            if (!isNetlifySuccess && !isEmailSuccess) {
+                throw new Error("Both services failed.");
             }
 
-            if (!isNetlifySuccess) console.error("Netlify Save Failed:", (netlifyResult as PromiseRejectedResult).reason);
-            if (!isAdminSuccess) console.error("Element Admin Email Failed:", (adminResult as PromiseRejectedResult).reason);
-
-            // 3. Success (Partial or Full)
+            // Success
             setStatus('success');
             setIsSubmitted(true);
 

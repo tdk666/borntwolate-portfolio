@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X, ShieldCheck, ArrowRight, Eye } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { sendEmail } from '../services/email';
 import { PRICING_CATALOG } from '../data/pricing';
 import { FadeIn } from './animations/FadeIn';
 import WallPreview from './WallPreview';
@@ -223,17 +224,44 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`w-full bg-white text-black py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-gray-200 transition-colors shadow-lg shadow-white/5 active:scale-[0.98] ${isLoading ? 'opacity-70 cursor-wait' : ''}`}
-                onClick={(e) => {
+                onClick={async (e) => {
                   if (isLoading) e.preventDefault();
                   else {
-                    // Track Initiate Checkout
-                    console.log('InitiateCheckout', {
-                      variant: currentVariant.id,
-                      price: currentVariant.price,
-                      currency: 'EUR'
-                    });
-                    setIsLoading(true);
-                    setTimeout(() => setIsLoading(false), 2000);
+                    setIsLoading(true); // Set loading state immediately
+                    try {
+                      // 1. Send Email Notification (Chameleon Strategy)
+                      // We send this BEFORE the Stripe redirect just to capture the lead in case they drop off at payment
+                      // (Optional strategy, but good for "Abandonment")
+                      await sendEmail({
+                        contact_type: "COMMANDE",
+                        user_name: "Client Stripe (Pre-Checkout)",
+                        user_email: "attente_paiement@borntoolate.com", // Placeholder until Stripe webhook
+                        admin_subject: `NOUVELLE TENTATIVE D'ACHAT : ${photoTitle}`,
+                        message_content: `[TENTATIVE ACHAT STRIPE]\n\nŒuvre : ${photoTitle}\nFormat : ${currentVariant.label}\nFinition : ${activeTab}\nPrix : ${currentVariant.price}€`,
+                        reply_subject: "Votre sélection - Born Too Late",
+                        reply_message: "Vous avez initié un paiement pour une œuvre. Si vous n'avez pas finalisé la commande, n'hésitez pas à nous contacter.",
+                        reply_details: `Œuvre : ${photoTitle}\nFormat : ${currentVariant.label}`
+                      });
+
+                      // 2. Redirect to Stripe
+                      const { error } = await stripe.redirectToCheckout({
+                        lineItems: [{ price: currentVariant.id, quantity: 1 }],
+                        mode: 'payment',
+                        successUrl: `${window.location.origin}/success`,
+                        cancelUrl: `${window.location.origin}/`,
+                      });
+
+                      if (error) {
+                        console.error("Stripe checkout error:", error);
+                        // Handle error, e.g., show a message to the user
+                        setIsLoading(false); // Reset loading state on error
+                      }
+                      // If successful, Stripe redirects, so no need to set isLoading(false) here.
+                      // If there's an error before redirect, we need to reset.
+                    } catch (error) {
+                      console.error("Error during checkout process:", error);
+                      setIsLoading(false); // Reset loading state on any error
+                    }
                   }
                 }}
               >
