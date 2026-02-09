@@ -181,7 +181,7 @@ const CertificateGenerator = () => {
                     <div className="text-right">
                         <p className="font-space-mono text-[10px] uppercase tracking-widest text-black/40 mb-12">Signature de l'Artiste</p>
                         {data.useSignature ? (
-                            <img src="/signature.png" alt="Signature" className="h-16 ml-auto -mt-8 mb-4 mix-blend-multiply opacity-90" />
+                            <img src="/signature.png" alt="Signature" className="h-32 ml-auto -mt-16 mb-2 mix-blend-multiply opacity-90" />
                         ) : (
                             <div className="h-px bg-black/20 w-3/4 ml-auto"></div>
                         )}
