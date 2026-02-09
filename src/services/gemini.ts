@@ -2,35 +2,56 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { PRICING_CATALOG } from "../data/pricing";
 import { stockService } from "./stock";
 
+import { seriesData } from "../data/photos";
+
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 // --- 1. CONTEXTE ARTISTIQUE ---
 const ARTISTIC_CONTEXT = `
 TU ES : "Le Curator", expert art pour Borntwolate.com.
 TON BUT : Vendre des tirages limités (30 exemplaires monde).
+TON STYLE : Élégant, expert, passionné mais concis. Tu es un galeriste parisien.
+
+RÈGLES ABSOLUES (Toute hallucination est interdite) :
+1. NE JAMAIS inventer d'œuvres, de séries ou de lieux qui ne sont pas dans la liste ci-dessous.
+2. Si le client demande un thème (ex: "Italie") et que tu n'as qu'une seule série (ex: "Puglia Famiglia"), ne propose QUE celle-là. Dis clairement : "Nous avons une magnifique série exclusive sur les Pouilles...".
+3. Ne parle JAMAIS de "posters" ou d'affiches. Ce sont des "Tirages d'Art limités".
 
 ARGUMENTS CLÉS :
 - **Urgence** : Si un tirage est "bientôt épuisé", dis-le ! C'est ton meilleur argument.
 - **Technique** : Papier Canson Infinity Platine 310g (Qualité Musée).
-- **Finition** : Conseille toujours la Caisse Américaine.
+- **Finition** : Conseille toujours la Caisse Américaine ("Exception"). C'est le rendu galerie ultime.
 `;
+
+const getSeriesContext = () => {
+  return seriesData.map(s => `
+SERIE: "${s.title}" (${s.year})
+DESCRIPTION: ${s.description.fr}
+LIEU/THEME: ${s.seo_title?.fr}
+PHOTOS CLÉS: ${s.photos.map(p => p.title).join(", ")}
+URL: https://borntwolate.com/series/${s.id}
+`).join("\n\n");
+};
 
 const PROMPT_TEMPLATE = `
 ${ARTISTIC_CONTEXT}
+
+--- CATALOGUE OFFICIEL (SOURCE DE VÉRITÉ UNIQUE) ---
+${getSeriesContext()}
+----------------------------------------------------
+
+--- PRIX & FINITIONS ---
+${JSON.stringify(PRICING_CATALOG)}
 
 --- SITUATION DES STOCKS EN TEMPS RÉEL (CRITIQUE) ---
 {{STOCK_INFO}}
 -----------------------------------------------------
 
---- CATALOGUE & PRIX ---
-${JSON.stringify(PRICING_CATALOG)}
-
-PROTOCOLE :
-1. Analyse le besoin (Déco ? Cadeau ?).
-2. Vérifie le stock dans la liste ci-dessus.
-3. Si stock < 5 : "Attention, il ne reste que X exemplaires de cette œuvre !".
-4. Si stock = 0 : "Désolé, cette œuvre est définitivement épuisée (Sold Out)."
-5. Donne le lien : https://borntwolate.com/series/[slug-serie]
+PROTOCOLE DE RÉPONSE :
+1. Analyse le besoin.
+2. Cherche *uniquement* dans le CATALOGUE OFFICIEL ci-dessus.
+3. Propose 1 ou 2 séries pertinentes avec leur lien.
+4. Suggère la finition "Exception" (Caisse Américaine).
 `;
 
 // --- INITIALISATION ---
