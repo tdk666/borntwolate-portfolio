@@ -40,30 +40,10 @@ const getGenAI = () => {
   return new GoogleGenerativeAI(API_KEY);
 }
 
+// Debug function removed for production
 export const debugModels = async () => {
-  if (!API_KEY) {
-    console.log("Chatbot: No API Key for debug");
-    return;
-  }
-  try {
-    console.log("Chatbot: Checking available models via REST API...");
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${API_KEY}`);
-    const data = await response.json();
-
-    if (data.error) {
-      console.error("Chatbot REST API Error:", data.error);
-    } else if (data.models) {
-      console.log("Chatbot: Available Models:", data.models.map((m: any) => m.name));
-      // Check if our desired model is in the list
-      const hasFlash = data.models.some((m: any) => m.name.includes("gemini-1.5-flash"));
-      console.log("Chatbot: Has gemini-1.5-flash?", hasFlash);
-    } else {
-      console.log("Chatbot: No models returned (unexpected structure)", data);
-    }
-  } catch (e) {
-    console.error("Chatbot Debug Fetch Error:", e);
-  }
-}
+  // no-op
+};
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const sendMessageToGemini = async (message: string, history: { role: 'user' | 'model', parts: { text: string }[] }[], _lang: 'fr' | 'en' = 'fr') => {

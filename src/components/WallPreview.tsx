@@ -76,7 +76,7 @@ export default function WallPreview({ isOpen, onClose, imageSrc, initialSize = '
     const availableSizes = activeRange.variants.map(v => {
         let w = 30, h = 45;
         // Fix for "Cannot read properties of undefined (reading 'match')"
-        if (v?.id) {
+        if (v?.id && typeof v.id === 'string') {
             const match = v.id.match(/(\d+)x(\d+)/);
             if (match) {
                 w = parseInt(match[1]);

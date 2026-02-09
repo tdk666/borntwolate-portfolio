@@ -16,13 +16,6 @@ if (import.meta.env.PROD) {
   );
 }
 
-window.addEventListener('unhandledrejection', event => {
-  console.error('Global Unhandled Rejection:', event.reason);
-  if (event.reason && event.reason.stack) {
-    console.error(event.reason.stack);
-  }
-});
-
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HelmetProvider>
