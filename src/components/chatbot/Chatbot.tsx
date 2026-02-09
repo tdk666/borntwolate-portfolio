@@ -153,8 +153,8 @@ export const Chatbot = () => {
         const parts = text.split(urlRegex);
 
         return parts.map((part, index) => {
-            if (!part) return null; // Skip undefined parts from regex split
-            if (part.match(urlRegex)) {
+            if (part === undefined || part === null) return null; // Robust check
+            if (part.match && part.match(urlRegex)) { // Extra safety check for .match method existence
                 return (
                     <a
                         key={index}
