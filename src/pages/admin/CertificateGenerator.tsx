@@ -98,9 +98,11 @@ const CertificateGenerator = () => {
         if (finishId === 'collection') {
             paperDetails = "Canson Infinity Platine Fibre Rag 310g"; // Standard Fine Art
         } else if (finishId === 'elegance') {
-            paperDetails = "Hahnemühle Photo Rag 308g + Cadre Nielsen Alpha";
+            // Updated per user feedback: Always Canson Infinity Platine 310g
+            paperDetails = "Canson Infinity Platine Fibre Rag 310g + Cadre Nielsen Alpha";
         } else if (finishId === 'exception' || finishId === 'galerie') {
-            paperDetails = "Caisse Américaine Bois Noir + Contrecollage Alu";
+            // Updated per user feedback: Always Canson Infinity Platine 310g
+            paperDetails = "Canson Infinity Platine Fibre Rag 310g + Caisse Américaine";
         }
 
         setData(prev => ({ ...prev, paper: paperDetails }));
