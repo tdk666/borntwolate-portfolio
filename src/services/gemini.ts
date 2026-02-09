@@ -40,7 +40,8 @@ const getGenAI = () => {
   return new GoogleGenerativeAI(API_KEY);
 }
 
-export const sendMessageToGemini = async (message: string, history: { role: 'user' | 'model', parts: { text: string }[] }[], lang: 'fr' | 'en' = 'fr') => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const sendMessageToGemini = async (message: string, history: { role: 'user' | 'model', parts: { text: string }[] }[], _lang: 'fr' | 'en' = 'fr') => {
   // Unused 'lang' kept for signature compatibility but ignored for now as user simplified prompt
 
   if (!API_KEY) {
