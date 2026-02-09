@@ -75,10 +75,13 @@ export default function WallPreview({ isOpen, onClose, imageSrc, initialSize = '
     // Extraire les dimensions et gérer l'orientation
     const availableSizes = activeRange.variants.map(v => {
         let w = 30, h = 45;
-        const match = v.id.match(/(\d+)x(\d+)/);
-        if (match) {
-            w = parseInt(match[1]);
-            h = parseInt(match[2]);
+        // Fix for "Cannot read properties of undefined (reading 'match')"
+        if (v?.id) {
+            const match = v.id.match(/(\d+)x(\d+)/);
+            if (match) {
+                w = parseInt(match[1]);
+                h = parseInt(match[2]);
+            }
         }
 
         const min = Math.min(w, h);
