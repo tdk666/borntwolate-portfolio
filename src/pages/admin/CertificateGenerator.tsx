@@ -4,19 +4,24 @@ import { SEO } from '../../components/SEO';
 import { stockService } from '../../services/stock';
 import toast, { Toaster } from 'react-hot-toast';
 import { photos, seriesData } from '../../data/photos';
+import { PRICING_CATALOG } from '../../data/pricing';
 
 const CertificateGenerator = () => {
     // --- ÉTATS ---
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [passwordInput, setPasswordInput] = useState("");
     const [error, setError] = useState(false);
+
+    // Selectors
     const [selectedPhotoId, setSelectedPhotoId] = useState<number | string>("");
+    const [selectedFinishId, setSelectedFinishId] = useState<string>("");
+    const [selectedFormatId, setSelectedFormatId] = useState<string>("");
 
     const [data, setData] = useState({
         title: '',
         series: '',
-        format: '40 x 60 cm',
-        paper: 'Hahnemühle Photo Rag 308g',
+        format: '', // Auto-filled
+        paper: '', // Auto-filled
         number: '',
         total: '30',
         date: new Date().toLocaleDateString('fr-FR'),
@@ -64,11 +69,7 @@ const CertificateGenerator = () => {
 
         const photo = photos.find(p => p.id === Number(id)) || photos.find(p => p.title === id);
         if (photo) {
-            // 1. Mise à jour des infos de base
             const slug = getSlug(photo.title);
-
-            // 2. Récupération intelligente du numéro d'édition
-            // On regarde combien ont été vendus (ex: 1), donc on propose le suivant (ex: 2)
             const soldCount = await stockService.getStock(slug);
             const nextEdition = soldCount + 1;
 
@@ -76,10 +77,44 @@ const CertificateGenerator = () => {
                 ...prev,
                 title: photo.title,
                 series: getSeriesTitle(photo.seriesId),
-                number: String(nextEdition).padStart(2, '0'), // "01", "02", etc.
+                number: String(nextEdition).padStart(2, '0'),
             }));
 
             toast.success(`Chargé : ${photo.title}\nStock vendu : ${soldCount} → Édition suggérée : ${nextEdition}/${data.total}`);
+        }
+    };
+
+    const handleFinishSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const finishId = e.target.value;
+        setSelectedFinishId(finishId);
+        setSelectedFormatId(""); // Reset format when finish changes
+
+        if (!finishId) return;
+
+        const range = PRICING_CATALOG[finishId];
+        let paperDetails = "";
+
+        // Auto-Fill Logic based on Pricing Catalog
+        if (finishId === 'collection') {
+            paperDetails = "Canson Infinity Platine Fibre Rag 310g"; // Standard Fine Art
+        } else if (finishId === 'elegance') {
+            paperDetails = "Hahnemühle Photo Rag 308g + Cadre Nielsen Alpha";
+        } else if (finishId === 'exception' || finishId === 'galerie') {
+            paperDetails = "Caisse Américaine Bois Noir + Contrecollage Alu";
+        }
+
+        setData(prev => ({ ...prev, paper: paperDetails }));
+    };
+
+    const handleFormatSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const formatId = e.target.value;
+        setSelectedFormatId(formatId);
+
+        if (selectedFinishId && formatId) {
+            const variant = PRICING_CATALOG[selectedFinishId].variants.find(v => v.id === formatId);
+            if (variant) {
+                setData(prev => ({ ...prev, format: variant.label }));
+            }
         }
     };
 
@@ -220,9 +255,9 @@ const CertificateGenerator = () => {
                     </div>
 
                     <div className="grid gap-4">
-                        {/* NEW: DROPDOWN SELECTOR */}
+                        {/* PHOTO SELECTOR */}
                         <div>
-                            <label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Oeuvre (Auto-Fill)</label>
+                            <label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Oeuvre</label>
                             <select
                                 value={selectedPhotoId}
                                 onChange={handlePhotoSelect}
@@ -235,16 +270,53 @@ const CertificateGenerator = () => {
                             </select>
                         </div>
 
-                        <div><label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Titre (Manuel)</label><input type="text" value={data.title} onChange={e => setData({ ...data, title: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-darkroom-red outline-none text-white" /></div>
-                        <div><label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Série</label><input type="text" value={data.series} onChange={e => setData({ ...data, series: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-darkroom-red outline-none text-white" /></div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div><label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Format</label><input type="text" value={data.format} onChange={e => setData({ ...data, format: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-darkroom-red outline-none text-white" /></div>
-                            <div><label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Support</label><input type="text" value={data.paper} onChange={e => setData({ ...data, paper: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-darkroom-red outline-none text-white" /></div>
+                        {/* FINISH SELECTOR */}
+                        <div>
+                            <label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Finition (Gamme)</label>
+                            <select
+                                value={selectedFinishId}
+                                onChange={handleFinishSelect}
+                                className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-darkroom-red outline-none text-white [&>option]:bg-neutral-900"
+                            >
+                                <option value="">-- Choisir une finition --</option>
+                                {Object.entries(PRICING_CATALOG).map(([key, range]) => (
+                                    <option key={key} value={key}>{range.label}</option>
+                                ))}
+                            </select>
                         </div>
-                        <div className="grid grid-cols-3 gap-4">
+
+                        {/* FORMAT SELECTOR */}
+                        <div>
+                            <label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Format (Taille)</label>
+                            <select
+                                value={selectedFormatId}
+                                onChange={handleFormatSelect}
+                                disabled={!selectedFinishId}
+                                className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-darkroom-red outline-none text-white [&>option]:bg-neutral-900 disabled:opacity-50"
+                            >
+                                <option value="">-- Choisir un format --</option>
+                                {selectedFinishId && PRICING_CATALOG[selectedFinishId].variants.map(v => (
+                                    <option key={v.id} value={v.id}>{v.label}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {/* MANUAL OVERRIDES */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div><label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Titre (Manuel)</label><input type="text" value={data.title} onChange={e => setData({ ...data, title: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-darkroom-red outline-none text-white" /></div>
+                            <div><label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Série (Manuel)</label><input type="text" value={data.series} onChange={e => setData({ ...data, series: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-darkroom-red outline-none text-white" /></div>
+                        </div>
+
+                        <div><label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Support (Auto)</label><input type="text" value={data.paper} onChange={e => setData({ ...data, paper: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-darkroom-red outline-none text-white" /></div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div><label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Format (Manuel)</label><input type="text" value={data.format} onChange={e => setData({ ...data, format: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-sm focus:border-darkroom-red outline-none text-white" /></div>
+                            <div><label className="block text-[10px] text-silver mb-1">Date</label><input type="text" value={data.date} onChange={e => setData({ ...data, date: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-white" /></div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
                             <div><label className="block text-[10px] text-silver mb-1">N°</label><input type="text" value={data.number} onChange={e => setData({ ...data, number: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-center text-white" /></div>
                             <div><label className="block text-[10px] text-silver mb-1">Total</label><input type="text" value={data.total} onChange={e => setData({ ...data, total: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-center text-white" /></div>
-                            <div><label className="block text-[10px] text-silver mb-1">Date</label><input type="text" value={data.date} onChange={e => setData({ ...data, date: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-white" /></div>
                         </div>
                     </div>
 
