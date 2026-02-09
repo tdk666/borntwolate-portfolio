@@ -41,23 +41,27 @@ const getGenAI = () => {
 }
 
 export const debugModels = async () => {
-  const genAI = getGenAI();
-  if (!genAI) {
+  if (!API_KEY) {
     console.log("Chatbot: No API Key for debug");
     return;
   }
   try {
-    genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // Dummy init to get client
-    // Actually we need the model-agnostic client to list models? 
-    // The SDK doesn't expose listModels directly on the instance easily without complex setup usually?
-    // Wait, genAI.getGenerativeModel is for a specific model.
-    // We can try to use the REST API for debugging if SDK fails?
-    // Or just try a simple generateContent to see if it works with *any* model?
+    console.log("Chatbot: Checking available models via REST API...");
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${API_KEY}`);
+    const data = await response.json();
 
-    // Let's just log that we are trying gemini-1.5-flash
-    console.log("Chatbot: Attempting to use model 'gemini-1.5-flash'...");
+    if (data.error) {
+      console.error("Chatbot REST API Error:", data.error);
+    } else if (data.models) {
+      console.log("Chatbot: Available Models:", data.models.map((m: any) => m.name));
+      // Check if our desired model is in the list
+      const hasFlash = data.models.some((m: any) => m.name.includes("gemini-1.5-flash"));
+      console.log("Chatbot: Has gemini-1.5-flash?", hasFlash);
+    } else {
+      console.log("Chatbot: No models returned (unexpected structure)", data);
+    }
   } catch (e) {
-    console.error("Chatbot Debug Error:", e);
+    console.error("Chatbot Debug Fetch Error:", e);
   }
 }
 
