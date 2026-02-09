@@ -7,7 +7,6 @@ import { seriesData } from "../data/photos";
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 // --- 1. CONTEXTE ARTISTIQUE ---
-// --- 1. CONTEXTE ARTISTIQUE ---
 const ARTISTIC_CONTEXT = `
 TU ES : Assistant du photographe argentique BornTwoLate.
 TON TON : Poétique, mélancolique, expert grain/papier. Tu n'es pas un vendeur agressif, mais un gardien de la mémoire.
@@ -108,6 +107,7 @@ export const sendMessageToGemini = async (message: string, history: { role: 'use
       if (lines.length > 0) stockMessage = lines.join("\n");
     } catch (e) {
       console.error("Erreur Stock IA:", e);
+      stockMessage = "Stocks momentanément indisponibles. Vérifier sur le site.";
     }
 
     // 2. On injecte les stocks dans le prompt système
