@@ -25,6 +25,7 @@ const CertificateGenerator = () => {
         number: '',
         total: '30',
         date: new Date().toLocaleDateString('fr-FR'),
+        useSignature: true, // Default to true
     });
 
     // MOT DE PASSE (À changer ici si besoin)
@@ -179,7 +180,11 @@ const CertificateGenerator = () => {
                     </div>
                     <div className="text-right">
                         <p className="font-space-mono text-[10px] uppercase tracking-widest text-black/40 mb-12">Signature de l'Artiste</p>
-                        <div className="h-px bg-black/20 w-3/4 ml-auto"></div>
+                        {data.useSignature ? (
+                            <img src="/signature.png" alt="Signature" className="h-16 ml-auto -mt-8 mb-4 mix-blend-multiply opacity-90" />
+                        ) : (
+                            <div className="h-px bg-black/20 w-3/4 ml-auto"></div>
+                        )}
                     </div>
                 </div>
                 <div className="absolute bottom-4 right-12 text-[8px] font-mono text-black/20">
@@ -319,6 +324,18 @@ const CertificateGenerator = () => {
                         <div className="grid grid-cols-2 gap-4">
                             <div><label className="block text-[10px] text-silver mb-1">N°</label><input type="text" value={data.number} onChange={e => setData({ ...data, number: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-center text-white" /></div>
                             <div><label className="block text-[10px] text-silver mb-1">Total</label><input type="text" value={data.total} onChange={e => setData({ ...data, total: e.target.value })} className="w-full bg-black/50 border border-white/20 p-2 text-center text-white" /></div>
+                        </div>
+
+                        {/* SIGNATURE TOGGLE */}
+                        <div className="flex items-center gap-2 mt-2">
+                            <input
+                                type="checkbox"
+                                id="useSignature"
+                                checked={data.useSignature}
+                                onChange={e => setData({ ...data, useSignature: e.target.checked })}
+                                className="accent-darkroom-red w-4 h-4"
+                            />
+                            <label htmlFor="useSignature" className="text-xs text-silver select-none cursor-pointer">Inclure Signature Numérique</label>
                         </div>
                     </div>
 
