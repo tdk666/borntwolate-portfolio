@@ -76,7 +76,7 @@ export const sendMessageToGemini = async (message: string, history: { role: 'use
 
     // 3. On lance le chat avec le nouveau contexte
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash", // Revert to standard alias
+      model: "gemini-pro", // Fallback to stable legacy model
       systemInstruction: finalSystemPrompt
     });
 
