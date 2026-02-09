@@ -1,7 +1,5 @@
 User-agent: *
 Allow: /
-
-Disallow: /*.json
 Disallow: /admin/
 
 Sitemap: https://borntwolate.com/sitemap.xml

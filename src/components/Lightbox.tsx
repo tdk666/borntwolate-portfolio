@@ -123,7 +123,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
     return (
         <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-black/98 backdrop-blur-xl flex items-center justify-center"
+            className="fixed inset-0 z-[100] bg-black/98 backdrop-blur-md flex items-center justify-center"
             onClick={onClose}
             // Handlers manuels pour le fond noir uniquement
             onTouchStart={onTouchStart}
@@ -144,6 +144,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                         key={photo.url}
                         src={photo.url}
                         alt={photo.title}
+                        fetchPriority="high"
                         // Framer Motion Drag (Gère le swipe sur l'image)
                         drag="x"
                         dragConstraints={{ left: 0, right: 0 }}
