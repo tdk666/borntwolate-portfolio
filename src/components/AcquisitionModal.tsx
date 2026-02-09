@@ -26,6 +26,22 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
   const [isWallPreviewOpen, setIsWallPreviewOpen] = useState(false);
   const [currency, setCurrency] = useState<'EUR' | 'USD' | 'GBP'>('EUR');
   const [isLoading, setIsLoading] = useState(false);
+  const [stockCount, setStockCount] = useState<number | null>(null);
+
+  // Stock Fetching
+  useEffect(() => {
+    if (isOpen && photoTitle) {
+      const fetchStock = async () => {
+        // Dynamic import to avoid cycles or load issues if service is broken? No, standard import is fine.
+        // We assume stockService handles errors now.
+        const { stockService } = await import('../services/stock');
+        const slug = stockService.getSlug(photoTitle);
+        const sold = await stockService.getStock(slug);
+        setStockCount(sold);
+      };
+      fetchStock();
+    }
+  }, [isOpen, photoTitle]);
 
   if (!isOpen) return null;
 
@@ -102,9 +118,22 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
               <div>
                 <div className="text-[10px] uppercase tracking-widest text-white/60 mb-1 md:mb-2">{t('acquisition.selected_work')}</div>
                 <h2 className="font-serif text-2xl md:text-3xl text-white leading-tight shadow-black drop-shadow-md md:drop-shadow-none">{photoTitle}</h2>
-                <p className="text-xs md:text-sm text-white/80 md:text-white/60 mt-1">
-                  {t('acquisition.limited_edition')}
-                </p>
+                <div className="flex flex-col gap-1 mt-1">
+                  <p className="text-xs md:text-sm text-white/80 md:text-white/60">
+                    {t('acquisition.limited_edition')}
+                  </p>
+                  {stockCount !== null && (
+                    <p className={`text-[10px] uppercase tracking-widest font-space-mono ${(30 - stockCount) <= 5 ? 'text-red-500 animate-pulse' : 'text-white/40'
+                      }`}>
+                      {(30 - stockCount) <= 0
+                        ? (t('common.sold_out') || 'SOLD OUT')
+                        : (30 - stockCount) <= 5
+                          ? `${30 - stockCount} copies remaining!`
+                          : `${30 - stockCount} copies available`
+                      }
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>

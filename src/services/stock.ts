@@ -18,21 +18,28 @@ export const stockService = {
 
     getAllStocks: async (): Promise<Record<string, number>> => {
         try {
-            const { data, error } = await supabase
-                .from('art_stocks')
-                .select('slug, sold_count');
+            // Inner try-catch to handle Supabase connection errors specifically
+            try {
+                const { data, error } = await supabase
+                    .from('art_stocks')
+                    .select('slug, sold_count');
 
-            if (error) throw error;
+                // If credentials were fake/missing, this will error
+                if (error) throw error;
 
-            const stocks: Record<string, number> = {};
-            if (data) {
-                data.forEach((item: StockData) => {
-                    stocks[item.slug] = item.sold_count;
-                });
+                const stocks: Record<string, number> = {};
+                if (data) {
+                    data.forEach((item: StockData) => {
+                        stocks[item.slug] = item.sold_count;
+                    });
+                }
+                return stocks;
+            } catch (supaError) {
+                console.warn("Stock fetch failed (likely missing env vars):", supaError);
+                return {}; // Return empty object so app doesn't crash
             }
-            return stocks;
         } catch (error) {
-            console.error('Error fetching all stocks:', error);
+            console.error('Error in getAllStocks wrapper:', error);
             return {};
         }
     },
@@ -53,7 +60,7 @@ export const stockService = {
 
             return data?.sold_count || 0;
         } catch (error) {
-            console.error(`Error fetching stock for ${slug}:`, error);
+            console.warn(`Error fetching stock for ${slug} (using default 0):`, error);
             return 0;
         }
     },
