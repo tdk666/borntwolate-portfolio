@@ -4,6 +4,7 @@ import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Photo } from '../data/photos';
 import { useTranslation } from 'react-i18next';
 import AcquisitionModal from './AcquisitionModal';
+import { stockService } from '../services/stock';
 
 interface LightboxProps {
     photo: Photo;
@@ -21,6 +22,20 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
     const isNavigatingRef = useRef(false);
     const [showInfo, setShowInfo] = useState(false);
     const [isAcquisitionOpen, setIsAcquisitionOpen] = useState(false);
+    const [stockCount, setStockCount] = useState<number | null>(null);
+
+    useEffect(() => {
+        const fetchStock = async () => {
+            const slug = stockService.getSlug(photo.title);
+            const sold = await stockService.getStock(slug);
+            setStockCount(sold);
+        };
+        fetchStock();
+    }, [photo.title]);
+
+    const remaining = stockCount !== null ? 30 - stockCount : 30;
+    const isSoldOut = remaining <= 0;
+    const isLowStock = remaining <= 5 && !isSoldOut;
 
     const handleNavigate = useCallback((direction: 'next' | 'prev') => {
         // Si déjà en cours de navigation, on bloque immédiatement
@@ -158,15 +173,32 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
 
                     {/* Acquisition Link */}
                     {/* Acquisition Link */}
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            setIsAcquisitionOpen(true);
-                        }}
-                        className="mt-8 text-xs font-space-mono text-silver/50 hover:text-darkroom-red transition-colors uppercase tracking-widest underline decoration-1 underline-offset-4 py-2"
-                    >
-                        {t('lightbox.collect_button')}
-                    </button>
+                    <div className="mt-8 flex flex-col items-center gap-2">
+                        {stockCount !== null && (
+                            <span className={`text-[10px] uppercase tracking-widest font-space-mono ${isSoldOut ? 'text-gray-500 line-through' : isLowStock ? 'text-red-500 animate-pulse' : 'text-white/40'}`}>
+                                {isSoldOut
+                                    ? (currentLang === 'fr' ? "ÉPUISÉ / SOLD OUT" : "SOLD OUT")
+                                    : isLowStock
+                                        ? (currentLang === 'fr' ? `Derniers exemplaires ! (${remaining} restants)` : `Last copies! (${remaining} remaining)`)
+                                        : (currentLang === 'fr' ? `Édition Limitée (${30} ex)` : `Limited Edition (${30} copies)`)
+                                }
+                            </span>
+                        )}
+
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (!isSoldOut) setIsAcquisitionOpen(true);
+                            }}
+                            disabled={isSoldOut}
+                            className={`text-xs font-space-mono transition-colors uppercase tracking-widest underline decoration-1 underline-offset-4 py-2 ${isSoldOut
+                                ? 'text-gray-600 cursor-not-allowed decoration-transparent hover:text-gray-600'
+                                : 'text-silver/50 hover:text-darkroom-red'
+                                }`}
+                        >
+                            {t('lightbox.collect_button')}
+                        </button>
+                    </div>
                 </div>
 
                 {/* Hide mobile info when Acquisition Modal is open to prevent scroll conflict */}
@@ -217,12 +249,26 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                                     {photo.technical_info && <p className="font-mono text-xs text-darkroom-red uppercase tracking-widest">{photo.technical_info}</p>}
                                     {photo.caption_artistic && <p className="font-inter font-light text-sm text-silver leading-relaxed text-justify whitespace-pre-line">{getLocalizedText(photo.caption_artistic)}</p>}
                                     <div className="pt-4 flex flex-col items-center gap-4">
+                                        {stockCount !== null && (
+                                            <span className={`text-[10px] uppercase tracking-widest font-space-mono ${isSoldOut ? 'text-gray-500' : isLowStock ? 'text-red-500 animate-pulse' : 'text-white/40'}`}>
+                                                {isSoldOut
+                                                    ? (currentLang === 'fr' ? "ÉPUISÉ / SOLD OUT" : "SOLD OUT")
+                                                    : isLowStock
+                                                        ? (currentLang === 'fr' ? `Derniers exemplaires ! (${remaining} restants)` : `Last copies! (${remaining} remaining)`)
+                                                        : (currentLang === 'fr' ? `Édition Limitée (${30} ex)` : `Limited Edition (${30} copies)`)
+                                                }
+                                            </span>
+                                        )}
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                setIsAcquisitionOpen(true);
+                                                if (!isSoldOut) setIsAcquisitionOpen(true);
                                             }}
-                                            className="bg-white text-black px-8 py-3 rounded-full font-medium hover:bg-gray-200 transition-colors uppercase tracking-widest text-xs"
+                                            disabled={isSoldOut}
+                                            className={`bg-white text-black px-8 py-3 rounded-full font-medium transition-colors uppercase tracking-widest text-xs ${isSoldOut
+                                                ? 'opacity-50 cursor-not-allowed bg-gray-500 text-gray-300'
+                                                : 'hover:bg-gray-200'
+                                                }`}
                                         >
                                             {t('lightbox.collect_button')}
                                         </button>

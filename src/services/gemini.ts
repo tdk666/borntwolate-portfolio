@@ -1,8 +1,10 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { photos, seriesData } from "../data/photos";
 import { PRICING_CATALOG as pricing } from "../data/pricing";
+import { stockService } from './stock';
 
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+// Fallback to provided key if env var is missing or for immediate fix
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "AIzaSyAWuGIWKHiXlyTpeKmET8ddp9p-TXLKhvQ";
 
 // 1. DATA PREPARATION (The Dynamic Brain)
 // Inject ALL photos with their pre-calculated direct link
@@ -136,6 +138,27 @@ export const sendMessageToGemini = async (message: string, history: { role: 'use
       : "The Curator is momentarily unavailable. Please find us on the Contact page.";
   }
 
+  // 1. Fetch Real-Time Stock
+  let stockContext = "";
+  try {
+    const stocks = await stockService.getAllStocks();
+    const stockList = Object.entries(stocks)
+      .map(([slug, sold]) => {
+        const remaining = 30 - sold;
+        const status = remaining <= 0 ? (lang === 'fr' ? "ÉPUISÉ" : "SOLD OUT") : (lang === 'fr' ? `${remaining} restants` : `${remaining} remaining`);
+        return `${slug}: ${sold} sold (${status})`;
+      })
+      .join(", ");
+
+    stockContext = lang === 'fr'
+      ? `\n\n[ÉTAT DES STOCKS EN TEMPS RÉEL]\nVoici les stocks actuels (Max 30 exemplaires par œuvre) :\n${stockList}\nUtilise ces infos pour créer de l'urgence si le stock est bas (< 5).`
+      : `\n\n[REAL-TIME STOCK STATUS]\nCurrent stocks (Max 30 copies per artwork):\n${stockList}\nUse this info to create urgency if stock is low (< 5).`;
+  } catch (e) {
+    console.warn("Failed to fetch stocks for Gemini", e);
+  }
+
+  const systemInstruction = PROMPTS[lang] + stockContext;
+
   try {
     const formattedHistory = history.map(h => ({
       role: h.role,
@@ -148,6 +171,10 @@ export const sendMessageToGemini = async (message: string, history: { role: 'use
         maxOutputTokens: 1000,
         temperature: 0.7,
       },
+      systemInstruction: {
+        role: 'system',
+        parts: [{ text: systemInstruction }]
+      }
     });
 
     const result = await chat.sendMessage(message);

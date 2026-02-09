@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react';
-import { ShieldCheck, Printer, AlertCircle, Lock } from 'lucide-react';
+import { ShieldCheck, Printer, AlertCircle, Lock, TrendingUp } from 'lucide-react';
 import { SEO } from '../../components/SEO';
+import { stockService } from '../../services/stock';
+import toast, { Toaster } from 'react-hot-toast';
 
 const CertificateGenerator = () => {
     // --- ÉTATS ---
@@ -33,6 +35,27 @@ const CertificateGenerator = () => {
 
     const handlePrint = () => {
         window.print();
+    };
+
+    const handleStockIncrement = async () => {
+        const slug = stockService.getSlug(data.title);
+        const confirm = window.confirm(`Valider une vente pour "${data.title}" (slug: ${slug}) ?\nCela ajoutera +1 au stock vendu.`);
+
+        if (confirm) {
+            const result = await stockService.incrementStock(slug);
+            if (result.success) {
+                toast.success(`Stock mis à jour !\nNouveau total vendu : ${result.newCount}`);
+                // Update local number if user wants sync? 
+                // data.number is "Edition N°", so if sold_count is X, maybe edition is X?
+                // But edition numbering might be manual. We just notify for now.
+                if (result.newCount) {
+                    setData(prev => ({ ...prev, number: String(result.newCount).padStart(2, '0') }));
+                }
+            } else {
+                toast.error("Erreur mise à jour stock.");
+                console.error(result.error);
+            }
+        }
     };
 
     // --- COMPOSANT CERTIFICAT (Template) ---
@@ -116,6 +139,7 @@ const CertificateGenerator = () => {
     return (
         <div className="min-h-screen bg-neutral-900 text-white p-4 md:p-8">
             <SEO title="Générateur Certificat" description="Admin only" robots="noindex" />
+            <Toaster position="top-right" />
 
             {/* STYLE PRINT */}
             <style>{`
@@ -169,6 +193,13 @@ const CertificateGenerator = () => {
                         <button onClick={handlePrint} className="w-full bg-off-white text-darkroom-black py-4 font-space-mono uppercase font-bold hover:bg-darkroom-red hover:text-white transition-colors flex items-center justify-center gap-2">
                             <Printer size={18} /> Imprimer PDF
                         </button>
+
+                        <div className="pt-4 border-t border-white/10 mt-4">
+                            <h3 className="text-xs uppercase tracking-widest text-silver mb-3">Gestion Stock</h3>
+                            <button onClick={handleStockIncrement} className="w-full bg-red-900/50 border border-red-500/30 text-red-200 py-3 font-space-mono uppercase text-xs font-bold hover:bg-red-900 hover:text-white transition-colors flex items-center justify-center gap-2">
+                                <TrendingUp size={16} /> Valider une Vente (+1)
+                            </button>
+                        </div>
                     </div>
                 </div>
 
