@@ -58,18 +58,28 @@ const CertificateGenerator = () => {
             .replace(/-+/g, "-");
     };
 
-    const handlePhotoSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const handlePhotoSelect = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const id = e.target.value;
         setSelectedPhotoId(id);
 
         const photo = photos.find(p => p.id === Number(id)) || photos.find(p => p.title === id);
         if (photo) {
+            // 1. Mise à jour des infos de base
+            const slug = getSlug(photo.title);
+
+            // 2. Récupération intelligente du numéro d'édition
+            // On regarde combien ont été vendus (ex: 1), donc on propose le suivant (ex: 2)
+            const soldCount = await stockService.getStock(slug);
+            const nextEdition = soldCount + 1;
+
             setData(prev => ({
                 ...prev,
                 title: photo.title,
                 series: getSeriesTitle(photo.seriesId),
-                // Reset number/total if needed, or keep previous defaults
+                number: String(nextEdition).padStart(2, '0'), // "01", "02", etc.
             }));
+
+            toast.success(`Chargé : ${photo.title}\nStock vendu : ${soldCount} → Édition suggérée : ${nextEdition}/${data.total}`);
         }
     };
 
