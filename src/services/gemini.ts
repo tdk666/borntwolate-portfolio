@@ -47,7 +47,7 @@ export const debugModels = async () => {
     return;
   }
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // Dummy init to get client
+    genAI.getGenerativeModel({ model: "gemini-1.5-flash" }); // Dummy init to get client
     // Actually we need the model-agnostic client to list models? 
     // The SDK doesn't expose listModels directly on the instance easily without complex setup usually?
     // Wait, genAI.getGenerativeModel is for a specific model.
