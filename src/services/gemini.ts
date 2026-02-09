@@ -4,7 +4,8 @@ import { PRICING_CATALOG as pricing } from "../data/pricing";
 import { stockService } from './stock';
 
 // Fallback to provided key if env var is missing or for immediate fix
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || "AIzaSyAWuGIWKHiXlyTpeKmET8ddp9p-TXLKhvQ";
+// Fallback to provided key if env var is missing or for immediate fix
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
 // 1. DATA PREPARATION (The Dynamic Brain)
 // Inject ALL photos with their pre-calculated direct link
