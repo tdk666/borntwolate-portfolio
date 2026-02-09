@@ -118,22 +118,9 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
               <div>
                 <div className="text-[10px] uppercase tracking-widest text-white/60 mb-1 md:mb-2">{t('acquisition.selected_work')}</div>
                 <h2 className="font-serif text-2xl md:text-3xl text-white leading-tight shadow-black drop-shadow-md md:drop-shadow-none">{photoTitle}</h2>
-                <div className="flex flex-col gap-1 mt-1">
-                  <p className="text-xs md:text-sm text-white/80 md:text-white/60">
-                    {t('acquisition.limited_edition')}
-                  </p>
-                  {stockCount !== null && (
-                    <p className={`text-[10px] uppercase tracking-widest font-space-mono ${(30 - stockCount) <= 5 ? 'text-red-500 animate-pulse' : 'text-white/40'
-                      }`}>
-                      {(30 - stockCount) <= 0
-                        ? (t('common.sold_out') || 'SOLD OUT')
-                        : (30 - stockCount) <= 5
-                          ? `${30 - stockCount} copies remaining!`
-                          : `${30 - stockCount} copies available`
-                      }
-                    </p>
-                  )}
-                </div>
+                <p className="text-xs md:text-sm text-white/80 md:text-white/60 mt-1">
+                  {t('acquisition.limited_edition')}
+                </p>
               </div>
             </div>
           </div>
@@ -143,6 +130,24 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
 
             {/* Scrollable Content Area */}
             <div className="flex-1 overflow-y-auto p-6 md:p-8 overscroll-contain">
+
+              {/* Stock Status Indicator */}
+              {stockCount !== null && (
+                <div className={`mb-6 p-3 rounded-lg flex items-center gap-3 ${(30 - stockCount) <= 0 ? 'bg-red-500/10 border border-red-500/20' : 'bg-white/5'
+                  }`}>
+                  <div className={`w-2 h-2 rounded-full ${(30 - stockCount) <= 5 ? 'bg-red-500 animate-pulse' : 'bg-emerald-500'
+                    }`} />
+                  <span className={`text-xs uppercase tracking-widest font-space-mono ${(30 - stockCount) <= 5 ? 'text-red-400' : 'text-white/60'
+                    }`}>
+                    {(30 - stockCount) <= 0
+                      ? (t('common.sold_out') || 'SOLD OUT - ÉPUISÉ')
+                      : (30 - stockCount) <= 5
+                        ? `${30 - stockCount} copies remaining`
+                        : `Limited Edition - ${30 - stockCount}/30 copies`
+                    }
+                  </span>
+                </div>
+              )}
 
               {/* Tabs Finitions */}
               <div className="flex gap-2 mb-6 border-b border-white/10 pb-4 overflow-x-auto no-scrollbar mask-gradient-right">

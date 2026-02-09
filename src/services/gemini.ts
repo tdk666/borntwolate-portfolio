@@ -138,23 +138,36 @@ export const sendMessageToGemini = async (message: string, history: { role: 'use
       : "The Curator is momentarily unavailable. Please find us on the Contact page.";
   }
 
-  // 1. Fetch Real-Time Stock
+  // 1. Fetch Real-Time Stock (SAFE MODE)
   let stockContext = "";
   try {
-    const stocks = await stockService.getAllStocks();
-    const stockList = Object.entries(stocks)
-      .map(([slug, sold]) => {
-        const remaining = 30 - sold;
-        const status = remaining <= 0 ? (lang === 'fr' ? "ÉPUISÉ" : "SOLD OUT") : (lang === 'fr' ? `${remaining} restants` : `${remaining} remaining`);
-        return `${slug}: ${sold} sold (${status})`;
-      })
-      .join(", ");
+    // We define a timeout to prevent hanging if Supabase is slow/unresponsive
+    const stockPromise = stockService.getAllStocks().catch(err => {
+      console.warn("Stock service internal error:", err);
+      return {};
+    });
 
-    stockContext = lang === 'fr'
-      ? `\n\n[ÉTAT DES STOCKS EN TEMPS RÉEL]\nVoici les stocks actuels (Max 30 exemplaires par œuvre) :\n${stockList}\nUtilise ces infos pour créer de l'urgence si le stock est bas (< 5).`
-      : `\n\n[REAL-TIME STOCK STATUS]\nCurrent stocks (Max 30 copies per artwork):\n${stockList}\nUse this info to create urgency if stock is low (< 5).`;
+    // Race against a timeout of 2 seconds
+    const timeoutPromise = new Promise<Record<string, number>>((resolve) => setTimeout(() => resolve({}), 2000));
+
+    const stocks = await Promise.race([stockPromise, timeoutPromise]);
+
+    if (stocks && Object.keys(stocks).length > 0) {
+      const stockList = Object.entries(stocks)
+        .map(([slug, sold]) => {
+          const remaining = 30 - sold;
+          const status = remaining <= 0 ? (lang === 'fr' ? "ÉPUISÉ" : "SOLD OUT") : (lang === 'fr' ? `${remaining} restants` : `${remaining} remaining`);
+          return `${slug}: ${sold} sold (${status})`;
+        })
+        .join(", ");
+
+      stockContext = lang === 'fr'
+        ? `\n\n[ÉTAT DES STOCKS EN TEMPS RÉEL]\nVoici les stocks actuels (Max 30 exemplaires par œuvre) :\n${stockList}\nUtilise ces infos pour créer de l'urgence si le stock est bas (< 5).`
+        : `\n\n[REAL-TIME STOCK STATUS]\nCurrent stocks (Max 30 copies per artwork):\n${stockList}\nUse this info to create urgency if stock is low (< 5).`;
+    }
   } catch (e) {
-    console.warn("Failed to fetch stocks for Gemini", e);
+    console.warn("Failed to fetch stocks for Gemini (Graceful Degradation):", e);
+    // Fallback: No stock context, chatbot works as before
   }
 
   const systemInstruction = PROMPTS[lang] + stockContext;
