@@ -6,6 +6,10 @@ import { sendEmail } from '../services/email';
 import { PRICING_CATALOG } from '../data/pricing';
 import { FadeIn } from './animations/FadeIn';
 import WallPreview from './WallPreview';
+import { loadStripe } from '@stripe/stripe-js';
+
+// Initialize Stripe outside of component to avoid recreating the object on every render
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 interface AcquisitionModalProps {
   isOpen: boolean;
@@ -244,6 +248,9 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
                       });
 
                       // 2. Redirect to Stripe
+                      const stripe = await stripePromise;
+                      if (!stripe) throw new Error("Stripe failed to initialize");
+
                       const { error } = await stripe.redirectToCheckout({
                         lineItems: [{ price: currentVariant.id, quantity: 1 }],
                         mode: 'payment',

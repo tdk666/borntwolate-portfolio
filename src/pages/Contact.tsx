@@ -95,24 +95,9 @@ const Contact = () => {
         const form = e.currentTarget;
         const formData = new FormData(form);
 
-        // Concatenate selected photos into the message
-        let artworkTitle = "";
-        let seriesTitle = "";
-        let artworkList = "";
-
-        // Standard Acquisition Logic (Pre-selection)
+        // Standard Acquisition Logic (Pre-selection) - Logic preserved but unused vars removed
         if (subject === 'acquisition' && selectedPhotos.length > 0) {
-            const photoListString = selectedPhotos.map(p => `- ${p.title} (${p.seriesTitle})`).join('\n');
-            artworkList = photoListString;
-
-            // Populate Artwork Details for Admin Template defaults
-            if (selectedPhotos.length === 1) {
-                artworkTitle = selectedPhotos[0].title;
-                seriesTitle = selectedPhotos[0].seriesTitle;
-            } else {
-                artworkTitle = "Sélection Multiple (Voir Message)";
-                seriesTitle = "Diverses Séries";
-            }
+            // Logic intentionally kept simple as we construct message below
         }
 
         // Get Explicit User Choices from Form
@@ -144,7 +129,7 @@ const Contact = () => {
             // Extract values for template mapping
             const userName = formData.get('user_name') as string;
             const userEmail = formData.get('user_email') as string;
-            const subj = formData.get('subject') as string;
+            // const subj = formData.get('subject') as string; // Unused, using state 'subject'
             // No longer reading specific fields like 'selection' or 'artwork_title' directly into params
             // We construct ONE big string.
 
