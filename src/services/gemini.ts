@@ -88,8 +88,9 @@ export const sendMessageToGemini = async (message: string, history: { role: 'use
     const response = await result.response;
     return response.text();
 
-  } catch (error) {
+  } catch (error: any) {
     console.error("Gemini Error:", error);
-    return "Désolé, une interférence technique m'empêche de consulter les archives. Réessayez dans une seconde.";
+    // Temporary Debugging: Show exact error to user
+    return `Erreur Technique Détail : ${error.message || JSON.stringify(error)}`;
   }
 };
