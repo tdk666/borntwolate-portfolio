@@ -5,10 +5,17 @@ import { PRICING_CATALOG } from "../data/pricing";
 // SAFETY CHECK: Access key safely (Support both variable names)
 const API_KEY = import.meta.env.VITE_GEMINI_SEARCH_KEY || import.meta.env.VITE_GEMINI_API_KEY;
 
+// Log once on load to debug (Will show in Netlify function logs or Browser Console)
+if (!API_KEY) {
+  console.error("🚨 CRITICAL: VITE_GEMINI_SEARCH_KEY is missing. Search will NOT work.");
+} else {
+  console.log("✅ Search Service: API Key detected.");
+}
+
 // Initialize only if key exists
 const genAI = API_KEY ? new GoogleGenerativeAI(API_KEY) : null;
 
-// --- 1. SEARCH LOGIC (NUCLEAR FIX) ---
+// --- 1. SEARCH LOGIC (V2 FIX: 1.5-Flash + Debug Logs) ---
 
 const cleanJsonOutput = (text: string): string => {
   let clean = text.replace(/```json/g, "").replace(/```/g, "");
@@ -16,31 +23,41 @@ const cleanJsonOutput = (text: string): string => {
 };
 
 export const getSemanticTags = async (query: string): Promise<string[]> => {
-  if (!genAI) {
-    console.warn("⚠️ SEARCH DISABLED: Missing API Key");
-    return [];
-  }
+  if (!genAI) return []; // Fail safe
   if (!query || query.trim().length < 2) return [];
 
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    // Switch to 1.5-flash for maximum stability
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
     const prompt = `
-      Analyze the user search query: "${query}".
-      Return ONLY a JSON array of 3 to 5 visual photography keywords (in French) relating to mood, lighting, color, or subject.
-      Example input: "triste" -> Output: ["mélancolie", "sombre", "solitude", "noir et blanc"]
-      Do NOT write any text outside the JSON array.
+      Tu es un assistant expert en photographie. Analyse cette recherche : "${query}".
+      Sors UNIQUEMENT un tableau JSON de 3 à 5 mots-clés visuels (en français) liés à l'ambiance, la couleur ou le sujet.
+      Exemple : "triste" -> ["mélancolie", "sombre", "solitude", "noir et blanc"]
+      Réponds uniquement le tableau JSON.
     `;
+
     const result = await model.generateContent(prompt);
-    const text = result.response.text();
-    const tags = JSON.parse(cleanJsonOutput(text));
-    return Array.isArray(tags) ? tags.map(t => String(t).toLowerCase()) : [];
+    const response = await result.response;
+    const text = response.text();
+
+    console.log("🤖 Raw AI Response:", text); // Debug log
+
+    const cleanedText = cleanJsonOutput(text);
+    const tags = JSON.parse(cleanedText);
+
+    if (Array.isArray(tags)) {
+      return tags.map(t => String(t).toLowerCase());
+    }
+    return [];
+
   } catch (error) {
-    console.error("❌ Gemini Search Failed:", error);
+    console.warn("⚠️ Search Error (Non-blocking):", error);
     return [];
   }
 };
 
-// --- 2. CHATBOT LOGIC (RESTORED) ---
+// --- 2. CHATBOT LOGIC (PRESERVED) ---
 
 const CONTEXT_DATA = {
   photographer: "Théo DeQuecker (TDK)",
