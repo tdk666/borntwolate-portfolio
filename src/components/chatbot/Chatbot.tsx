@@ -156,7 +156,7 @@ export const Chatbot = () => {
 
         return parts.map((part, index) => {
             if (part === undefined || part === null) return null; // Robust check
-            if (part.match && part.match(urlRegex)) { // Extra safety check for .match method existence
+            if (typeof part === 'string' && part.match && part.match(urlRegex)) { // Extra safety check for .match method existence and type
                 return (
                     <a
                         key={index}
