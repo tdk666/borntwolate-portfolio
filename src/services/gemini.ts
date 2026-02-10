@@ -155,15 +155,20 @@ const getSearchGenAI = () => {
 // --- SEMANTIC SEARCH HOOK (V2) ---
 // Maps user "vibes" (e.g., "nostalgie", "froid") to technical tags using Gemini 2.0 Flash
 export const getSemanticTags = async (query: string): Promise<string[]> => {
-  // Fallback if key missing or query too short
-  if (!SEARCH_API_KEY || query.length < 3) {
-    console.warn("⚠️ Search: Missing VITE_GEMINI_SEARCH_KEY or short query. Using legacy fallback.");
-    return legacyFallbackSearch(query);
+  // 0. Safety Check: API Key
+  if (!SEARCH_API_KEY) {
+    console.warn("⚠️ Search: Missing VITE_GEMINI_SEARCH_KEY. Semantic search disabled.");
+    return []; // Fail safely, do not crash
+  }
+
+  // 1. Safety Check: Query Length
+  if (!query || query.length < 3) {
+    return [];
   }
 
   try {
     const genAI = getSearchGenAI();
-    if (!genAI) return legacyFallbackSearch(query);
+    if (!genAI) return [];
 
     const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
@@ -178,35 +183,46 @@ export const getSemanticTags = async (query: string): Promise<string[]> => {
     const response = await result.response;
     const text = response.text();
 
-    // Clean up markdown code blocks if present (```json ... ```)
-    const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
+    if (!text) return [];
 
-    const tags = JSON.parse(cleanText);
-    if (Array.isArray(tags)) {
-      // Ensure all tags are strings and filtered
-      return tags.filter(t => typeof t === 'string').map(t => t.toLowerCase());
+    // 2. Robust Cleaning (Markdown, whitespace, unexpected chars)
+    // Remove ```json and ``` wrapping
+    let cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
+
+    // Attempt to find the array if there's extra text around it
+    const firstBracket = cleanText.indexOf('[');
+    const lastBracket = cleanText.lastIndexOf(']');
+
+    if (firstBracket !== -1 && lastBracket !== -1) {
+      cleanText = cleanText.substring(firstBracket, lastBracket + 1);
+    } else {
+      // If no brackets found, it's not a JSON array
+      console.warn("Gemini: Invalid response format (no array found)", text);
+      return [];
     }
-    return legacyFallbackSearch(query);
+
+    // 3. Safe Parsing
+    try {
+      const tags = JSON.parse(cleanText);
+      if (Array.isArray(tags)) {
+        // Ensure all tags are strings and filtered
+        return tags.filter(t => typeof t === 'string').map(t => t.toLowerCase());
+      }
+    } catch (parseError) {
+      console.warn("Gemini: JSON Parse Failed", cleanText, parseError);
+      // Fallback to simpler cleaning or just return empty
+      return [];
+    }
+
+    return [];
 
   } catch (error) {
-    console.error("Semantic Search Error:", error);
-    return legacyFallbackSearch(query);
+    // 4. Global Error Trap (Network, Quota, Unknown)
+    // warn only, do NOT throw
+    console.warn("Semantic Search Error (Handled):", error);
+    return [];
   }
 };
 
-const legacyFallbackSearch = (query: string): string[] => {
-  const lowerQuery = query.toLowerCase();
-  const semanticMap: Record<string, string[]> = {
-    'hiver': ['neige', 'froid', 'montagne'],
-    'sombre': ['nuit', 'contraste', 'urbain'],
-    'nature': ['montagne', 'alpes', 'randonnée'],
-    'ville': ['urbain', 'rue', 'architecture'],
-    'voyage': ['japon', 'italie', 'roadtrip'],
-    'nostalgie': ['argentique', 'grain', 'souvenir']
-  };
-
-  for (const [key, tags] of Object.entries(semanticMap)) {
-    if (lowerQuery.includes(key)) return tags;
-  }
-  return [lowerQuery]; // Return the query itself as a tag if no map found
-};
+// Legacy fallback removed as per V2 strict requirements to return empty array on failure.
+// const legacyFallbackSearch = ...

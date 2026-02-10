@@ -5,6 +5,7 @@ import Lightbox from '../components/Lightbox';
 
 interface SearchContextType {
     isSearchOpen: boolean;
+    isSearching: boolean; // Added
     searchResults: Photo[];
     currentPhotoIndex: number;
     searchQuery: string;
@@ -29,6 +30,7 @@ const normalizeText = (text: string | null | undefined) => {
 
 export const SearchProvider = ({ children }: { children: ReactNode }) => {
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [isSearching, setIsSearching] = useState(false); // New loading state
     const [searchResults, setSearchResults] = useState<Photo[]>([]);
     const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
     const [searchQuery, setSearchQuery] = useState('');
@@ -55,15 +57,18 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
         setIsSearchOpen(true);
         setSearchQuery(query);
         setSearchResults([]);
+        setIsSearching(true); // Start loading
 
         try {
             // V2: Semantic Search via Gemini
             let semanticTags: string[] = [];
+
+            // WRAPPED TRY-CATCH for Service Call
             try {
                 semanticTags = await getSemanticTags(query);
             } catch (err) {
-                console.warn("Semantic Search failed, falling back to simple search.", err);
-                semanticTags = [query];
+                console.warn("Context: Semantic Search Service Failed (Should satisfy 'never crash' rule)", err);
+                semanticTags = []; // Default to empty
             }
 
             console.debug("Semantic Tags:", semanticTags);
@@ -78,7 +83,7 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
                 const locMatch = normalizeText(photo?._meta?.location).includes(q);
 
                 // Semantic matching
-                const isSemanticMatch = Array.isArray(semanticTags) && semanticTags.some(tag => {
+                const isSemanticMatch = Array.isArray(semanticTags) && semanticTags.length > 0 && semanticTags.some(tag => {
                     const normTag = normalizeText(tag);
                     if (!normTag) return false;
 
@@ -97,15 +102,15 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
                 setSearchResults(results);
                 setCurrentPhotoIndex(0);
             } else {
-                // Keep open but show empty state or close? 
-                // Context pattern usually implies we just show empty results
-                // But for now, let's keep previous behavior of alert/reset
-                alert(`Aucune photo trouvée pour "${query}"`);
-                setIsSearchOpen(false);
+                // Logic for 0 results handled by UI consuming context or transient alert
+                // For now, consistent with legacy behavior
+                // alert(`Aucune photo trouvée pour "${query}"`); // Removed to avoid blocking UI thread on "crash" feeling
+                console.log(`Aucune photo trouvée pour "${query}"`);
             }
         } catch (e) {
-            console.error("Search Error:", e);
-            setIsSearchOpen(false);
+            console.error("Critical Search Context Error:", e);
+        } finally {
+            setIsSearching(false); // ALWAYS reset loading
         }
     };
 
@@ -113,6 +118,7 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
         setIsSearchOpen(false);
         setSearchResults([]);
         setSearchQuery('');
+        setIsSearching(false);
     };
 
     const nextResult = () => {
@@ -133,13 +139,14 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
             searchResults,
             currentPhotoIndex,
             searchQuery,
+            isSearching, // Exposed
             openSearch,
             closeSearch,
             nextResult,
             prevResult
         }}>
             {children}
-            {isSearchOpen && currentPhoto && (
+            {isSearchOpen && (
                 <Lightbox
                     photo={currentPhoto}
                     onClose={closeSearch}

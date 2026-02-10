@@ -123,7 +123,7 @@ const VisualSelector = ({ options, onSelect, label = "Sélectionner une œuvre",
                                 ))
                             ) : (
                                 <div className="p-4 text-center text-silver/40 text-xs font-space-mono">
-                                    Aucun résultat
+                                    Aucun résultat pour cette recherche (ou service indisponible).
                                 </div>
                             )}
                         </div>
