@@ -24,38 +24,31 @@ const cleanJsonOutput = (text: string): string => {
 export const getSemanticTags = async (query: string): Promise<string[]> => {
   // Gatekeeping
   if (!genAI) {
-    console.warn("⚠️ Search skipped: No API Key provided.");
+    console.warn("⚠️ Search disabled: VITE_GEMINI_SEARCH_KEY missing.");
     return [];
   }
   if (!query || query.trim().length < 2) return [];
 
   try {
-    // Try the latest efficient model
-    // Note: If this fails with 404, it usually means the 'Generative Language API' is not enabled in Google Cloud.
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    // 🚀 SWITCH TO GEMINI 2.0 FLASH (User Confirmed Working Model)
+    // If 2.0 fails, we add a fallback to 1.5-pro (more stable than flash)
+    const modelName = "gemini-2.0-flash";
+    const model = genAI.getGenerativeModel({ model: modelName });
+
+    console.log(`🔍 Gemini Search: Asking '${modelName}'...`);
 
     const prompt = `
-      Analyze this search query for a photography website: "${query}".
-      Return ONLY a JSON array of 3 to 5 visual French keywords (mood, color, subject).
+      Analyze this search query for a photography portfolio: "${query}".
+      Extract 3 to 5 visual tags (mood, color, subject) in French.
+      Return ONLY a JSON array of strings.
       Example: "triste" -> ["mélancolie", "sombre", "solitude", "noir et blanc"]
-      Output format: JSON Array ONLY.
     `;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
-
-    // 2. Response Integrity Check
-    if (!response) {
-      throw new Error("No response object received from Gemini.");
-    }
-
     const text = response.text();
 
-    // 3. Content Safety Check
-    if (!text) {
-      console.warn("⚠️ Gemini returned empty text.");
-      return [];
-    }
+    console.log("🤖 Gemini 2.0 Response:", text);
 
     const cleanedText = cleanJsonOutput(text);
     const tags = JSON.parse(cleanedText);
@@ -66,14 +59,24 @@ export const getSemanticTags = async (query: string): Promise<string[]> => {
     return [];
 
   } catch (error: any) {
-    // 4. Specific Error Handling (No Crash)
+    // Detailed Error Logging
+    console.error(`❌ Gemini 2.0 Search Failed:`, error);
+
+    // Attempt Fallback to Pro model if Flash 2.0 fails (e.g. 404 or Overloaded)
     if (error.message?.includes("404") || error.toString().includes("404")) {
-      console.error("🚨 GEMINI API ERROR (404): Model not found. Please enable 'Generative Language API' in your Google Cloud Console.");
-    } else {
-      console.error("❌ Search Error (Handled):", error);
+      console.warn("⚠️ Retrying with gemini-1.5-pro as fallback...");
+      try {
+        const fallbackModel = genAI.getGenerativeModel({ model: "gemini-1.5-pro" });
+        const fallbackResult = await fallbackModel.generateContent(`Return JSON array of 3 keywords for photo search: "${query}"`);
+        const fallbackText = fallbackResult.response.text();
+        const clean = cleanJsonOutput(fallbackText);
+        const tags = JSON.parse(clean);
+        return Array.isArray(tags) ? tags : [];
+      } catch (fallbackError) {
+        console.error("❌ Fallback (1.5-pro) also failed.", fallbackError);
+      }
     }
 
-    // Graceful fallback: return empty array so the UI continues working
     return [];
   }
 };
@@ -122,11 +125,10 @@ export const sendMessageToGemini = async (msg: string, history: any[], lang: str
   if (!genAI) throw new Error("API_KEY_MISSING");
 
   try {
-    // Attempt 1.5-Flash (if it works for Chat)
-    // If user has 404 for search, they might have it here too. 
-    // But Chatbot errors are handled in Chatbot.tsx component UI.
+    // Attempt 2.0-Flash (Confirmed working by user for Chatbot)
+    // We update this to match the Search model for consistency.
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash",
+      model: "gemini-2.0-flash", // UPDATED to match search
       systemInstruction: SYSTEM_INSTRUCTION + `\nCURRENT USER LANGUAGE: ${lang}`
     });
 
