@@ -10,6 +10,7 @@ export interface Photo {
     orientation?: 'landscape' | 'portrait';
     alt_accessible?: LocalizedText;
     caption_artistic?: LocalizedText;
+    tags?: string[];
 }
 
 export interface Series {

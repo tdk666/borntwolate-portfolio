@@ -1,228 +1,104 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { photos } from "../data/photos";
 import { PRICING_CATALOG } from "../data/pricing";
-import { stockService } from "./stock";
 
-import { seriesData } from "../data/photos";
+// SAFETY CHECK: Access key safely (Support both variable names)
+const API_KEY = import.meta.env.VITE_GEMINI_SEARCH_KEY || import.meta.env.VITE_GEMINI_API_KEY;
 
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+// Initialize only if key exists
+const genAI = API_KEY ? new GoogleGenerativeAI(API_KEY) : null;
 
-// --- 1. CONTEXTE ARTISTIQUE ---
-const ARTISTIC_CONTEXT = `
-TU ES : Assistant du photographe argentique BornTwoLate.
-TON TON : Poétique, mélancolique, expert grain/papier. Tu n'es pas un vendeur agressif, mais un gardien de la mémoire.
+// --- 1. SEARCH LOGIC (NUCLEAR FIX) ---
 
-RÈGLES ABSOLUES (Toute hallucination est interdite) :
-1. NE JAMAIS inventer d'œuvres, de séries ou de lieux qui ne sont pas dans la liste ci-dessous.
-2. Si le client demande un thème (ex: "Italie") et que tu n'as qu'une seule série (ex: "Puglia Famiglia"), ne propose QUE celle-là.
-3. Utilise les PRIX OFFICIELS ci-dessous. N'invente jamais de prix.
-
-ARGUMENTS CLÉS :
-- **Urgence** : Si un tirage est "bientôt épuisé", dis-le ! C'est ton meilleur argument.
-- **Technique** : Papier Canson Infinity Platine 310g (Qualité Musée).
-- **Finition** : Conseille toujours la Caisse Américaine ("Exception"). C'est le rendu galerie ultime.
-`;
-
-const PHOTOGRAPHER_CONTEXT = `
---- L'ARTISTE (SOURCE DE VÉRITÉ) ---
-NOM : Théophile Dequecker (Alias: Borntwolate).
-TESTIMONIAL : "Je ne vends pas des photos, je vends de la mémoire."
-HISTOIRE :
-- Débuts : Juin 2020, hérite d'un Nikon F301 de sa mère.
-- Style : Argentique pur (Grain, Nostalgie, "Born Too Late").
-- Philosophie : La rareté (chaque cliché est un risque).
-- Appareil fétiche actuel : Rollei 35 (compact, discret).
-- SÉRIE PRÉFÉRÉE DE L'ARTISTE : "Retro Mountain" (Pour son esthétique graphique et minimaliste).
-`;
-
-const getSeriesContext = () => {
-  return seriesData.map(s => `
-SERIE: "${s.title}" (${s.year})
-DESCRIPTION: ${s.description.fr}
-LIEU/THEME: ${s.seo_title?.fr}
-PHOTOS CLÉS: ${s.photos.map(p => p.title).join(", ")}
-URL: https://borntwolate.com/series/${s.id}
-`).join("\n\n");
+const cleanJsonOutput = (text: string): string => {
+  let clean = text.replace(/```json/g, "").replace(/```/g, "");
+  return clean.trim();
 };
 
-const PROMPT_TEMPLATE = `
-${ARTISTIC_CONTEXT}
-${PHOTOGRAPHER_CONTEXT}
-
---- CATALOGUE OFFICIEL (SOURCE DE VÉRITÉ UNIQUE) ---
-${getSeriesContext()}
-----------------------------------------------------
-
---- PRIX & FINITIONS ---
-${JSON.stringify(PRICING_CATALOG)}
-
---- SITUATION DES STOCKS EN TEMPS RÉEL (CRITIQUE) ---
-{{STOCK_INFO}}
------------------------------------------------------
-
-PROTOCOLE DE RÉPONSE :
-1. Analyse le besoin.
-2. Cherche *uniquement* dans le CATALOGUE OFFICIEL ci-dessus.
-3. Propose 1 ou 2 séries pertinentes avec leur lien.
-4. Suggère la finition "Exception" (Caisse Américaine).
-`;
-
-// --- INITIALISATION ---
-// Initialize lazily or check for key
-const getGenAI = () => {
-  if (!API_KEY) return null;
-  return new GoogleGenerativeAI(API_KEY);
-}
-
-// Debug function removed for production
-export const debugModels = async () => {
-  // no-op
-};
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const sendMessageToGemini = async (message: string, history: { role: 'user' | 'model', parts: { text: string }[] }[], _lang: 'fr' | 'en' = 'fr') => {
-  // Unused 'lang' kept for signature compatibility but ignored for now as user simplified prompt
-
-  if (!API_KEY) {
-    console.warn("⚠️ Chatbot: Clé API manquante");
-    return "Le Curator est en pause café (Clé API manquante).";
+export const getSemanticTags = async (query: string): Promise<string[]> => {
+  if (!genAI) {
+    console.warn("⚠️ SEARCH DISABLED: Missing API Key");
+    return [];
   }
-
-  const genAI = getGenAI();
-  if (!genAI) return "Erreur configuration IA.";
+  if (!query || query.trim().length < 2) return [];
 
   try {
-    // 1. On récupère les stocks frais depuis Supabase
-    let stockMessage = "Stocks disponibles (30/30) sauf indication contraire.";
-    try {
-      const stocks = await stockService.getAllStocks();
-      // stocks is Record<string, number> (slug -> sold_count)
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+    const prompt = `
+      Analyze the user search query: "${query}".
+      Return ONLY a JSON array of 3 to 5 visual photography keywords (in French) relating to mood, lighting, color, or subject.
+      Example input: "triste" -> Output: ["mélancolie", "sombre", "solitude", "noir et blanc"]
+      Do NOT write any text outside the JSON array.
+    `;
+    const result = await model.generateContent(prompt);
+    const text = result.response.text();
+    const tags = JSON.parse(cleanJsonOutput(text));
+    return Array.isArray(tags) ? tags.map(t => String(t).toLowerCase()) : [];
+  } catch (error) {
+    console.error("❌ Gemini Search Failed:", error);
+    return [];
+  }
+};
 
-      const lines = Object.entries(stocks).map(([slug, soldCount]) => {
-        const remaining = 30 - soldCount;
-        if (remaining === 0) return `- ${slug} : ÉPUISÉ (Sold Out)`;
-        if (remaining < 10) return `- ${slug} : URGENCE (${remaining} restants)`;
-        return null;
-      }).filter(Boolean);
+// --- 2. CHATBOT LOGIC (RESTORED) ---
 
-      if (lines.length > 0) stockMessage = lines.join("\n");
-    } catch (e) {
-      console.error("Erreur Stock IA:", e);
-      stockMessage = "Stocks momentanément indisponibles. Vérifier sur le site.";
-    }
+const CONTEXT_DATA = {
+  photographer: "Théo DeQuecker (TDK)",
+  brand: "BornTwoLate",
+  pricing: PRICING_CATALOG,
+  photos: photos.map(p => ({
+    id: p.id,
+    title: p.title,
+    series: p.seriesId,
+    tags: p.tags,
+    desc: p.caption_artistic
+  }))
+};
 
-    // 2. On injecte les stocks dans le prompt système
-    const finalSystemPrompt = PROMPT_TEMPLATE.replace('{{STOCK_INFO}}', stockMessage);
+const SYSTEM_INSTRUCTION = `
+You are LARA, the AI Assistant for BornTwoLate (Théo DeQuecker's Analog Photography Portfolio).
+Your role is to guide visitors, explain the artistic vision, and facilitate print acquisitions.
 
-    // 3. On lance le chat avec le nouveau contexte
+TONE: Elegant, knowledgeable, slightly artistic but accessible.
+CONTEXT:
+${JSON.stringify(CONTEXT_DATA)}
+
+ORDER PROCESS:
+If a user wants to order/buy:
+1. Ask for details if needed (Which photo? Which format?).
+2. When confirmed, output a JSON action block HIDDEN from the user:
+   <<<ORDER_ACTION>>>
+   {
+     "client_name": "User Name",
+     "client_email": "User Email (if given)",
+     "artwork_title": "Title",
+     "format": "Format",
+     "price": "Price",
+     "ai_summary": "Summary"
+   }
+   <<<END_ACTION>>>
+   Add a polite confirmation message outside the block.
+`;
+
+export const sendMessageToGemini = async (msg: string, history: any[], lang: string) => {
+  if (!genAI) throw new Error("API_KEY_MISSING");
+
+  try {
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash", // Updated to available model
-      systemInstruction: finalSystemPrompt
+      model: "gemini-2.0-flash",
+      systemInstruction: SYSTEM_INSTRUCTION + `\nCURRENT USER LANGUAGE: ${lang}`
     });
 
     const chat = model.startChat({
-      history: history.map(h => ({ role: h.role, parts: h.parts })),
+      history: history,
     });
 
-    const result = await chat.sendMessage(message);
-    const response = await result.response;
-    return response.text();
-
-  } catch (error: any) {
-    const errorString = error.message || JSON.stringify(error);
-
-    // Check for API Key restriction/validity issues (Localhost vs Domain)
-    if (errorString.includes("API_KEY_INVALID") || errorString.includes("400")) {
-      return "Je ne travaille pas ici, mais chez borntwolate.com. Au plaisir de vous y retrouver !";
-    }
-
-    console.error("Gemini Error:", error);
-    return `Erreur Technique : ${errorString.substring(0, 100)}`;
-    return `Erreur Technique : ${errorString.substring(0, 100)}`;
-  }
-};
-
-// --- SEMANTIC SEARCH HOOK (V2) ---
-// Maps user "vibes" (e.g., "nostalgie", "froid") to technical tags
-const SEARCH_API_KEY = import.meta.env.VITE_GEMINI_SEARCH_KEY;
-
-// Initialize separate instance for Search if needed, or reuse generic if keys are same.
-// For V2 safety, we respect the specific SEARCH_KEY.
-const getSearchGenAI = () => {
-  if (!SEARCH_API_KEY) return null;
-  return new GoogleGenerativeAI(SEARCH_API_KEY);
-};
-
-// --- SEMANTIC SEARCH HOOK (V2) ---
-// Maps user "vibes" (e.g., "nostalgie", "froid") to technical tags using Gemini 2.0 Flash
-export const getSemanticTags = async (query: string): Promise<string[]> => {
-  // 0. Safety Check: API Key
-  if (!SEARCH_API_KEY) {
-    console.warn("⚠️ Search: Missing VITE_GEMINI_SEARCH_KEY. Semantic search disabled.");
-    return []; // Fail safely, do not crash
-  }
-
-  // 1. Safety Check: Query Length
-  if (!query || query.length < 3) {
-    return [];
-  }
-
-  try {
-    const genAI = getSearchGenAI();
-    if (!genAI) return [];
-
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
-
-    const prompt = `
-        Analyze this photography search query: "${query}".
-        Return ONLY a JSON array of 5 French keywords that best capture the visual intent (mood, lighting, subject, color, location).
-        Example: ["nostalgie", "grain", "noir et blanc", "urbain", "mélancolie"]
-        Do not add markdown formatting. Just the raw JSON array.
-        `;
-
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-
-    if (!text) return [];
-
-    // 2. Robust Cleaning (Markdown, whitespace, unexpected chars)
-    // Remove ```json and ``` wrapping
-    let cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
-
-    // Attempt to find the array if there's extra text around it
-    const firstBracket = cleanText.indexOf('[');
-    const lastBracket = cleanText.lastIndexOf(']');
-
-    if (firstBracket !== -1 && lastBracket !== -1) {
-      cleanText = cleanText.substring(firstBracket, lastBracket + 1);
-    } else {
-      // If no brackets found, it's not a JSON array
-      console.warn("Gemini: Invalid response format (no array found)", text);
-      return [];
-    }
-
-    // 3. Safe Parsing
-    try {
-      const tags = JSON.parse(cleanText);
-      if (Array.isArray(tags)) {
-        // Ensure all tags are strings and filtered
-        return tags.filter(t => typeof t === 'string').map(t => t.toLowerCase());
-      }
-    } catch (parseError) {
-      console.warn("Gemini: JSON Parse Failed", cleanText, parseError);
-      // Fallback to simpler cleaning or just return empty
-      return [];
-    }
-
-    return [];
-
+    const result = await chat.sendMessage(msg);
+    return result.response.text();
   } catch (error) {
-    // 4. Global Error Trap (Network, Quota, Unknown)
-    // warn only, do NOT throw
-    console.warn("Semantic Search Error (Handled):", error);
-    return [];
+    console.error("Chat Error:", error);
+    throw error;
   }
 };
 
-// Legacy fallback removed as per V2 strict requirements to return empty array on failure.
-// const legacyFallbackSearch = ...
+export const debugModels = () => console.log("Debug: Gemini Service & Chatbot Ready");
