@@ -8,7 +8,10 @@ import { CurrencyProvider } from './context/CurrencyContext';
 import { SearchProvider } from './context/SearchContext';
 import { HelmetProvider } from 'react-helmet-async';
 
-if (import.meta.env.PROD) {
+import { validatePricing } from './utils/validation';
+
+if (import.meta.env.PROD || import.meta.env.DEV) {
+  validatePricing();
   console.log(
     "%c Born Too Late %c v1.0.0 ",
     "background: #0a0a0a; color: #f0f0f0; padding: 4px; border-radius: 4px 0 0 4px;",

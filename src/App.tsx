@@ -23,6 +23,7 @@ import { GoogleAnalytics } from './components/GoogleAnalytics';
 // LAZY LOAD CHATBOT
 const Chatbot = lazy(() => import('./components/chatbot/Chatbot').then(module => ({ default: module.Chatbot })));
 const PhotographeArgentique = lazy(() => import('./pages/PhotographeArgentique'));
+import { CookieConsent } from './components/CookieConsent';
 
 
 function AnimatedRoutes() {
@@ -110,6 +111,7 @@ function App() {
           </Suspense>
         </ErrorBoundary>
       </div>
+      <CookieConsent />
     </Router>
   );
 }

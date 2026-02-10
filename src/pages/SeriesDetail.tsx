@@ -12,6 +12,7 @@ import SeriesNavigation from '../components/SeriesNavigation';
 import { useDarkroom } from '../context/DarkroomContext';
 import { FadeIn } from '../components/animations/FadeIn';
 import { generateSeriesSchema } from '../utils/schemaGenerator';
+import { GrainedImage } from '../components/GrainedImage';
 
 const SeriesDetail = () => {
     const { id } = useParams<{ id: string }>();
@@ -174,16 +175,17 @@ const SeriesDetail = () => {
                             role="button"
                             aria-label={`Agrandir la photo : ${photo.title}`}
                         >
-                            <img
-                                src={photo.url}
-                                alt={photo.alt_accessible?.[currentLang] || photo.title}
-                                loading={index < 2 ? "eager" : "lazy"}
-                                fetchPriority={index < 2 ? "high" : "auto"}
-                                decoding="async"
-                                className="w-full h-auto object-cover transition-transform duration-700 group-hover:scale-[1.01]"
-                                onContextMenu={(e) => e.preventDefault()}
-                                draggable="false"
-                            />
+                            <div className="group-hover:scale-[1.01] transition-transform duration-700 ease-out">
+                                <GrainedImage
+                                    src={photo.url}
+                                    alt={photo.alt_accessible?.[currentLang] || photo.title}
+                                    orientation={photo.orientation}
+                                    loading={index < 2 ? "eager" : "lazy"}
+                                    fetchPriority={index < 2 ? "high" : "auto"}
+                                    className="w-full h-full"
+                                    onClick={() => setSelectedPhotoIndex(index)}
+                                />
+                            </div>
                             <figcaption className="absolute inset-0 flex items-end justify-center pb-6 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-500 pointer-events-none z-[60]">
                                 <span className="text-off-white font-space-mono text-sm uppercase tracking-widest transform translate-y-0 md:translate-y-2 md:group-hover:translate-y-0 transition-transform duration-500 drop-shadow-md">
                                     {photo.title}

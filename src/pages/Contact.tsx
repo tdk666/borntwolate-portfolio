@@ -36,7 +36,8 @@ const Contact = () => {
             url: photo.url,
             title: photo.title,
             seriesTitle: series.title,
-            value: photo.title // keeping value if needed compatibility
+            value: photo.title, // keeping value if needed compatibility
+            orientation: photo.orientation
         }))
     ), []);
 

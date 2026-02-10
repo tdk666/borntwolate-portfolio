@@ -2,7 +2,7 @@ import type { Series, Photo, LocalizedText } from '../data/photos';
 import { PRICING_CATALOG } from '../data/pricing';
 
 const BASE_URL = 'https://borntwolate.com';
-const BRAND_NAME = 'Born Too Late';
+const BRAND_NAME = 'BornTwoLate';
 
 // Helper to get localized string or fallback
 const getLoc = (text?: LocalizedText | string, lang: 'fr' | 'en' = 'fr'): string => {

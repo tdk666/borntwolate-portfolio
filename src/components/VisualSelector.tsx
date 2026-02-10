@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { GrainedImage } from './GrainedImage';
 
 interface VisualSelectorOption {
     id: number | string;
@@ -8,6 +9,7 @@ interface VisualSelectorOption {
     title: string;
     seriesTitle: string;
     value: string;
+    orientation?: 'landscape' | 'portrait' | 'square';
 }
 
 interface VisualSelectorProps {
@@ -103,11 +105,15 @@ const VisualSelector = ({ options, onSelect, label = "Sélectionner une œuvre",
                                         }}
                                         className="w-full flex items-center gap-4 p-3 hover:bg-white/5 transition-colors text-left group/item focus:bg-white/10 focus:outline-none"
                                     >
-                                        <img
-                                            src={option.url}
-                                            alt={option.title}
-                                            className="w-12 h-12 object-cover border border-white/10 group-hover/item:border-white/30 transition-colors bg-black"
-                                        />
+                                        <div className="w-12 h-12 shrink-0 border border-white/10 group-hover/item:border-white/30 transition-colors">
+                                            <GrainedImage
+                                                src={option.url}
+                                                alt={option.title}
+                                                orientation={option.orientation || 'square'}
+                                                className="w-full h-full"
+                                                aspectRatio="1/1"
+                                            />
+                                        </div>
                                         <div>
                                             <div className="text-off-white font-bold font-inter text-sm group-hover/item:text-darkroom-red transition-colors">{option.title}</div>
                                             <div className="text-silver/50 text-xs font-space-mono uppercase">{option.seriesTitle}</div>

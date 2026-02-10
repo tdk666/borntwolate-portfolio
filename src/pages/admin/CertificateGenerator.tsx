@@ -5,12 +5,14 @@ import { stockService } from '../../services/stock';
 import toast, { Toaster } from 'react-hot-toast';
 import { photos, seriesData } from '../../data/photos';
 import { PRICING_CATALOG } from '../../data/pricing';
+import { verifyAdminCode } from '../../utils/auth';
 
 const CertificateGenerator = () => {
     // --- ÉTATS ---
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [passwordInput, setPasswordInput] = useState("");
     const [error, setError] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     // Selectors
     const [selectedPhotoId, setSelectedPhotoId] = useState<number | string>("");
@@ -28,16 +30,24 @@ const CertificateGenerator = () => {
         useSignature: true, // Default to true
     });
 
-    // MOT DE PASSE (À changer ici si besoin)
-    const SECRET_PASS = "THEOrugby2001!!";
-
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (passwordInput === SECRET_PASS) {
-            setIsAuthenticated(true);
-        } else {
+        setLoading(true);
+        setError(false);
+
+        try {
+            const isValid = await verifyAdminCode(passwordInput);
+            if (isValid) {
+                setIsAuthenticated(true);
+            } else {
+                setError(true);
+                setPasswordInput("");
+            }
+        } catch (err) {
+            console.error("Auth error:", err);
             setError(true);
-            setPasswordInput("");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -213,11 +223,16 @@ const CertificateGenerator = () => {
                             onChange={(e) => setPasswordInput(e.target.value)}
                             className="w-full bg-black/50 border border-white/20 p-4 text-center text-white focus:border-darkroom-red outline-none rounded-sm font-space-mono tracking-widest"
                             autoFocus
+                            autoComplete="current-password"
                         />
                         {error && <p className="text-darkroom-red text-xs text-center font-mono">Code incorrect. Réessayez.</p>}
 
-                        <button type="submit" className="w-full bg-off-white text-darkroom-black py-4 font-space-mono uppercase font-bold hover:bg-darkroom-red hover:text-white transition-colors">
-                            Entrer
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full bg-off-white text-darkroom-black py-4 font-space-mono uppercase font-bold hover:bg-darkroom-red hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            {loading ? "Vérification..." : "Entrer"}
                         </button>
                     </div>
                 </form>

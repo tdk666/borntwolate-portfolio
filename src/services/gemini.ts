@@ -128,8 +128,14 @@ export const sendMessageToGemini = async (message: string, history: { role: 'use
     return response.text();
 
   } catch (error: any) {
+    const errorString = error.message || JSON.stringify(error);
+
+    // Check for API Key restriction/validity issues (Localhost vs Domain)
+    if (errorString.includes("API_KEY_INVALID") || errorString.includes("400")) {
+      return "Je ne travaille pas ici, mais chez borntwolate.com. Au plaisir de vous y retrouver !";
+    }
+
     console.error("Gemini Error:", error);
-    // Temporary Debugging: Show exact error to user
-    return `Erreur Technique Détail : ${error.message || JSON.stringify(error)}`;
+    return `Erreur Technique : ${errorString.substring(0, 100)}`;
   }
 };

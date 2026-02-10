@@ -16,13 +16,27 @@ const Home = () => {
         ]
     };
 
+    const organizationSchema = {
+        "@type": "Organization",
+        "name": "Born Too Late",
+        "url": "https://borntwolate.com",
+        "logo": "https://borntwolate.com/logo.png", // Assuming logo exists or use text
+        "sameAs": [
+            "https://instagram.com/borntwolate"
+        ]
+    };
+
+    const homeSchema = {
+        "@graph": [personSchema, organizationSchema]
+    };
+
     return (
         <>
             <SEO
                 title="Théophile Dequecker | Photographe Argentique & Directeur Artistique"
                 description={t('home.seo_desc')}
                 url="/"
-                structuredData={personSchema}
+                structuredData={homeSchema}
             />
             <Hero />
         </>
