@@ -5,70 +5,80 @@ import { PRICING_CATALOG } from "../data/pricing";
 // SAFETY CHECK: Access key safely (Support both variable names)
 const API_KEY = import.meta.env.VITE_GEMINI_SEARCH_KEY || import.meta.env.VITE_GEMINI_API_KEY;
 
-// Log once on load to debug
+// 1. Initialization Safety
+const genAI = API_KEY ? new GoogleGenerativeAI(API_KEY) : null;
+
+// Log once on load (Safety Check)
 if (!API_KEY) {
   console.error("🚨 CRITICAL: VITE_GEMINI_SEARCH_KEY is missing. Search will NOT work.");
 } else {
   console.log("✅ Search Service: API Key detected.");
 }
 
-// Initialize only if key exists
-const genAI = API_KEY ? new GoogleGenerativeAI(API_KEY) : null;
-
-// --- 1. SEARCH LOGIC (V4 FIX: Multi-Model Fallback) ---
-
 const cleanJsonOutput = (text: string): string => {
+  if (!text) return "[]"; // Safety for empty strings
   let clean = text.replace(/```json/g, "").replace(/```/g, "");
   return clean.trim();
 };
 
-const generateTagsWithModel = async (modelName: string, prompt: string) => {
-  if (!genAI) throw new Error("No API Key");
-  console.log(`🤖 Attempting search with model: ${modelName}`);
-  const model = genAI.getGenerativeModel({ model: modelName });
-  const result = await model.generateContent(prompt);
-  const response = await result.response;
-  return response.text();
-};
-
 export const getSemanticTags = async (query: string): Promise<string[]> => {
-  if (!genAI) return [];
+  // Gatekeeping
+  if (!genAI) {
+    console.warn("⚠️ Search skipped: No API Key provided.");
+    return [];
+  }
   if (!query || query.trim().length < 2) return [];
 
-  const prompt = `
-    Tu es un assistant expert en photographie. Analyse cette recherche : "${query}".
-    Sors UNIQUEMENT un tableau JSON de 3 à 5 mots-clés visuels (en français) liés à l'ambiance, la couleur ou le sujet.
-    Exemple : "triste" -> ["mélancolie", "sombre", "solitude", "noir et blanc"]
-    Réponds uniquement le tableau JSON.
-  `;
-
   try {
-    let text = "";
-    try {
-      // TIER 1: Try modern efficient model
-      text = await generateTagsWithModel("gemini-1.5-flash", prompt);
-    } catch (e1) {
-      console.warn("⚠️ gemini-1.5-flash failed, trying fallback...", e1);
-      try {
-        // TIER 2: Try stable legacy model
-        text = await generateTagsWithModel("gemini-pro", prompt);
-      } catch (e2) {
-        console.warn("⚠️ Both models failed.", e2);
-        return [];
-      }
+    // Try the latest efficient model
+    // Note: If this fails with 404, it usually means the 'Generative Language API' is not enabled in Google Cloud.
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+    const prompt = `
+      Analyze this search query for a photography website: "${query}".
+      Return ONLY a JSON array of 3 to 5 visual French keywords (mood, color, subject).
+      Example: "triste" -> ["mélancolie", "sombre", "solitude", "noir et blanc"]
+      Output format: JSON Array ONLY.
+    `;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+
+    // 2. Response Integrity Check
+    if (!response) {
+      throw new Error("No response object received from Gemini.");
     }
 
-    console.log("🤖 Raw AI Response:", text);
-    const tags = JSON.parse(cleanJsonOutput(text));
-    return Array.isArray(tags) ? tags.map(t => String(t).toLowerCase()) : [];
+    const text = response.text();
 
-  } catch (error) {
-    console.warn("⚠️ Search Error (Non-blocking):", error);
+    // 3. Content Safety Check
+    if (!text) {
+      console.warn("⚠️ Gemini returned empty text.");
+      return [];
+    }
+
+    const cleanedText = cleanJsonOutput(text);
+    const tags = JSON.parse(cleanedText);
+
+    if (Array.isArray(tags)) {
+      return tags.map(t => String(t).toLowerCase());
+    }
+    return [];
+
+  } catch (error: any) {
+    // 4. Specific Error Handling (No Crash)
+    if (error.message?.includes("404") || error.toString().includes("404")) {
+      console.error("🚨 GEMINI API ERROR (404): Model not found. Please enable 'Generative Language API' in your Google Cloud Console.");
+    } else {
+      console.error("❌ Search Error (Handled):", error);
+    }
+
+    // Graceful fallback: return empty array so the UI continues working
     return [];
   }
 };
 
-// --- 2. CHATBOT LOGIC (PRESERVED) ---
+// --- CHATBOT LOGIC (PRESERVED) ---
 
 const CONTEXT_DATA = {
   photographer: "Théo DeQuecker (TDK)",
@@ -112,19 +122,9 @@ export const sendMessageToGemini = async (msg: string, history: any[], lang: str
   if (!genAI) throw new Error("API_KEY_MISSING");
 
   try {
-    // For Chatbot, we also want robustness.
-    // Try gemini-1.5-flash first (supports systemInstruction properly), then fallback.
-    // However, for simplicity and stability given recent errors, we'll try to stick to one or implement fallback if safe.
-    // SDK doesn't support easy fallback for ChatSession state transfer.
-    // Let's us "gemini-1.5-flash" but with a try/catch during initialization?
-    // User reported 404s on 1.5-flash.
-    // User reported 404s on gemini-pro.
-    // This implies NO model worked.
-    // But verify connection script will tell us.
-    // Let's default to "gemini-1.5-flash" as it is the most likely to be supported if key is correct.
-    // The previous 404 "gemini-pro" was likely due to v1beta + SDK mismatch or key permissions.
-
-    // We will use 1.5-flash.
+    // Attempt 1.5-Flash (if it works for Chat)
+    // If user has 404 for search, they might have it here too. 
+    // But Chatbot errors are handled in Chatbot.tsx component UI.
     const model = genAI.getGenerativeModel({
       model: "gemini-1.5-flash",
       systemInstruction: SYSTEM_INSTRUCTION + `\nCURRENT USER LANGUAGE: ${lang}`
