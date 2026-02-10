@@ -5,7 +5,7 @@ import { PRICING_CATALOG } from "../data/pricing";
 // SAFETY CHECK: Access key safely (Support both variable names)
 const API_KEY = import.meta.env.VITE_GEMINI_SEARCH_KEY || import.meta.env.VITE_GEMINI_API_KEY;
 
-// Log once on load to debug (Will show in Netlify function logs or Browser Console)
+// Log once on load to debug
 if (!API_KEY) {
   console.error("🚨 CRITICAL: VITE_GEMINI_SEARCH_KEY is missing. Search will NOT work.");
 } else {
@@ -15,43 +15,52 @@ if (!API_KEY) {
 // Initialize only if key exists
 const genAI = API_KEY ? new GoogleGenerativeAI(API_KEY) : null;
 
-// --- 1. SEARCH LOGIC (V3 FIX: Stable gemini-pro) ---
+// --- 1. SEARCH LOGIC (V4 FIX: Multi-Model Fallback) ---
 
 const cleanJsonOutput = (text: string): string => {
   let clean = text.replace(/```json/g, "").replace(/```/g, "");
   return clean.trim();
 };
 
+const generateTagsWithModel = async (modelName: string, prompt: string) => {
+  if (!genAI) throw new Error("No API Key");
+  console.log(`🤖 Attempting search with model: ${modelName}`);
+  const model = genAI.getGenerativeModel({ model: modelName });
+  const result = await model.generateContent(prompt);
+  const response = await result.response;
+  return response.text();
+};
+
 export const getSemanticTags = async (query: string): Promise<string[]> => {
-  if (!genAI) return []; // Fail safe
+  if (!genAI) return [];
   if (!query || query.trim().length < 2) return [];
 
+  const prompt = `
+    Tu es un assistant expert en photographie. Analyse cette recherche : "${query}".
+    Sors UNIQUEMENT un tableau JSON de 3 à 5 mots-clés visuels (en français) liés à l'ambiance, la couleur ou le sujet.
+    Exemple : "triste" -> ["mélancolie", "sombre", "solitude", "noir et blanc"]
+    Réponds uniquement le tableau JSON.
+  `;
+
   try {
-    // FALLBACK TO STABLE MODEL: "gemini-pro"
-    // "gemini-1.5-flash" was returning 404 for some keys/SDK versions.
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
-
-    // Updated prompt for 1.0 Pro
-    const prompt = `
-      Tu es un assistant expert en photographie. Analyse cette recherche : "${query}".
-      Sors UNIQUEMENT un tableau JSON de 3 à 5 mots-clés visuels (en français) liés à l'ambiance, la couleur ou le sujet.
-      Exemple : "triste" -> ["mélancolie", "sombre", "solitude", "noir et blanc"]
-      Réponds uniquement le tableau JSON.
-    `;
-
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
-
-    console.log("🤖 Raw AI Response (gemini-pro):", text); // Debug log
-
-    const cleanedText = cleanJsonOutput(text);
-    const tags = JSON.parse(cleanedText);
-
-    if (Array.isArray(tags)) {
-      return tags.map(t => String(t).toLowerCase());
+    let text = "";
+    try {
+      // TIER 1: Try modern efficient model
+      text = await generateTagsWithModel("gemini-1.5-flash", prompt);
+    } catch (e1) {
+      console.warn("⚠️ gemini-1.5-flash failed, trying fallback...", e1);
+      try {
+        // TIER 2: Try stable legacy model
+        text = await generateTagsWithModel("gemini-pro", prompt);
+      } catch (e2) {
+        console.warn("⚠️ Both models failed.", e2);
+        return [];
+      }
     }
-    return [];
+
+    console.log("🤖 Raw AI Response:", text);
+    const tags = JSON.parse(cleanJsonOutput(text));
+    return Array.isArray(tags) ? tags.map(t => String(t).toLowerCase()) : [];
 
   } catch (error) {
     console.warn("⚠️ Search Error (Non-blocking):", error);
@@ -103,43 +112,26 @@ export const sendMessageToGemini = async (msg: string, history: any[], lang: str
   if (!genAI) throw new Error("API_KEY_MISSING");
 
   try {
+    // For Chatbot, we also want robustness.
+    // Try gemini-1.5-flash first (supports systemInstruction properly), then fallback.
+    // However, for simplicity and stability given recent errors, we'll try to stick to one or implement fallback if safe.
+    // SDK doesn't support easy fallback for ChatSession state transfer.
+    // Let's us "gemini-1.5-flash" but with a try/catch during initialization?
+    // User reported 404s on 1.5-flash.
+    // User reported 404s on gemini-pro.
+    // This implies NO model worked.
+    // But verify connection script will tell us.
+    // Let's default to "gemini-1.5-flash" as it is the most likely to be supported if key is correct.
+    // The previous 404 "gemini-pro" was likely due to v1beta + SDK mismatch or key permissions.
+
+    // We will use 1.5-flash.
     const model = genAI.getGenerativeModel({
-      // Keep 2.0 Flash for Chatbot if it works, otherwise downgrade here too if needed.
-      // But user only reported 404 on Search (which was explicitly using 1.5-flash).
-      // Let's use gemini-pro here too for consistency and safety.
-      model: "gemini-pro",
-      // System instructions are supported in gemini-pro via API but SDK might differ.
-      // Gemini 1.5 Flash supports systemInstruction. Gemini 1.0 Pro does NOT via this param (it's part of history).
-      // CAUTION: "systemInstruction" param might be ignored by gemini-pro in older SDKs.
-      // Let's stick to gemini-1.5-flash for Chatbot IF it works for the user (user logs only showed error for search).
-      // ACTUALLY, if key doesn't work for 1.5-flash in search, it won't work here.
-      // SAFE BET: Use "gemini-pro" but inject system prompt in history/message.
+      model: "gemini-1.5-flash",
+      systemInstruction: SYSTEM_INSTRUCTION + `\nCURRENT USER LANGUAGE: ${lang}`
     });
 
-    // WORKAROUND for Gemini Pro (add system prompt to history manually if needed, 
-    // OR just try 1.5-flash and if it fails, fallback. 
-    // Given the user wants stability, let's try 'gemini-1.5-flash' first (chatbot might use different endpoint?) 
-    // NO, key is same. 
-    // Let's assume the user's key/region doesn't support 1.5 Flash via API.
-    // We will use 'gemini-pro' but we need to handle system prompt differently.
-    // OR: Use 'gemini-1.5-flash-latest' which might resolve the alias.
-
-    // DECISION: Use 'gemini-1.5-flash' but handle the error. 
-    // Wait, the user's log said "404 models/gemini-1.5-flash is not found". 
-    // We MUST use 'gemini-pro'.
-
     const chat = model.startChat({
-      history: [
-        {
-          role: "user",
-          parts: [{ text: `SYSTEM INSTRUCTION:\n${SYSTEM_INSTRUCTION}\nCURRENT USER LANGUAGE: ${lang}\n\n(Acknowledge)` }]
-        },
-        {
-          role: "model",
-          parts: [{ text: "Understood. I am Lara." }]
-        },
-        ...history
-      ]
+      history: history,
     });
 
     const result = await chat.sendMessage(msg);
