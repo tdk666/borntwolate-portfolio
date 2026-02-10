@@ -1,12 +1,18 @@
 import { Handler } from "@netlify/functions";
 import crypto from "crypto";
 
-const VALID_HASH = "41b76dc4aea7baba298aab2cbe705629ccbf0c6b6124b7448f3c14c77ed63903";
-
 const handler: Handler = async (event) => {
     // Only allow POST requests
     if (event.httpMethod !== "POST") {
         return { statusCode: 405, body: "Method Not Allowed" };
+    }
+
+    // Security Check: Ensure environment variable is set
+    // This prevents the function from running insecurely if the variable is missing
+    const validHash = process.env.ADMIN_PASSWORD_HASH;
+    if (!validHash) {
+        console.error("CRITICAL: ADMIN_PASSWORD_HASH is not set in environment variables.");
+        return { statusCode: 500, body: JSON.stringify({ success: false, message: "Configuration Error" }) };
     }
 
     try {
@@ -19,7 +25,7 @@ const handler: Handler = async (event) => {
         // Server-side hashing (Node.js crypto)
         const hash = crypto.createHash('sha256').update(password).digest('hex');
 
-        if (hash === VALID_HASH) {
+        if (hash === validHash) {
             return {
                 statusCode: 200,
                 body: JSON.stringify({ success: true }),
