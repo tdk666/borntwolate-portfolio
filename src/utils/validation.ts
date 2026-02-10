@@ -1,6 +1,6 @@
 import { PRICING_CATALOG } from '../data/pricing';
 
-export const validatePricing = () => {
+export const validatePricing = (): string[] => {
     const errors: string[] = [];
 
     Object.entries(PRICING_CATALOG).forEach(([key, range]) => {
@@ -20,9 +20,9 @@ export const validatePricing = () => {
     if (errors.length > 0) {
         console.error("🚨 PRICING DATA INTEGRITY CHECK FAILED 🚨");
         errors.forEach(err => console.error(`- ${err}`));
-        return false;
+        return errors;
     } else {
         console.log("%c ✨ Pricing Data Integrity Verified ", "background: #0a0a0a; color: #22c55e; border: 1px solid #22c55e; padding: 2px; border-radius: 4px;");
-        return true;
+        return [];
     }
 };

@@ -3,6 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 // import { useTranslation } from 'react-i18next'; // Unused
 
 
+// Google Tag Manager is globally declared in GoogleAnalytics.tsx
+
+
 export const CookieConsent = () => {
     // const { t } = useTranslation(); // Unused for now
 
@@ -20,7 +23,18 @@ export const CookieConsent = () => {
     const handleAccept = () => {
         localStorage.setItem('cookie-consent', 'accepted');
         setIsVisible(false);
-        // Here you would trigger GA initialization if configured
+
+        // Google Consent Mode v2 Update
+        if (typeof window.gtag === 'function') {
+            window.gtag('consent', 'update', {
+                'analytics_storage': 'granted',
+                'ad_storage': 'granted',
+                'ad_user_data': 'granted',
+                'ad_personalization': 'granted'
+            });
+        }
+
+        window.dispatchEvent(new Event('cookie-consent-updated'));
     };
 
     const handleDecline = () => {

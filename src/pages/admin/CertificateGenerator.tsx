@@ -5,7 +5,8 @@ import { stockService } from '../../services/stock';
 import toast, { Toaster } from 'react-hot-toast';
 import { photos, seriesData } from '../../data/photos';
 import { PRICING_CATALOG } from '../../data/pricing';
-import { verifyAdminCode } from '../../utils/auth';
+// import { verifyAdminCode } from '../../utils/auth'; // Deprecated for Serverless
+
 
 const CertificateGenerator = () => {
     // --- ÉTATS ---
@@ -36,15 +37,23 @@ const CertificateGenerator = () => {
         setError(false);
 
         try {
-            const isValid = await verifyAdminCode(passwordInput);
-            if (isValid) {
+            // Server-side verification via Netlify Function
+            const response = await fetch('/.netlify/functions/verify-admin', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ password: passwordInput })
+            });
+
+            const data = await response.json();
+
+            if (response.ok && data.success) {
                 setIsAuthenticated(true);
             } else {
                 setError(true);
                 setPasswordInput("");
             }
         } catch (err) {
-            console.error("Auth error:", err);
+            console.error("Auth connection error:", err);
             setError(true);
         } finally {
             setLoading(false);

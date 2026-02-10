@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 declare global {
     interface Window {
         gtag: (
-            command: "config" | "event" | "js",
+            command: "config" | "event" | "js" | "consent",
             targetId: string,
             config?: Record<string, any>
         ) => void;
@@ -27,14 +27,37 @@ export const GoogleAnalytics = () => {
             return;
         }
 
-        // Envoi de l'événement de page view
-        // Remplace G-XXXXXXXXXX par ton ID réel si tu veux le hardcoder ici,
-        // ou mieux, le passer via une variable d'environnement VITE_GA_ID.
         const trackingId = "G-Q3VNSP006H";
+        const consent = localStorage.getItem('cookie-consent');
 
-        window.gtag("config", trackingId, {
-            page_path: location.pathname + location.search,
-        });
+        // Initial Page View check - Only if consent is already accepted
+        if (consent === 'accepted') {
+            window.gtag("config", trackingId, {
+                page_path: location.pathname + location.search,
+            });
+        }
+    }, [location]);
+
+    // Listener for consent updates (same session)
+    useEffect(() => {
+        const handleStorageChange = () => {
+            if (localStorage.getItem('cookie-consent') === 'accepted') {
+                const trackingId = "G-Q3VNSP006H";
+                if (typeof window.gtag !== "undefined") {
+                    window.gtag("config", trackingId, {
+                        page_path: location.pathname + location.search,
+                    });
+                }
+            }
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+        window.addEventListener('cookie-consent-updated', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+            window.removeEventListener('cookie-consent-updated', handleStorageChange);
+        };
     }, [location]);
 
     return null;
