@@ -45,7 +45,7 @@ export const GrainedImage = ({
 
     return (
         <div
-            className={`relative overflow-hidden element-grain ${className}`}
+            className={`relative overflow-hidden ${className}`}
             style={ratioStyle}
             onClick={onClick}
         >
