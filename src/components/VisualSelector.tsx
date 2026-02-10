@@ -54,6 +54,7 @@ const VisualSelector = ({ options, onSelect, label = "Sélectionner une œuvre",
                 aria-expanded={isOpen}
                 aria-haspopup="listbox"
                 aria-controls="visual-selector-list"
+                aria-label={isOpen ? "Fermer le menu de sélection" : "Ouvrir le menu de sélection"}
                 className="w-full bg-white/5 border border-white/20 py-3 px-4 text-off-white font-inter flex justify-between items-center hover:bg-white/10 transition-colors focus:outline-none focus:border-darkroom-red focus:ring-1 focus:ring-darkroom-red"
             >
                 <span className="text-silver/80">{placeholder}</span>

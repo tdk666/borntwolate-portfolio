@@ -18,6 +18,9 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
     const currentLang = i18n.language.split('-')[0] as 'fr' | 'en';
     const controls = useAnimation();
 
+    // SAFETY CHECK: Early return if photo data is missing to prevent crash
+    if (!photo || !photo.url) return null;
+
     // --- FIX 1: UseRef pour un verrouillage immédiat (Synchrone) ---
     const isNavigatingRef = useRef(false);
     const [showInfo, setShowInfo] = useState(false);
@@ -136,8 +139,8 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
 
                 {/* Zone Image */}
                 <div className="relative flex-1 h-full w-full flex items-center justify-center p-0 md:p-2 bg-black/90 group">
-                    <button onClick={(e) => { e.stopPropagation(); onPrev(); }} className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-all z-50 hidden md:block p-2 hover:bg-white/10 rounded-full"><ChevronLeft size={48} strokeWidth={0.5} /></button>
-                    <button onClick={(e) => { e.stopPropagation(); onNext(); }} className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-all z-50 hidden md:block p-2 hover:bg-white/10 rounded-full"><ChevronRight size={48} strokeWidth={0.5} /></button>
+                    <button onClick={(e) => { e.stopPropagation(); onPrev(); }} aria-label="Photo précédente" className="absolute left-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-all z-50 hidden md:block p-2 hover:bg-white/10 rounded-full"><ChevronLeft size={48} strokeWidth={0.5} /></button>
+                    <button onClick={(e) => { e.stopPropagation(); onNext(); }} aria-label="Photo suivante" className="absolute right-4 top-1/2 -translate-y-1/2 text-white/50 hover:text-white transition-all z-50 hidden md:block p-2 hover:bg-white/10 rounded-full"><ChevronRight size={48} strokeWidth={0.5} /></button>
 
                     <motion.img
                         layoutId={`photo-${photo.id}`}

@@ -53,6 +53,7 @@ export const GrainedImage = ({
                 src={src}
                 alt={alt}
                 loading={loading}
+                decoding="async"
                 fetchPriority={fetchPriority}
                 className={`w-full h-full object-cover transition-opacity duration-700 ease-in-out ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
                 onLoad={() => setIsLoaded(true)}

@@ -144,7 +144,7 @@ const Navbar = () => {
                     <button onClick={toggleLang} aria-label="Changer la langue" className="hover:text-warm-sepia transition-colors font-bold drop-shadow-lg">
                         {i18n.language === 'fr' ? 'EN' : 'FR'}
                     </button>
-                    <a href="https://instagram.com/borntwolate" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="hover:text-warm-sepia transition-colors drop-shadow-lg">
+                    <a href="https://instagram.com/borntwolate" target="_blank" rel="noopener noreferrer" aria-label="Suivre sur Instagram" className="hover:text-warm-sepia transition-colors drop-shadow-lg">
                         <Instagram size={20} />
                     </a>
                     <button onClick={toggleDarkroom} aria-label="Mode Chambre Noire" className="hover:text-darkroom-red transition-colors drop-shadow-lg">
@@ -213,10 +213,10 @@ const Navbar = () => {
                                 {i18n.language === 'fr' ? 'Switch to EN' : 'Passer en FR'}
                             </button>
                             <div className="flex items-center gap-8">
-                                <button onClick={toggleDarkroom} aria-label="Mode Sombre" className="text-silver hover:text-darkroom-red transition-colors">
+                                <button onClick={toggleDarkroom} aria-label="Mode Chambre Noire" className="text-silver hover:text-darkroom-red transition-colors">
                                     {isDarkroom ? <Sun size={24} /> : <Moon size={24} />}
                                 </button>
-                                <a href="https://instagram.com/borntwolate" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="text-silver hover:text-darkroom-red transition-colors">
+                                <a href="https://instagram.com/borntwolate" target="_blank" rel="noopener noreferrer" aria-label="Suivre sur Instagram" className="text-silver hover:text-darkroom-red transition-colors">
                                     <Instagram size={24} />
                                 </a>
                             </div>
