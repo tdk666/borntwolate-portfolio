@@ -183,7 +183,8 @@ export const getSemanticTags = async (query: string): Promise<string[]> => {
 
     const tags = JSON.parse(cleanText);
     if (Array.isArray(tags)) {
-      return tags.map(t => t.toLowerCase());
+      // Ensure all tags are strings and filtered
+      return tags.filter(t => typeof t === 'string').map(t => t.toLowerCase());
     }
     return legacyFallbackSearch(query);
 

@@ -18,10 +18,11 @@ const SearchContext = createContext<SearchContextType | undefined>(undefined);
 
 // Fonction utilitaire pour ignorer les accents et la casse
 // Ex: "Montréal" -> "montreal"
-const normalizeText = (text: string) => {
-    return text
-        .normalize("NFD") // Décompose les caractères (é -> e + ´)
-        .replace(/[\u0300-\u036f]/g, "") // Supprime les diacritiques (accents)
+const normalizeText = (text: string | null | undefined) => {
+    if (!text) return "";
+    return String(text)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase()
         .trim();
 };
@@ -41,8 +42,8 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
                 _meta: {
                     seriesTitle: series?.title || '',
                     year: series?.year || '',
-                    description: series?.description ? (series.description.fr + ' ' + series.description.en) : '',
-                    location: series?.seo_title ? (series.seo_title.fr + ' ' + series.seo_title.en) : ''
+                    description: (series?.description?.fr || '') + ' ' + (series?.description?.en || ''),
+                    location: (series?.seo_title?.fr || '') + ' ' + (series?.seo_title?.en || '')
                 }
             };
         });
@@ -51,33 +52,41 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
     const openSearch = async (query: string) => {
         if (!query.trim()) return;
 
-        setIsSearchOpen(true); // Open immediately with loading state if needed (optional improvement)
+        setIsSearchOpen(true);
         setSearchQuery(query);
-        setSearchResults([]); // Clear previous
+        setSearchResults([]);
 
         try {
             // V2: Semantic Search via Gemini
-            const semanticTags = await getSemanticTags(query);
+            let semanticTags: string[] = [];
+            try {
+                semanticTags = await getSemanticTags(query);
+            } catch (err) {
+                console.warn("Semantic Search failed, falling back to simple search.", err);
+                semanticTags = [query];
+            }
+
             console.debug("Semantic Tags:", semanticTags);
 
             const q = normalizeText(query);
 
             const results = enrichedPhotos.filter(photo => {
-                const titleMatch = normalizeText(photo.title).includes(q);
-                const seriesMatch = normalizeText(photo._meta.seriesTitle).includes(q);
-                const yearMatch = normalizeText(photo._meta.year).includes(q);
-                const locMatch = normalizeText(photo._meta.location).includes(q);
+                // Safeguard against undefined data
+                const titleMatch = normalizeText(photo?.title).includes(q);
+                const seriesMatch = normalizeText(photo?._meta?.seriesTitle).includes(q);
+                const yearMatch = normalizeText(photo?._meta?.year).includes(q);
+                const locMatch = normalizeText(photo?._meta?.location).includes(q);
 
-                // Semantic matching: Check if ANY valid semantic tag matches the photo's content
-                // We match against title, category, and artistic caption keys
-                const isSemanticMatch = semanticTags.some(tag => {
+                // Semantic matching
+                const isSemanticMatch = Array.isArray(semanticTags) && semanticTags.some(tag => {
                     const normTag = normalizeText(tag);
+                    if (!normTag) return false;
+
                     return (
                         normalizeText(photo.title).includes(normTag) ||
                         normalizeText(photo.category).includes(normTag) ||
                         normalizeText(photo._meta.description).includes(normTag) ||
-                        // Also check caption for "vibes"
-                        (photo.caption_artistic && normalizeText(photo.caption_artistic.fr).includes(normTag))
+                        (photo.caption_artistic && normalizeText(photo.caption_artistic?.fr).includes(normTag))
                     );
                 });
 
