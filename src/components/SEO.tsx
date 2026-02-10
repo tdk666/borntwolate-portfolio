@@ -55,6 +55,41 @@ export const SEO = ({
                 "jobTitle": "Photographe Argentique",
                 "url": baseUrl,
                 "sameAs": ["https://www.instagram.com/borntwolate_/"]
+            },
+            {
+                "@type": "PhotographyBusiness",
+                "name": "Borntwolate Photography",
+                "image": "https://borntwolate.com/images/portrait.jpg",
+                "@id": "https://borntwolate.com",
+                "url": "https://borntwolate.com",
+                "priceRange": "€€",
+                "address": {
+                    "@type": "PostalAddress",
+                    "streetAddress": "",
+                    "addressLocality": "Paris",
+                    "postalCode": "75000",
+                    "addressCountry": "FR"
+                },
+                "geo": {
+                    "@type": "GeoCoordinates",
+                    "latitude": 48.8566,
+                    "longitude": 2.3522
+                },
+                "openingHoursSpecification": {
+                    "@type": "OpeningHoursSpecification",
+                    "dayOfWeek": [
+                        "Monday",
+                        "Tuesday",
+                        "Wednesday",
+                        "Thursday",
+                        "Friday"
+                    ],
+                    "opens": "09:00",
+                    "closes": "18:00"
+                },
+                "sameAs": [
+                    "https://www.instagram.com/borntwolate.photo/"
+                ]
             }
         ]
     };

@@ -1,3 +1,4 @@
+
 export interface ProductVariant {
     id: string;
     label: string;
@@ -14,78 +15,6 @@ export interface ProductRange {
     features: string[];
     variants: ProductVariant[];
 }
-
-const SHEET_ID = import.meta.env.VITE_GOOGLE_SHEET_ID;
-const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
-const CACHE_KEY = 'pricing_cache_v2';
-const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24h
-
-export const fetchExternalPrices = async (): Promise<void> => {
-    if (!SHEET_ID || !API_KEY) {
-        console.warn("Pricing: Missing V2 Config (SHEET_ID or API_KEY). Using static catalog.");
-        return;
-    }
-
-    // Check Cache
-    const cached = localStorage.getItem(CACHE_KEY);
-    if (cached) {
-        try {
-            const { timestamp, data } = JSON.parse(cached);
-            if (Date.now() - timestamp < CACHE_DURATION) {
-                console.debug("Pricing: Using cached data.");
-                applyPricingOverrides(data);
-                return;
-            }
-        } catch (e) {
-            localStorage.removeItem(CACHE_KEY);
-        }
-    }
-
-    try {
-        // 'Tarifieur' sheet as requested. Fetch A:E to cover columns.
-        const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Tarifieur!A:E?key=${API_KEY}`);
-        const json = await response.json();
-
-        if (json.values && json.values.length > 1) {
-            const rows = json.values.slice(1); // Skip header
-            // Expected Columns: [RangeID, FormatID, Price, StripeURL]
-            // Example: ['collection', '20x30', '45', 'https://...']
-
-            const overrides = rows.map((r: string[]) => ({
-                rangeId: r[0]?.toLowerCase().trim(),
-                formatId: r[1]?.trim(),
-                price: Number(r[2]?.replace(/[€$ ]/g, '')),
-                stripeUrl: r[3]?.trim()
-            })).filter((o: any) => o.rangeId && o.formatId && !isNaN(o.price));
-
-            if (overrides.length > 0) {
-                // Cache
-                localStorage.setItem(CACHE_KEY, JSON.stringify({
-                    timestamp: Date.now(),
-                    data: overrides
-                }));
-
-                applyPricingOverrides(overrides);
-                console.debug(`Pricing: Updated ${overrides.length} prices from Sheet.`);
-            }
-        }
-    } catch (err) {
-        console.error("Pricing: API Error - using static data.", err);
-    }
-};
-
-const applyPricingOverrides = (overrides: any[]) => {
-    overrides.forEach(o => {
-        const range = PRICING_CATALOG[o.rangeId];
-        if (range) {
-            const variant = range.variants.find(v => v.id === o.formatId);
-            if (variant) {
-                variant.price = o.price;
-                if (o.stripeUrl) variant.stripeUrl = o.stripeUrl;
-            }
-        }
-    });
-};
 
 export const PRICING_CATALOG: Record<string, ProductRange> = {
     collection: {
@@ -140,5 +69,70 @@ export const PRICING_CATALOG: Record<string, ProductRange> = {
             { id: '40x60', label: 'Caisse 40x60 cm', price: 490, stripeUrl: 'https://buy.stripe.com/bJedR97Jn69g5Bz87M1Jm0k' },
             { id: '50x75', label: 'Caisse 50x75 cm', price: 690, stripeUrl: 'https://buy.stripe.com/8x26oHd3Hapwd41ds61Jm0l' }
         ]
+    }
+};
+
+const applyPricingOverrides = (overrides: any[]) => {
+    overrides.forEach(o => {
+        const range = PRICING_CATALOG[o.rangeId];
+        if (range) {
+            const variant = range.variants.find(v => v.id === o.formatId);
+            if (variant) {
+                variant.price = o.price;
+                if (o.stripeUrl) variant.stripeUrl = o.stripeUrl;
+            }
+        }
+    });
+};
+
+const CACHE_KEY = 'pricing_cache_v2';
+const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24h
+
+export const fetchExternalPrices = async (): Promise<void> => {
+    // Check Cache
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (cached) {
+        try {
+            const { timestamp, data } = JSON.parse(cached);
+            if (Date.now() - timestamp < CACHE_DURATION) {
+                console.debug("Pricing: Using cached data.");
+                applyPricingOverrides(data);
+                return;
+            }
+        } catch (e) {
+            localStorage.removeItem(CACHE_KEY);
+        }
+    }
+
+    try {
+        // Call the Netlify Function
+        const response = await fetch('/.netlify/functions/get-prices');
+        const json = await response.json();
+
+        if (json.values && json.values.length > 1) {
+            const rows = json.values.slice(1); // Skip header
+            // Expected Columns: [RangeID, FormatID, Price, StripeURL]
+            // Example: ['collection', '20x30', '45', 'https://...']
+
+            const overrides = rows.map((r: string[]) => ({
+                rangeId: r[0]?.toLowerCase().trim(),
+                formatId: r[1]?.trim(),
+                price: Number(r[2]?.replace(/[€$ ]/g, '')),
+                stripeUrl: r[3]?.trim()
+            })).filter((o: any) => o.rangeId && o.formatId && !isNaN(o.price));
+
+            if (overrides.length > 0) {
+                // Cache
+                localStorage.setItem(CACHE_KEY, JSON.stringify({
+                    timestamp: Date.now(),
+                    data: overrides
+                }));
+
+                applyPricingOverrides(overrides);
+                console.debug(`Pricing: Updated ${overrides.length} prices from Netlify Function.`);
+            }
+        }
+    } catch (err) {
+        console.error("Pricing: API Error - using static data.", err);
     }
 };
