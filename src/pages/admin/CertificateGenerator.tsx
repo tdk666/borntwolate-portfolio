@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ShieldCheck, Printer, AlertCircle, Lock, TrendingUp } from 'lucide-react';
+import { ShieldCheck, Printer, AlertCircle, Lock, TrendingUp, CloudDownload } from 'lucide-react';
 import { SEO } from '../../components/SEO';
 import { stockService } from '../../services/stock';
 import toast, { Toaster } from 'react-hot-toast';
@@ -137,6 +137,89 @@ const CertificateGenerator = () => {
             if (variant) {
                 setData(prev => ({ ...prev, format: variant.label }));
             }
+        }
+    };
+
+    const [orderId, setOrderId] = useState("");
+    const [isFetchingOrder, setIsFetchingOrder] = useState(false);
+
+    // Google Sheets Config
+    const SHEET_ID = import.meta.env.VITE_GOOGLE_SHEET_ID;
+    const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
+
+    const handleFetchOrder = async () => {
+        if (!orderId || !SHEET_ID || !API_KEY) return;
+        setIsFetchingOrder(true);
+
+        try {
+            // Fetch "Suivi commandes" (Reading broadly A:Z to find headers)
+            const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Suivi%20commandes!A:Z?key=${API_KEY}`);
+            const json = await response.json();
+
+            if (!json.values || json.values.length < 2) {
+                toast.error("Format feuille invalide ou vide.");
+                return;
+            }
+
+            const headers = json.values[0].map((h: string) => h.toLowerCase().trim());
+            const rows = json.values.slice(1);
+
+            // Identify Columns (Loose matching)
+            const idxId = headers.findIndex((h: string) => h.includes("commande") || h.includes("order"));
+            // const idxName = headers.findIndex((h: string) => h.includes("client") || h.includes("nom"));
+            const idxTitle = headers.findIndex((h: string) => h.includes("produit") || h.includes("titre") || h.includes("oeuvre"));
+            const idxDate = headers.findIndex((h: string) => h.includes("date"));
+
+            if (idxId === -1) {
+                toast.error("Colonne 'Commande' introuvable.");
+                return;
+            }
+
+            // Find Row
+            const row = rows.find((r: string[]) => r[idxId]?.toString().trim() === orderId.trim());
+
+            if (row) {
+                const title = idxTitle > -1 ? row[idxTitle] : "";
+                const date = idxDate > -1 ? row[idxDate] : new Date().toLocaleDateString('fr-FR');
+                // const client = idxName > -1 ? row[idxName] : ""; // Retrieved but currently only used for toast/verification
+
+                // Update Data
+                setData(prev => ({
+                    ...prev,
+                    title: title || prev.title,
+                    date: date || prev.date
+                }));
+
+                // Try to auto-select photo in dropdown if title matches
+                if (title) {
+                    const match = photos.find(p => p.title.toLowerCase() === title.toLowerCase());
+                    if (match) {
+                        // Trigger stock fetch logic conceptually similar to handlePhotoSelect mechanism
+                        // We simulate the select event or just call logic directly
+                        setSelectedPhotoId(match.id);
+
+                        // Update extra metadata
+                        const slug = getSlug(match.title);
+                        const { count } = await stockService.getStock(slug);
+                        setData(prev => ({
+                            ...prev,
+                            title: match.title,
+                            series: getSeriesTitle(match.seriesId),
+                            number: String(count + 1).padStart(2, '0')
+                        }));
+                    }
+                }
+
+                toast.success(`Commande #${orderId} trouvée !`);
+            } else {
+                toast.error("Commande introuvable.");
+            }
+
+        } catch (err) {
+            console.error(err);
+            toast.error("Erreur API Sheets");
+        } finally {
+            setIsFetchingOrder(false);
         }
     };
 
@@ -286,6 +369,27 @@ const CertificateGenerator = () => {
                     </div>
 
                     <div className="grid gap-4">
+                        {/* ORDER ID FETCH */}
+                        <div className="bg-white/5 p-4 rounded border border-white/10 mb-2">
+                            <label className="block text-[10px] uppercase tracking-widest text-silver mb-2">Import Commande (Google Sheets)</label>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    placeholder="# ID"
+                                    value={orderId}
+                                    onChange={(e) => setOrderId(e.target.value)}
+                                    className="w-full bg-black/50 border border-white/20 p-2 text-sm text-white focus:border-darkroom-red outline-none"
+                                />
+                                <button
+                                    onClick={handleFetchOrder}
+                                    disabled={isFetchingOrder || !orderId}
+                                    className="px-4 bg-darkroom-red/20 text-darkroom-red border border-darkroom-red/50 hover:bg-darkroom-red hover:text-white transition-colors uppercase text-xs font-bold disabled:opacity-50 flex items-center gap-2"
+                                >
+                                    {isFetchingOrder ? "..." : <><CloudDownload size={14} /> Go</>}
+                                </button>
+                            </div>
+                        </div>
+
                         {/* PHOTO SELECTOR */}
                         <div>
                             <label className="block text-[10px] uppercase tracking-widest text-silver mb-1">Oeuvre</label>

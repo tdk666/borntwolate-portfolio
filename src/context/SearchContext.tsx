@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, type ReactNode, useMemo } from 'react';
 import { photos, seriesData, type Photo } from '../data/photos';
+import { getSemanticTags } from '../services/gemini';
 import Lightbox from '../components/Lightbox';
 
 interface SearchContextType {
@@ -47,29 +48,54 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
         });
     }, []);
 
-    const openSearch = (query: string) => {
+    const openSearch = async (query: string) => {
         if (!query.trim()) return;
 
-        const q = normalizeText(query);
-        const results = enrichedPhotos.filter(photo => {
-            const titleMatch = normalizeText(photo.title).includes(q);
-            const seriesMatch = normalizeText(photo._meta.seriesTitle).includes(q);
-            const yearMatch = normalizeText(photo._meta.year).includes(q);
-            const locMatch = normalizeText(photo._meta.location).includes(q);
-            // Optional: Search in description/captions if needed, keeping it focused for now
+        setIsSearchOpen(true); // Open immediately with loading state if needed (optional improvement)
+        setSearchQuery(query);
+        setSearchResults([]); // Clear previous
 
-            return titleMatch || seriesMatch || yearMatch || locMatch;
-        });
+        try {
+            // V2: Semantic Search via Gemini
+            const semanticTags = await getSemanticTags(query);
+            console.debug("Semantic Tags:", semanticTags);
 
-        if (results.length > 0) {
-            setSearchResults(results);
-            setSearchQuery(query);
-            setCurrentPhotoIndex(0);
-            setIsSearchOpen(true);
-        } else {
-            // Should be handled by UI (Toast), but here we reset
-            alert(`Aucune photo trouvée pour "${query}"`); // Simple fallback
-            setSearchResults([]);
+            const q = normalizeText(query);
+
+            const results = enrichedPhotos.filter(photo => {
+                const titleMatch = normalizeText(photo.title).includes(q);
+                const seriesMatch = normalizeText(photo._meta.seriesTitle).includes(q);
+                const yearMatch = normalizeText(photo._meta.year).includes(q);
+                const locMatch = normalizeText(photo._meta.location).includes(q);
+
+                // Semantic matching: Check if ANY valid semantic tag matches the photo's content
+                // We match against title, category, and artistic caption keys
+                const isSemanticMatch = semanticTags.some(tag => {
+                    const normTag = normalizeText(tag);
+                    return (
+                        normalizeText(photo.title).includes(normTag) ||
+                        normalizeText(photo.category).includes(normTag) ||
+                        normalizeText(photo._meta.description).includes(normTag) ||
+                        // Also check caption for "vibes"
+                        (photo.caption_artistic && normalizeText(photo.caption_artistic.fr).includes(normTag))
+                    );
+                });
+
+                return titleMatch || seriesMatch || yearMatch || locMatch || isSemanticMatch;
+            });
+
+            if (results.length > 0) {
+                setSearchResults(results);
+                setCurrentPhotoIndex(0);
+            } else {
+                // Keep open but show empty state or close? 
+                // Context pattern usually implies we just show empty results
+                // But for now, let's keep previous behavior of alert/reset
+                alert(`Aucune photo trouvée pour "${query}"`);
+                setIsSearchOpen(false);
+            }
+        } catch (e) {
+            console.error("Search Error:", e);
             setIsSearchOpen(false);
         }
     };

@@ -143,11 +143,58 @@ export const sendMessageToGemini = async (message: string, history: { role: 'use
 
 // --- SEMANTIC SEARCH HOOK (V2) ---
 // Maps user "vibes" (e.g., "nostalgie", "froid") to technical tags
-export const getSemanticTags = async (query: string): Promise<string[]> => {
-  // TODO: Connect to real Gemini Flash 2.0 API for synonym extraction
-  // For V1 (Hardening), we use a deterministic mapping to save tokens/latency
-  const lowerQuery = query.toLowerCase();
+const SEARCH_API_KEY = import.meta.env.VITE_GEMINI_SEARCH_KEY;
 
+// Initialize separate instance for Search if needed, or reuse generic if keys are same.
+// For V2 safety, we respect the specific SEARCH_KEY.
+const getSearchGenAI = () => {
+  if (!SEARCH_API_KEY) return null;
+  return new GoogleGenerativeAI(SEARCH_API_KEY);
+};
+
+// --- SEMANTIC SEARCH HOOK (V2) ---
+// Maps user "vibes" (e.g., "nostalgie", "froid") to technical tags using Gemini 2.0 Flash
+export const getSemanticTags = async (query: string): Promise<string[]> => {
+  // Fallback if key missing or query too short
+  if (!SEARCH_API_KEY || query.length < 3) {
+    console.warn("⚠️ Search: Missing VITE_GEMINI_SEARCH_KEY or short query. Using legacy fallback.");
+    return legacyFallbackSearch(query);
+  }
+
+  try {
+    const genAI = getSearchGenAI();
+    if (!genAI) return legacyFallbackSearch(query);
+
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+    const prompt = `
+        Analyze this photography search query: "${query}".
+        Return ONLY a JSON array of 5 French keywords that best capture the visual intent (mood, lighting, subject, color, location).
+        Example: ["nostalgie", "grain", "noir et blanc", "urbain", "mélancolie"]
+        Do not add markdown formatting. Just the raw JSON array.
+        `;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+
+    // Clean up markdown code blocks if present (```json ... ```)
+    const cleanText = text.replace(/```json/g, '').replace(/```/g, '').trim();
+
+    const tags = JSON.parse(cleanText);
+    if (Array.isArray(tags)) {
+      return tags.map(t => t.toLowerCase());
+    }
+    return legacyFallbackSearch(query);
+
+  } catch (error) {
+    console.error("Semantic Search Error:", error);
+    return legacyFallbackSearch(query);
+  }
+};
+
+const legacyFallbackSearch = (query: string): string[] => {
+  const lowerQuery = query.toLowerCase();
   const semanticMap: Record<string, string[]> = {
     'hiver': ['neige', 'froid', 'montagne'],
     'sombre': ['nuit', 'contraste', 'urbain'],
@@ -157,10 +204,8 @@ export const getSemanticTags = async (query: string): Promise<string[]> => {
     'nostalgie': ['argentique', 'grain', 'souvenir']
   };
 
-  // Check for direct matches or partial matches
   for (const [key, tags] of Object.entries(semanticMap)) {
     if (lowerQuery.includes(key)) return tags;
   }
-
-  return [];
+  return [lowerQuery]; // Return the query itself as a tag if no map found
 };
