@@ -24,6 +24,7 @@ import { GoogleAnalytics } from './components/GoogleAnalytics';
 const Chatbot = lazy(() => import('./components/chatbot/Chatbot').then(module => ({ default: module.Chatbot })));
 const PhotographeArgentique = lazy(() => import('./pages/PhotographeArgentique'));
 import { CookieConsent } from './components/CookieConsent';
+import Success from './pages/Success';
 
 
 function AnimatedRoutes() {
@@ -42,6 +43,7 @@ function AnimatedRoutes() {
         <Route path="/photographe-argentique" element={<PhotographeArgentique />} />
         <Route path="/admin/certificate" element={<CertificateGenerator />} />
         <Route path="/legals" element={<Legals />} />
+        <Route path="/success" element={<Success />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>

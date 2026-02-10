@@ -88,7 +88,8 @@ const VisualSelector = ({ options, onSelect, label = "Sélectionner une œuvre",
                         <div className="py-2">
                             {filteredOptions.length > 0 ? (
                                 filteredOptions.map((option) => (
-                                    <button
+                                    <motion.button
+                                        whileTap={{ scale: 0.98 }}
                                         key={option.id}
                                         type="button"
                                         role="option"
@@ -119,7 +120,7 @@ const VisualSelector = ({ options, onSelect, label = "Sélectionner une œuvre",
                                             <div className="text-off-white font-bold font-inter text-sm group-hover/item:text-darkroom-red transition-colors">{option.title}</div>
                                             <div className="text-silver/50 text-xs font-space-mono uppercase">{option.seriesTitle}</div>
                                         </div>
-                                    </button>
+                                    </motion.button>
                                 ))
                             ) : (
                                 <div className="p-4 text-center text-silver/40 text-xs font-space-mono">

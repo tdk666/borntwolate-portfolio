@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { X, ShieldCheck, ArrowRight, Eye } from 'lucide-react';
+import { X, ShieldCheck, ArrowRight, Eye, Globe, Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { sendEmail } from '../services/email';
 import { PRICING_CATALOG } from '../data/pricing';
@@ -219,11 +219,24 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
 
               <div className="flex flex-col gap-3 mb-4">
 
-                {/* Top Row: Shipping & Secure (Mobile Combined) */}
-                <div className="flex justify-between items-center w-full">
-                  <div className="flex items-center gap-2 text-white/50 text-xs">
-                    <ShieldCheck className="w-4 h-4" />
-                    <span className="truncate">{translatedCurrentRange.shipping || currentRange.shipping_text}</span>
+                {/* Top Row: Smart Shipping Info */}
+                <div className="flex flex-col gap-2 w-full mb-2">
+                  {/* Logic: Collection = Print (Worldwide), Others = Frame (Europe Only) */}
+                  {activeTab === 'collection' ? (
+                    <div className="flex items-start gap-2 text-emerald-400/80 text-xs">
+                      <Globe className="w-4 h-4 shrink-0 mt-0.5" />
+                      <span>Expédition : Monde entier / Worldwide Shipping.</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-start gap-2 text-amber-400/80 text-xs">
+                      <Info className="w-4 h-4 shrink-0 mt-0.5" />
+                      <span>Expédition : France & Europe uniquement (Fragile).</span>
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-2 text-white/50 text-[10px] md:text-xs">
+                    <ShieldCheck className="w-3 h-3 md:w-4 md:h-4" />
+                    <span className="truncate">Livraison suivie & assurée.</span>
                   </div>
                 </div>
 

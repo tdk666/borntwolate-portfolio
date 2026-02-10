@@ -43,7 +43,7 @@ textarea {
 /* ACCESSIBILITY: Visible Focus Indication (WCAG) */
 :focus-visible {
   outline: 2px solid var(--color-darkroom-red);
-  outline-offset: 4px;
+  outline-offset: 2px;
 }
 
 /* STATIC OPTIMIZED FILM GRAIN */

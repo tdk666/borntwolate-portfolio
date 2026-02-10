@@ -42,8 +42,8 @@ export const fetchExternalPrices = async (): Promise<void> => {
     }
 
     try {
-        // Assume 'Catalog' sheet. Fetch A:E to cover columns.
-        const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Catalog!A:E?key=${API_KEY}`);
+        // 'Tarifieur' sheet as requested. Fetch A:E to cover columns.
+        const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Tarifieur!A:E?key=${API_KEY}`);
         const json = await response.json();
 
         if (json.values && json.values.length > 1) {
