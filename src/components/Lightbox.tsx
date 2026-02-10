@@ -26,12 +26,14 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
     const [showInfo, setShowInfo] = useState(false);
     const [isAcquisitionOpen, setIsAcquisitionOpen] = useState(false);
     const [stockCount, setStockCount] = useState<number | null>(null);
+    const [isStockFallback, setIsStockFallback] = useState(false);
 
     useEffect(() => {
         const fetchStock = async () => {
             const slug = stockService.getSlug(photo.title);
-            const sold = await stockService.getStock(slug);
-            setStockCount(sold);
+            const { count, isFallback } = await stockService.getStock(slug);
+            setStockCount(count);
+            setIsStockFallback(isFallback);
         };
         fetchStock();
     }, [photo.title]);
@@ -182,9 +184,11 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                             <span className={`text-[10px] uppercase tracking-widest font-space-mono ${isSoldOut ? 'text-gray-500 line-through' : isLowStock ? 'text-red-500 animate-pulse' : 'text-white/40'}`}>
                                 {isSoldOut
                                     ? (currentLang === 'fr' ? "ÉPUISÉ / SOLD OUT" : "SOLD OUT")
-                                    : isLowStock
-                                        ? (currentLang === 'fr' ? `Derniers exemplaires ! (${remaining} restants)` : `Last copies! (${remaining} remaining)`)
-                                        : (currentLang === 'fr' ? `Édition Limitée (${30} ex)` : `Limited Edition (${30} copies)`)
+                                    : isStockFallback
+                                        ? (currentLang === 'fr' ? "Édition Limitée" : "Limited Edition")
+                                        : isLowStock
+                                            ? (currentLang === 'fr' ? `Derniers exemplaires ! (${remaining} restants)` : `Last copies! (${remaining} remaining)`)
+                                            : (currentLang === 'fr' ? `Édition Limitée (${30} ex)` : `Limited Edition (${30} copies)`)
                                 }
                             </span>
                         )}
@@ -257,9 +261,11 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                                             <span className={`text-[10px] uppercase tracking-widest font-space-mono ${isSoldOut ? 'text-gray-500' : isLowStock ? 'text-red-500 animate-pulse' : 'text-white/40'}`}>
                                                 {isSoldOut
                                                     ? (currentLang === 'fr' ? "ÉPUISÉ / SOLD OUT" : "SOLD OUT")
-                                                    : isLowStock
-                                                        ? (currentLang === 'fr' ? `Derniers exemplaires ! (${remaining} restants)` : `Last copies! (${remaining} remaining)`)
-                                                        : (currentLang === 'fr' ? `Édition Limitée (${30} ex)` : `Limited Edition (${30} copies)`)
+                                                    : isStockFallback
+                                                        ? (currentLang === 'fr' ? "Édition Limitée" : "Limited Edition")
+                                                        : isLowStock
+                                                            ? (currentLang === 'fr' ? `Derniers exemplaires ! (${remaining} restants)` : `Last copies! (${remaining} remaining)`)
+                                                            : (currentLang === 'fr' ? `Édition Limitée (${30} ex)` : `Limited Edition (${30} copies)`)
                                                 }
                                             </span>
                                         )}

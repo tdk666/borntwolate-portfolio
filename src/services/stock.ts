@@ -44,7 +44,7 @@ export const stockService = {
         }
     },
 
-    getStock: async (slug: string): Promise<number> => {
+    getStock: async (slug: string): Promise<{ count: number; isFallback: boolean }> => {
         try {
             const { data, error } = await supabase
                 .from('art_stocks')
@@ -53,15 +53,16 @@ export const stockService = {
                 .single();
 
             if (error) {
-                // If error is PGRU-000 (no row), return 0
-                if (error.code === 'PGRST116') return 0;
+                // If error is PGRU-000 (no row), return 0 count, not fallback
+                if (error.code === 'PGRST116') return { count: 0, isFallback: false };
                 throw error;
             }
 
-            return data?.sold_count || 0;
+            return { count: data?.sold_count || 0, isFallback: false };
         } catch (error) {
-            console.warn(`Error fetching stock for ${slug} (using default 0):`, error);
-            return 0;
+            console.warn(`Error fetching stock for ${slug} (using fallback):`, error);
+            // Fallback: return 0 count but mark as fallback so UI knows to hide specific number
+            return { count: 0, isFallback: true };
         }
     },
 

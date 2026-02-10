@@ -15,6 +15,14 @@ export interface ProductRange {
     variants: ProductVariant[];
 }
 
+export const fetchExternalPrices = async (): Promise<void> => {
+    // SKELETON: Future Google Sheets API Integration
+    // This function will fetch pricing overrides and update PRICING_CATALOG at runtime.
+    // For V1, we rely on the static export below.
+    console.debug("fetchExternalPrices: Placeholder for V2 dynamic pricing.");
+    return Promise.resolve();
+};
+
 export const PRICING_CATALOG: Record<string, ProductRange> = {
     collection: {
         id: 'collection',

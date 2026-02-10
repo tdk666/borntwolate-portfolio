@@ -90,7 +90,7 @@ const CertificateGenerator = () => {
         const photo = photos.find(p => p.id === Number(id)) || photos.find(p => p.title === id);
         if (photo) {
             const slug = getSlug(photo.title);
-            const soldCount = await stockService.getStock(slug);
+            const { count: soldCount } = await stockService.getStock(slug);
             const nextEdition = soldCount + 1;
 
             setData(prev => ({

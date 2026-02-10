@@ -137,5 +137,30 @@ export const sendMessageToGemini = async (message: string, history: { role: 'use
 
     console.error("Gemini Error:", error);
     return `Erreur Technique : ${errorString.substring(0, 100)}`;
+    return `Erreur Technique : ${errorString.substring(0, 100)}`;
   }
+};
+
+// --- SEMANTIC SEARCH HOOK (V2) ---
+// Maps user "vibes" (e.g., "nostalgie", "froid") to technical tags
+export const getSemanticTags = async (query: string): Promise<string[]> => {
+  // TODO: Connect to real Gemini Flash 2.0 API for synonym extraction
+  // For V1 (Hardening), we use a deterministic mapping to save tokens/latency
+  const lowerQuery = query.toLowerCase();
+
+  const semanticMap: Record<string, string[]> = {
+    'hiver': ['neige', 'froid', 'montagne'],
+    'sombre': ['nuit', 'contraste', 'urbain'],
+    'nature': ['montagne', 'alpes', 'randonnée'],
+    'ville': ['urbain', 'rue', 'architecture'],
+    'voyage': ['japon', 'italie', 'roadtrip'],
+    'nostalgie': ['argentique', 'grain', 'souvenir']
+  };
+
+  // Check for direct matches or partial matches
+  for (const [key, tags] of Object.entries(semanticMap)) {
+    if (lowerQuery.includes(key)) return tags;
+  }
+
+  return [];
 };

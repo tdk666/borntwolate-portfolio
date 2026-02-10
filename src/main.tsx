@@ -32,6 +32,12 @@ if (import.meta.env.PROD || import.meta.env.DEV) {
       "background: #0a0a0a; color: #f0f0f0; padding: 4px; border-radius: 4px 0 0 4px;",
       "background: #B91C1C; color: #f0f0f0; padding: 4px; border-radius: 0 4px 4px 0;"
     );
+  } else {
+    // PRODUCTION: Silence is Golden (Data Leakage Protection)
+    console.log = () => { };
+    console.debug = () => { };
+    console.info = () => { };
+    // Keep warn/error for monitoring tools (Sentry/LogRocket)
   }
 }
 

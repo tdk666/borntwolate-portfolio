@@ -40,6 +40,12 @@ textarea {
   -webkit-user-select: text;
 }
 
+/* ACCESSIBILITY: Visible Focus Indication (WCAG) */
+:focus-visible {
+  outline: 2px solid var(--color-darkroom-red);
+  outline-offset: 4px;
+}
+
 /* STATIC OPTIMIZED FILM GRAIN */
 .film-grain {
   position: fixed;

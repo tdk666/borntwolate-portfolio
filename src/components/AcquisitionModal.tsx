@@ -36,8 +36,8 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
         // We assume stockService handles errors now.
         const { stockService } = await import('../services/stock');
         const slug = stockService.getSlug(photoTitle);
-        const sold = await stockService.getStock(slug);
-        setStockCount(sold);
+        const { count } = await stockService.getStock(slug);
+        setStockCount(count);
       };
       fetchStock();
     }

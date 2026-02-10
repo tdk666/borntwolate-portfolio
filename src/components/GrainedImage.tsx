@@ -60,6 +60,12 @@ export const GrainedImage = ({
                 draggable="false"
                 onContextMenu={(e) => e.preventDefault()}
             />
+            {/* BRAND PROTECTION: Subtle Overlay */}
+            <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none mix-blend-difference overflow-hidden">
+                <span className="text-[10vw] font-serif font-bold text-white -rotate-12 whitespace-nowrap">
+                    © BORNTWOLATE
+                </span>
+            </div>
         </div>
     );
 };
