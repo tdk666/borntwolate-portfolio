@@ -93,6 +93,53 @@ ${products.map(product => `
     <g:price>${PRICE_EUR}</g:price>
     <g:google_product_category>821</g:google_product_category>
     <g:custom_label_0>${product.seriesId}</g:custom_label_0>
+    
+    <!-- Shipping Rules -->
+    <g:shipping>
+        <g:country>FR</g:country>
+        <g:service>Standard</g:service>
+        <g:price>0.00 EUR</g:price>
+    </g:shipping>
+    <g:shipping>
+        <g:country>DE</g:country>
+        <g:service>Standard</g:service>
+        <g:price>20.00 EUR</g:price>
+    </g:shipping>
+    <g:shipping>
+        <g:country>BE</g:country>
+        <g:service>Standard</g:service>
+        <g:price>20.00 EUR</g:price>
+    </g:shipping>
+    <g:shipping>
+        <g:country>IT</g:country>
+        <g:service>Standard</g:service>
+        <g:price>20.00 EUR</g:price>
+    </g:shipping>
+    <g:shipping>
+        <g:country>ES</g:country>
+        <g:service>Standard</g:service>
+        <g:price>20.00 EUR</g:price>
+    </g:shipping>
+    <g:shipping>
+        <g:country>GB</g:country>
+        <g:service>Standard</g:service>
+        <g:price>20.00 EUR</g:price>
+    </g:shipping>
+    <g:shipping>
+        <g:country>US</g:country>
+        <g:service>International</g:service>
+        <g:price>35.00 EUR</g:price>
+    </g:shipping>
+    <g:shipping>
+        <g:country>CA</g:country>
+        <g:service>International</g:service>
+        <g:price>35.00 EUR</g:price>
+    </g:shipping>
+    <g:shipping>
+        <g:country>CH</g:country>
+        <g:service>International</g:service>
+        <g:price>35.00 EUR</g:price>
+    </g:shipping>
 </item>
 `).join('\n')}
 
