@@ -29,8 +29,8 @@ export const StructuredData: React.FC<StructuredDataProps> = ({ type = 'website'
             const productSchemas = currentSeries.photos.map((photo: Photo) => {
                 const title = photo.title;
                 const description = photo.caption_artistic?.[currentLang]
-                    ? `${photo.caption_artistic[currentLang]} - Tirage d'art argentique limité.`
-                    : `Tirage d'art argentique limité : ${title}.`;
+                    ? `${photo.caption_artistic[currentLang]} - Tirage d'art argentique limité. (Ref: ${photo.id})`
+                    : `Tirage d'art argentique limité : ${title}. (Ref: ${photo.id})`;
 
                 const photoSlug = photo.title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "-");
                 const acquireUrl = `https://borntwolate.com/contact?ref=${photoSlug}`;

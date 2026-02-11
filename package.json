@@ -8,7 +8,7 @@
     "prebuild": "node scripts/generate-sitemap.js && node scripts/generate-merchant-feed.js",
     "generate-sitemap": "node scripts/generate-sitemap.js",
     "generate-feed": "node scripts/generate-merchant-feed.js",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && node scripts/generate-sitemap.js && node scripts/generate-merchant-feed.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },

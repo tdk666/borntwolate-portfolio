@@ -156,9 +156,18 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 
 // 4. Write to public/sitemap.xml
 try {
-  const outputPath = path.join(__dirname, '../public/sitemap.xml');
-  fs.writeFileSync(outputPath, sitemap);
-  console.log(`✅ Sitemap with Images generated at ${outputPath}`);
+  const publicPath = path.join(__dirname, '../public/sitemap.xml');
+  fs.writeFileSync(publicPath, sitemap);
+  console.log(`✅ Sitemap with Images generated at ${publicPath}`);
+
+  // ALSO Write to dist/sitemap.xml if it exists (for post-build execution)
+  const distDir = path.join(__dirname, '../dist');
+  if (fs.existsSync(distDir)) {
+    const distPath = path.join(distDir, 'sitemap.xml');
+    fs.writeFileSync(distPath, sitemap);
+    console.log(`✅ Sitemap ALSO generated at ${distPath}`);
+  }
+
   console.log(`📊 URLs: ${pages.length + seriesData.length}`);
   console.log(`📸 Images Indexed: ${seriesData.reduce((acc, s) => acc + s.photos.length, 0)}`);
 } catch (error) {

@@ -101,9 +101,18 @@ ${products.map(product => `
 
 // Write to public/products.xml
 try {
-    const outputPath = path.join(__dirname, '../public/products.xml');
-    fs.writeFileSync(outputPath, xml);
-    console.log(`✅ Merchant Feed generated at ${outputPath}`);
+    const publicPath = path.join(__dirname, '../public/products.xml');
+    fs.writeFileSync(publicPath, xml);
+    console.log(`✅ Merchant Feed generated at ${publicPath}`);
+
+    // ALSO Write to dist/products.xml if it exists (for post-build execution)
+    const distDir = path.join(__dirname, '../dist');
+    if (fs.existsSync(distDir)) {
+        const distPath = path.join(distDir, 'products.xml');
+        fs.writeFileSync(distPath, xml);
+        console.log(`✅ Merchant Feed ALSO generated at ${distPath}`);
+    }
+
     console.log(`🛍️  Products: ${products.length}`);
 } catch (error) {
     console.error('❌ Error writing products.xml:', error);
