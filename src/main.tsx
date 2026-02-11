@@ -10,10 +10,8 @@ import { HelmetProvider } from 'react-helmet-async';
 
 import { validatePricing } from './utils/validation';
 import { fetchExternalPrices } from './data/pricing';
-import { checkGeminiConnection } from './utils/gemini-check';
 
 // Initialize V2 Features
-checkGeminiConnection();
 fetchExternalPrices().catch(console.error);
 
 if (import.meta.env.PROD || import.meta.env.DEV) {

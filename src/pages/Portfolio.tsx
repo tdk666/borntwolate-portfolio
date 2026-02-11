@@ -52,7 +52,8 @@ const Portfolio = () => {
     useEffect(() => {
         const photoId = searchParams.get('open');
         if (photoId) {
-            const index = filteredPhotos.findIndex(p => p.id === Number(photoId) || p.id === String(photoId));
+            // Fix Type Mismatch: p.id is number, photoId is string. Convert both to string for safety.
+            const index = filteredPhotos.findIndex(p => String(p.id) === String(photoId));
             if (index !== -1) {
                 setSelectedPhotoIndex(index);
             }
