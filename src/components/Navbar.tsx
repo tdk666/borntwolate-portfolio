@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import { useState, useEffect, useRef } from 'react';
@@ -10,9 +10,10 @@ import { useSound } from '../hooks/useSound';
 
 const Navbar = () => {
     const location = useLocation();
+    const navigate = useNavigate();
     const { t, i18n } = useTranslation();
     const { isDarkroom, toggleDarkroom } = useDarkroom();
-    const { openSearch } = useSearch();
+    const { openSearch, resetSearch } = useSearch();
     const [isOpen, setIsOpen] = useState(false);
     const { scrollY } = useScroll();
     const [hidden, setHidden] = useState(false);
@@ -40,6 +41,10 @@ const Navbar = () => {
         const term = searchInputRef.current?.value || mobileSearchInputRef.current?.value;
         if (term) {
             openSearch(term);
+            const isPortfolio = location.pathname === '/portfolio';
+            if (!isPortfolio) {
+                navigate('/portfolio');
+            }
             if (searchInputRef.current) searchInputRef.current.value = '';
             if (mobileSearchInputRef.current) mobileSearchInputRef.current.value = '';
             setIsSearchVisible(false); // Close input after search
@@ -119,7 +124,10 @@ const Navbar = () => {
                             <Link
                                 key={link.path}
                                 to={link.path}
-                                onClick={() => playClick()}
+                                onClick={() => {
+                                    playClick();
+                                    resetSearch();
+                                }}
                                 onMouseEnter={() => playHover()}
                                 className="relative group px-4 py-2 overflow-hidden"
                             >

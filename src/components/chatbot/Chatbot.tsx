@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { photos } from '../../data/photos'; // Need photos to find ID from title
 import { FlaskConical, X, Send, Loader2 } from 'lucide-react';
 import { sendMessageToGemini } from '../../services/gemini';
 import { sendEmail } from '../../services/email';
@@ -8,6 +10,7 @@ import { useTranslation } from 'react-i18next'; // IMPORT I18N
 
 export const Chatbot = () => {
     const { t, i18n } = useTranslation(); // I18N HOOK
+    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<{ sender: 'user' | 'bot'; text: string }[]>([]);
     const [inputValue, setInputValue] = useState('');
@@ -99,6 +102,17 @@ export const Chatbot = () => {
                         console.error("Echec EmailJS:", emailResult);
                         newMessages.push({ sender: 'bot', text: t('chatbot.order_error') });
                     }
+
+                    // --- NEW ACTION LOGIC: NAVIGATE TO LIGHTBOX ---
+                    if (orderData.artwork_title) {
+                        const targetPhoto = photos.find(p => p.title.toLowerCase().includes(orderData.artwork_title.toLowerCase()));
+                        if (targetPhoto) {
+                            console.log(`Navigating to photo: ${targetPhoto.title} (ID: ${targetPhoto.id})`);
+                            navigate(`/portfolio?open=${targetPhoto.id}`);
+                            setIsOpen(false); // Close chat so user sees the lightbox
+                        }
+                    }
+                    // ----------------------------------------------
 
                     // Mise à jour de l'UI
                     setMessages(prev => [...prev, ...newMessages]);

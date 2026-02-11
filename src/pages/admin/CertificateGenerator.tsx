@@ -143,17 +143,23 @@ const CertificateGenerator = () => {
     const [orderId, setOrderId] = useState("");
     const [isFetchingOrder, setIsFetchingOrder] = useState(false);
 
-    // Google Sheets Config
-    const SHEET_ID = import.meta.env.VITE_GOOGLE_SHEET_ID;
-    const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
     const handleFetchOrder = async () => {
-        if (!orderId || !SHEET_ID || !API_KEY) return;
+        if (!orderId) return; // Removed client-side key checks
         setIsFetchingOrder(true);
 
         try {
-            // Fetch "Suivi commandes" (Reading broadly A:Z to find headers)
-            const response = await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Suivi%20commandes!A:Z?key=${API_KEY}`);
+            // Fetch "Suivi commandes" via Netlify Proxy
+            const response = await fetch('/.netlify/functions/admin-sheets-proxy', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ orderId }) // Sending orderId though currently the proxy fetches all and lets frontend filter.
+            });
+
+            if (!response.ok) {
+                throw new Error(`Proxy Error: ${response.statusText}`);
+            }
+
             const json = await response.json();
 
             if (!json.values || json.values.length < 2) {

@@ -19,7 +19,49 @@ interface Offer {
     itemCondition: string;
     url: string;
     name: string;
+    priceValidUntil?: string;
+    hasMerchantReturnPolicy?: object;
+    shippingDetails?: object;
 }
+
+const PRICE_VALID_UNTIL = '2025-12-31';
+
+const RETURN_POLICY = {
+    "@type": "MerchantReturnPolicy",
+    "applicableCountry": "FR",
+    "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+    "merchantReturnDays": 14,
+    "returnMethod": "https://schema.org/ReturnByMail",
+    "returnFees": "https://schema.org/ReturnShippingFeesCustomerResponsibility"
+};
+
+const SHIPPING_DETAILS = {
+    "@type": "OfferShippingDetails",
+    "shippingRate": {
+        "@type": "MonetaryAmount",
+        "value": 0,
+        "currency": "EUR"
+    },
+    "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "FR"
+    },
+    "deliveryTime": {
+        "@type": "ShippingDeliveryTime",
+        "handlingTime": {
+            "@type": "QuantitativeValue",
+            "minValue": 3,
+            "maxValue": 7,
+            "unitCode": "DAY"
+        },
+        "transitTime": {
+            "@type": "QuantitativeValue",
+            "minValue": 3,
+            "maxValue": 10,
+            "unitCode": "DAY"
+        }
+    }
+};
 
 // Generate Product Schema for a single photo
 export const generatePhotoProductSchema = (photo: Photo, lang: 'fr' | 'en' = 'fr') => {
@@ -41,7 +83,10 @@ export const generatePhotoProductSchema = (photo: Photo, lang: 'fr' | 'en' = 'fr
             "availability": "https://schema.org/InStock",
             "itemCondition": "https://schema.org/NewCondition",
             "url": variant.stripeUrl,
-            "name": `${PRICING_CATALOG.collection.label} - ${variant.label}`
+            "name": `${PRICING_CATALOG.collection.label} - ${variant.label}`,
+            "priceValidUntil": PRICE_VALID_UNTIL,
+            "hasMerchantReturnPolicy": RETURN_POLICY,
+            "shippingDetails": SHIPPING_DETAILS
         });
     });
 
@@ -54,7 +99,10 @@ export const generatePhotoProductSchema = (photo: Photo, lang: 'fr' | 'en' = 'fr
             "availability": "https://schema.org/InStock",
             "itemCondition": "https://schema.org/NewCondition",
             "url": variant.stripeUrl,
-            "name": `${PRICING_CATALOG.elegance.label} - ${variant.label}`
+            "name": `${PRICING_CATALOG.elegance.label} - ${variant.label}`,
+            "priceValidUntil": PRICE_VALID_UNTIL,
+            "hasMerchantReturnPolicy": RETURN_POLICY,
+            "shippingDetails": SHIPPING_DETAILS
         });
     });
 

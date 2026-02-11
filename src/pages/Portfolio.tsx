@@ -1,4 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { photos, type Photo } from '../data/photos';
 import { useTranslation } from 'react-i18next';
@@ -6,6 +7,7 @@ import { SEO } from '../components/SEO'; // AJOUT SEO
 import { FadeIn } from '../components/animations/FadeIn'; // AJOUT SEO
 import Lightbox from '../components/Lightbox';
 import { Magnetic } from '../components/Magnetic';
+import { useSearch } from '../context/SearchContext';
 
 const categories = ['all', 'urban', 'nature', 'portrait', 'bnw'];
 
@@ -14,11 +16,21 @@ const Portfolio = () => {
     const [filter, setFilter] = useState('all');
     const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
     const [columns, setColumns] = useState(1);
+    const [searchParams, setSearchParams] = useSearchParams();
+
+    // Search Context
+    const { isSearching, searchResults, resetSearch } = useSearch();
 
     // Filter & Shuffle
     const [filteredPhotos, setFilteredPhotos] = useState<Photo[]>(photos);
 
     useEffect(() => {
+        // PRIORITY: Search Results Override Category Filters
+        if (isSearching) {
+            setFilteredPhotos(searchResults);
+            return;
+        }
+
         const result = filter === 'all'
             ? [...photos]
             : photos.filter((photo) => photo.category === filter);
@@ -33,7 +45,26 @@ const Portfolio = () => {
         }
         // eslint-disable-next-line
         setFilteredPhotos(result);
-    }, [filter]);
+        setFilteredPhotos(result);
+    }, [filter, isSearching, searchResults]);
+
+    // Deep Linking: Open Lightbox via URL
+    useEffect(() => {
+        const photoId = searchParams.get('open');
+        if (photoId) {
+            const index = filteredPhotos.findIndex(p => p.id === Number(photoId) || p.id === String(photoId));
+            if (index !== -1) {
+                setSelectedPhotoIndex(index);
+            }
+        }
+    }, [searchParams, filteredPhotos]);
+
+    // Sync Lightbox close with URL
+    const closeLightbox = () => {
+        setSelectedPhotoIndex(null);
+        searchParams.delete('open');
+        setSearchParams(searchParams);
+    };
 
     // Responsive Columns
     useEffect(() => {
@@ -81,9 +112,12 @@ const Portfolio = () => {
                     {categories.map((category) => (
                         <Magnetic key={category}>
                             <button
-                                onClick={() => setFilter(category)}
+                                onClick={() => {
+                                    resetSearch();
+                                    setFilter(category);
+                                }}
                                 aria-label={`Filtrer par ${t(`categories.${category}`)}`}
-                                className={`text-sm font-space-mono uppercase tracking-widest transition-colors duration-300 hover-analog ${filter === category ? 'text-darkroom-red underline underline-offset-4' : 'text-silver hover:text-off-white'}`}
+                                className={`text-sm font-space-mono uppercase tracking-widest transition-colors duration-300 hover-analog ${!isSearching && filter === category ? 'text-darkroom-red underline underline-offset-4' : 'text-silver hover:text-off-white'}`}
                             >
                                 {t(`categories.${category}`)}
                             </button>
@@ -171,7 +205,7 @@ const Portfolio = () => {
 
             <AnimatePresence>
                 {selectedPhotoIndex !== null && (
-                    <Lightbox photo={filteredPhotos[selectedPhotoIndex]} onClose={() => setSelectedPhotoIndex(null)} onNext={handleNext} onPrev={handlePrev} />
+                    <Lightbox photo={filteredPhotos[selectedPhotoIndex]} onClose={closeLightbox} onNext={handleNext} onPrev={handlePrev} />
                 )}
             </AnimatePresence>
         </div>
