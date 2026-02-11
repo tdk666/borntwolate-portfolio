@@ -162,15 +162,16 @@ export const Chatbot = () => {
     };
 
     const renderMessageContent = (text: string) => {
-        // Regex pour détecter les URLs commençant par http/https (excludes trailing punctuation)
+        // Regex pour détecter les URLs (http/https)
         const urlRegex = /(https?:\/\/[^\s]+?)(?=[.,;!?]?(\s|$))/g;
-
-        // Découpe le texte
         const parts = text.split(urlRegex);
 
         return parts.map((part, index) => {
-            if (part === undefined || part === null) return null; // Robust check
-            if (typeof part === 'string' && part.match && part.match(urlRegex)) { // Extra safety check for .match method existence and type
+            if (!part) return null;
+
+            if (part.match && part.match(urlRegex)) {
+                const isStripe = part.includes('stripe.com');
+
                 return (
                     <a
                         key={index}
@@ -178,7 +179,24 @@ export const Chatbot = () => {
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-darkroom-red underline hover:text-white transition-colors"
-                        onClick={(e) => e.stopPropagation()} // Empêche les conflits de clic
+                        onClick={async (e) => {
+                            e.stopPropagation();
+                            // TRACKING CLICK STRIPE
+                            if (isStripe) {
+                                console.log("💳 Tracking Click Stripe via Chatbot");
+                                // Fire & Forget email (don't block the link)
+                                sendEmail({
+                                    contact_type: "COMMANDE", // Use COMMANDE to ensure it triggers the same alert as Modal
+                                    user_name: "Client Chatbot (Click Link)",
+                                    user_email: "click_stripe@borntoolate.com",
+                                    admin_subject: `💸 CLIC STRIPE VIA CHATBOT`,
+                                    message_content: `[INTENTION D'ACHAT DÉTECTÉE]\n\nL'utilisateur a cliqué sur le lien de paiement dans le chatbot.\n\nLien : ${part}`,
+                                    reply_subject: "Votre sélection - Born Too Late",
+                                    reply_message: "Vous avez consulté un lien de paiement. Besoin d'aide pour finaliser ?",
+                                    reply_details: `Lien consulté : ${part}`
+                                }).catch(err => console.error("Tracking Error:", err));
+                            }
+                        }}
                     >
                         {part}
                     </a>
