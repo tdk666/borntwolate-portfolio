@@ -27,15 +27,22 @@ export const getSemanticTags = async (query: string): Promise<string[]> => {
 
     const prompt = `
       Analyze this search query for a photography portfolio: "${query}".
-      Your goal is to maximize the chance of matching vague queries to specific photo subjects.
       
-      Return a JSON array of 10 strings containing:
-      - Synonyms (e.g. "moto" -> "scooter", "vespa", "bécane", "motorcycle")
-      - Related categories (e.g. "fille" -> "femme", "portrait", "woman", "girl", "soeurs")
-      - Visual tags (mood, color, season)
-      - English and French translations
-
-      Example: "moto" -> ["moto", "scooter", "vespa", "motorcycle", "véhicule", "transport", "bécane", "deux-roues", "urban", "vintage"]
+      Your goal is to be SURGICAL. Maximize precision, minimize noise.
+      
+      RULES:
+      1. RETURN A JSON ARRAY of strings (valid JSON).
+      2. SYNONYMS: Include close synonyms (e.g., "moto" -> "vespa", "scooter").
+      3. TRANSLATION: Translate ONLY if the meaning is identical.
+      4. ⛔ EXCLUSIONS (CRITICAL):
+         - DO NOT include broad geographical terms like "Europe", "World", "Earth".
+         - DO NOT include generic terms like "Travel", "Landscape", "Nature", "Photography", "Art".
+         - DO NOT include colors UNLESS the query IS a color (e.g. "Red").
+         - DO NOT split compound words (e.g. "New York" -> keep "New York", do NOT add "New" or "York").
+      
+      Example 1: "Italie" -> ["italie", "italy", "pouilles", "puglia", "apulia"] (NO "Europe", NO "Travel")
+      Example 2: "Liberta Bianca" -> ["liberta bianca", "libertà", "white freedom", "vespa", "scooter"] (NO "White", NO "Snow")
+      Example 3: "Neige" -> ["neige", "snow", "ski", "hiver", "winter", "montagne", "alpes"]
     `;
 
     const response = await fetch('/.netlify/functions/ai-curator', {
@@ -186,10 +193,26 @@ export const sendMessageToGemini = async (msg: string, history: any[], lang: str
     // 1. Fetch Real-Time Stock
     const stocks = await stockService.getAllStocks();
 
-    // 2. Update Context with Stock
+    // 2. Map Stock to Normalized Title (Slug) for AI Context
+    const STOCK_CONTEXT: Record<string, number> = {};
+    Object.keys(stocks).forEach(slug => {
+      STOCK_CONTEXT[slug] = stocks[slug];
+    });
+
+    // 3. Flatten Pricing Links for AI
+    const PRICING_LINKS: Record<string, string> = {};
+    Object.values(PRICING_CATALOG).forEach(range => {
+      range.variants.forEach(variant => {
+        const key = `${range.id}_${variant.id}`.toLowerCase();
+        PRICING_LINKS[key] = variant.stripeUrl;
+      });
+    });
+
+    // 4. Update Context with Stock & Links
     const DYNAMIC_CONTEXT = {
       ...CONTEXT_DATA,
-      stocks: stocks // Inject stock data { slug: sold_count }
+      stocks: STOCK_CONTEXT, // Now uses standardized slugs from DB
+      pricing_links: PRICING_LINKS
     };
 
     const response = await fetch('/.netlify/functions/ai-curator', {
@@ -198,7 +221,25 @@ export const sendMessageToGemini = async (msg: string, history: any[], lang: str
       body: JSON.stringify({
         prompt: msg,
         history: history,
-        systemInstruction: SYSTEM_INSTRUCTION + `\nCONTEXT DATA:\n${JSON.stringify(DYNAMIC_CONTEXT)}\nCURRENT USER LANGUAGE: ${lang}`
+        systemInstruction: SYSTEM_INSTRUCTION + `\n
+        CONTEXT DATA:
+        ${JSON.stringify(DYNAMIC_CONTEXT)}
+        
+        CURRENT USER LANGUAGE: ${lang}
+
+        ⭐⭐ CRITICAL STOCK INSTRUCTION ⭐⭐
+        1. The 'data.photos' list contains titles (e.g., "Le Gardien des Cimes").
+        2. To check stock, convert title to slug: lowercase, remove accents, replace spaces with "-".
+           Example: "Le Gardien des Cimes" -> "le-gardien-des-cimes".
+        3. Look up this slug in 'stocks'. If missing -> Stock is FULL (0 sold).
+        
+        ⭐⭐ CRITICAL INSTRUCTION FOR PAYMENT LINKS ⭐⭐
+        To find the Stripe URL:
+        1. Identify the Range ID (collection, elegance, exception).
+        2. Identify the Variant ID (20x30, 40x60, etc.).
+        3. Look up the key "range_variant" in 'pricing_links' (e.g., "exception_40x60").
+        4. INSERT THAT URL directly into the JSON 'ai_summary'.
+        `
       })
     });
 

@@ -10,6 +10,7 @@ export const stockService = {
     // Helper to generate consistent slugs from titles
     getSlug: (title: string): string => {
         return title.toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove accents
             .trim()
             .replace(/[^\w\s-]/g, '') // Remove special chars
             .replace(/[\s_-]+/g, '-') // Replace spaces/underscores with hyphens
