@@ -81,7 +81,7 @@ const CONTEXT_DATA = {
   pricing: PRICING_CATALOG,
   routes: {
     "/portfolio": "Main Gallery",
-    "/atelier": "Print Shop (Buy Prints)",
+    "/prints": "Print Shop (Buy Prints & Finitions)",
     "/about": "Artist Biography",
     "/contact": "Contact Form"
   },

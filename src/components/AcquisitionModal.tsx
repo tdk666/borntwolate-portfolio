@@ -6,10 +6,7 @@ import { sendEmail } from '../services/email';
 import { PRICING_CATALOG } from '../data/pricing';
 import { FadeIn } from './animations/FadeIn';
 import WallPreview from './WallPreview';
-import { loadStripe } from '@stripe/stripe-js';
 
-// Initialize Stripe outside of component to avoid recreating the object on every render
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
 interface AcquisitionModalProps {
   isOpen: boolean;
@@ -103,19 +100,19 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
           {/* GAUCHE : Info Photo & Image */}
           <div className="w-full md:w-1/3 bg-white/5 relative flex-shrink-0 min-h-[120px] md:min-h-0 md:h-auto">
             {imageSrc && (
-              <div className="absolute inset-0">
+              <div className="absolute inset-0 md:pb-32 transition-all duration-500">
                 <img
                   src={imageSrc}
                   alt={photoTitle}
                   className="w-full h-full object-cover md:object-contain opacity-60 md:opacity-80"
                 />
-                {/* Gradient overlay on mobile for text readability if needed */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent md:hidden" />
+                {/* Gradient overlay on mobile and desktop for text readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-transparent to-transparent opacity-90" />
               </div>
             )}
 
-            <div className="absolute bottom-0 left-0 p-6 md:p-8 md:relative md:h-full md:flex md:flex-col md:justify-between z-10">
-              <div>
+            <div className="absolute bottom-0 left-0 p-6 md:p-8 w-full md:relative md:h-full md:flex md:flex-col md:justify-end z-10 pointer-events-none">
+              <div className="pointer-events-auto">
                 <div className="text-[10px] uppercase tracking-widest text-white/60 mb-1 md:mb-2">{t('acquisition.selected_work')}</div>
                 <h2 className="font-serif text-2xl md:text-3xl text-white leading-tight shadow-black drop-shadow-md md:drop-shadow-none">{photoTitle}</h2>
                 <p className="text-xs md:text-sm text-white/80 md:text-white/60 mt-1">
@@ -140,10 +137,10 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
                   <span className={`text-xs uppercase tracking-widest font-space-mono ${(30 - stockCount) <= 5 ? 'text-red-400' : 'text-white/60'
                     }`}>
                     {(30 - stockCount) <= 0
-                      ? (t('common.sold_out') || 'SOLD OUT - ÉPUISÉ')
+                      ? (t('acquisition.sold_out') || 'SOLD OUT')
                       : (30 - stockCount) <= 5
-                        ? `${30 - stockCount} copies remaining`
-                        : `Limited Edition - ${30 - stockCount}/30 copies`
+                        ? t('acquisition.stock_remaining', { count: 30 - stockCount })
+                        : t('acquisition.stock_limited', { count: 30 - stockCount })
                     }
                   </span>
                 </div>
@@ -225,18 +222,18 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
                   {activeTab === 'collection' ? (
                     <div className="flex items-start gap-2 text-emerald-400/80 text-xs">
                       <Globe className="w-4 h-4 shrink-0 mt-0.5" />
-                      <span>Expédition : Monde entier / Worldwide Shipping.</span>
+                      <span>{t('acquisition.shipping_worldwide')}</span>
                     </div>
                   ) : (
                     <div className="flex items-start gap-2 text-amber-400/80 text-xs">
                       <Info className="w-4 h-4 shrink-0 mt-0.5" />
-                      <span>Expédition : France & Europe uniquement (Fragile).</span>
+                      <span>{t('acquisition.shipping_europe')}</span>
                     </div>
                   )}
 
                   <div className="flex items-center gap-2 text-white/50 text-[10px] md:text-xs">
                     <ShieldCheck className="w-3 h-3 md:w-4 md:h-4" />
-                    <span className="truncate">Livraison suivie & assurée.</span>
+                    <span className="truncate">{t('acquisition.shipping_secure')}</span>
                   </div>
                 </div>
 
@@ -276,46 +273,30 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
                 rel="noopener noreferrer"
                 className={`w-full bg-white text-black py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-gray-200 transition-colors shadow-lg shadow-white/5 active:scale-[0.98] ${isLoading ? 'opacity-70 cursor-wait' : ''}`}
                 onClick={async (e) => {
-                  if (isLoading) e.preventDefault();
-                  else {
-                    setIsLoading(true); // Set loading state immediately
-                    try {
-                      // 1. Send Email Notification (Chameleon Strategy)
-                      // We send this BEFORE the Stripe redirect just to capture the lead in case they drop off at payment
-                      // (Optional strategy, but good for "Abandonment")
-                      await sendEmail({
-                        contact_type: "COMMANDE",
-                        user_name: "Client Stripe (Pre-Checkout)",
-                        user_email: "attente_paiement@borntoolate.com", // Placeholder until Stripe webhook
-                        admin_subject: `NOUVELLE TENTATIVE D'ACHAT : ${photoTitle}`,
-                        message_content: `[TENTATIVE ACHAT STRIPE]\n\nŒuvre : ${photoTitle}\nFormat : ${currentVariant.label}\nFinition : ${activeTab}\nPrix : ${currentVariant.price}€`,
-                        reply_subject: "Votre sélection - Born Too Late",
-                        reply_message: "Vous avez initié un paiement pour une œuvre. Si vous n'avez pas finalisé la commande, n'hésitez pas à nous contacter.",
-                        reply_details: `Œuvre : ${photoTitle}\nFormat : ${currentVariant.label}`
-                      });
+                  e.preventDefault();
+                  if (isLoading) return;
 
-                      // 2. Redirect to Stripe
-                      const stripe = await stripePromise;
-                      if (!stripe) throw new Error("Stripe failed to initialize");
+                  setIsLoading(true);
+                  try {
+                    // 1. Send Email Notification (Chameleon Strategy)
+                    await sendEmail({
+                      contact_type: "COMMANDE",
+                      user_name: "Client Stripe (Pre-Checkout)",
+                      user_email: "attente_paiement@borntoolate.com",
+                      admin_subject: `NOUVELLE TENTATIVE D'ACHAT : ${photoTitle}`,
+                      message_content: `[TENTATIVE ACHAT STRIPE]\n\nŒuvre : ${photoTitle}\nFormat : ${currentVariant.label}\nFinition : ${activeTab}\nPrix : ${currentVariant.price}€`,
+                      reply_subject: "Votre sélection - Born Too Late",
+                      reply_message: "Vous avez initié un paiement pour une œuvre. Si vous n'avez pas finalisé la commande, n'hésitez pas à nous contacter.",
+                      reply_details: `Œuvre : ${photoTitle}\nFormat : ${currentVariant.label}`
+                    });
 
-                      const { error } = await stripe.redirectToCheckout({
-                        lineItems: [{ price: currentVariant.id, quantity: 1 }],
-                        mode: 'payment',
-                        successUrl: `${window.location.origin}/success`,
-                        cancelUrl: `${window.location.origin}/`,
-                      });
+                    // 2. Redirect to Stripe Payment Link
+                    window.location.href = finalStripeUrl;
 
-                      if (error) {
-                        console.error("Stripe checkout error:", error);
-                        // Handle error, e.g., show a message to the user
-                        setIsLoading(false); // Reset loading state on error
-                      }
-                      // If successful, Stripe redirects, so no need to set isLoading(false) here.
-                      // If there's an error before redirect, we need to reset.
-                    } catch (error) {
-                      console.error("Error during checkout process:", error);
-                      setIsLoading(false); // Reset loading state on any error
-                    }
+                  } catch (error) {
+                    console.error("Error during checkout process:", error);
+                    // Fallback redirect even if email fails
+                    window.location.href = finalStripeUrl;
                   }
                 }}
               >
@@ -345,7 +326,7 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
                 }}
                 className="w-full mt-3 py-3 text-xs text-white/40 hover:text-white underline decoration-white/20 underline-offset-4 transition-colors uppercase tracking-widest"
               >
-                Je préfère payer par Virement Bancaire
+                {t('acquisition.bank_transfer')}
               </button>
             </div>
 

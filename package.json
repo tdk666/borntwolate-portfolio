@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "node scripts/generate-sitemap.js",
+    "prebuild": "node scripts/generate-sitemap.js && node scripts/generate-merchant-feed.js",
     "generate-sitemap": "node scripts/generate-sitemap.js",
+    "generate-feed": "node scripts/generate-merchant-feed.js",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

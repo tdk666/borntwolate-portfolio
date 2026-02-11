@@ -172,7 +172,7 @@ export const seriesData: Series[] = [
         },
         coverImage: '/images/retro-mountain/mountain-retro.jpg',
         theme: { background: '#F0F0F0', text: '#000000' },
-        seo_title: { fr: "Retro Mountain - Ski Vintage Noir & Blanc (Rollei Retro 400S)", en: "Retro Mountain - Vintage B&W Skiing (Rollei Retro 400S)" },
+        seo_title: { fr: "Retro Mountain - Thollon-les-Mémises Ski Vintage (Rollei Retro 400S)", en: "Retro Mountain - Thollon-les-Mémises Vintage Skiing" },
         photos: [
             {
                 id: 9105, url: '/images/retro-mountain/tree-shape.jpg', title: 'Géométrie Naturelle', category: 'bnw', seriesId: 'retro-mountain', technical_info: 'Rollei 35 | Rollei Retro 400S', orientation: 'portrait', tags: ['bnw', 'montagne', 'alpes', 'suisse', 'noir et blanc', 'ski', 'hiver', 'rollei retro 400s', 'europe', 'mountain', 'switzerland', 'black and white', 'winter', 'tree', 'arbre'],

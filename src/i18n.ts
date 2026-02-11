@@ -245,7 +245,14 @@ i18n
                             "img_60x90": "(Format Image 60x90)",
                             "masterpiece": "(Édition Prestige)",
                             "redirecting": "Redirection vers Stripe...",
-                        }
+                        },
+                        shipping_worldwide: "Expédition : Monde entier / Worldwide Shipping",
+                        shipping_europe: "Expédition : France & Europe uniquement (Fragile)",
+                        shipping_secure: "Livraison suivie & assurée",
+                        bank_transfer: "Je préfère payer par Virement Bancaire",
+                        sold_out: "SOLD OUT - ÉPUISÉ",
+                        stock_remaining: "{{count}} exemplaires restants",
+                        stock_limited: "Édition Limitée - {{count}}/30 exemplaires"
                     },
                     prints: {
                         seo_title: 'Atelier & Collection',
@@ -498,7 +505,14 @@ i18n
                             "detail_47x70": "(Image 47x70 cm)",
                             "detail_full": "(Full Frame)",
                             "redirecting": "Redirecting to Stripe...",
-                        }
+                        },
+                        shipping_worldwide: "Shipping: Worldwide",
+                        shipping_europe: "Shipping: France & Europe Only (Fragile)",
+                        shipping_secure: "Tracked & Insured Shipping",
+                        bank_transfer: "I prefer Bank Transfer via Email",
+                        sold_out: "SOLD OUT",
+                        stock_remaining: "{{count}} copies remaining",
+                        stock_limited: "Limited Edition - {{count}}/30 copies"
                     },
                     prints: {
                         seo_title: 'Workshop & Collection',
