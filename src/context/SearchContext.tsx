@@ -36,6 +36,17 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
             const normalize = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
             const normalizedQuery = normalize(query);
 
+            // 0. PRIORITY: Exact Title Match (Surgical Precision)
+            // If the user types the exact title, we return ONLY that photo.
+            const exactMatch = photos.find(p => normalize(p.title) === normalizedQuery);
+            if (exactMatch) {
+                console.log(`🎯 Exact Match Found: ${exactMatch.title}`);
+                setSearchResults([exactMatch]);
+                setIsSearching(true);
+                setLastQuery(query);
+                return;
+            }
+
             const results = photos.filter((photo) => {
                 // Prepare searchable text fields
                 const texts = [

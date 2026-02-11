@@ -11,8 +11,8 @@ import { useTranslation } from 'react-i18next';
 import SeriesNavigation from '../components/SeriesNavigation';
 import { useDarkroom } from '../context/DarkroomContext';
 import { FadeIn } from '../components/animations/FadeIn';
-import { generateSeriesSchema } from '../utils/schemaGenerator';
 import { GrainedImage } from '../components/GrainedImage';
+import { StructuredData } from '../components/StructuredData';
 
 const SeriesDetail = () => {
     const { id } = useParams<{ id: string }>();
@@ -85,9 +85,6 @@ const SeriesDetail = () => {
     const mobileFactor = 120;
     const mobileSize = `${mobileFactor / longestLineChars}vw`;
 
-    // Génération du Schema.org via Factory
-    const seriesSchema = generateSeriesSchema(series, currentLang);
-
     return (
         <div key={id} className="min-h-screen pt-24 px-4 md:px-8 pb-12 transition-colors duration-1000 ease-in-out">
             <SEO
@@ -96,8 +93,9 @@ const SeriesDetail = () => {
                 image={series.coverImage}
                 url={`/series/${series.id}`}
                 type="article"
-                structuredData={seriesSchema}
             />
+            {/* Generate distinct Product Schema for each photo */}
+            <StructuredData type="series" seriesId={series.id} />
 
             {/* LATERAL NAVIGATION (Disabled when Lightbox is open) */}
             <SeriesNavigation
