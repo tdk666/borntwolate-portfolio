@@ -92,6 +92,7 @@ ${products.map(product => `
     <g:availability>in_stock</g:availability>
     <g:price>${PRICE_EUR}</g:price>
     <g:google_product_category>821</g:google_product_category>
+    <g:shipping_weight>0.5 kg</g:shipping_weight>
     <g:custom_label_0>${product.seriesId}</g:custom_label_0>
     
     <!-- Shipping Rules -->
