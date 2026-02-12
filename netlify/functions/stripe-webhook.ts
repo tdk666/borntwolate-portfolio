@@ -41,13 +41,27 @@ export const handler: Handler = async (event) => {
         const session = stripeEvent.data.object as Stripe.Checkout.Session;
 
         try {
-            console.log(`Processing Order for Session: ${session.id}`);
+            console.log(`[ORDER-START] Processing Order for Session: ${session.id}`);
 
             // Extract Customer Details
             const customerEmail = session.customer_details?.email;
             const customerName = session.customer_details?.name;
             const amountTotal = session.amount_total ? session.amount_total / 100 : 0;
             const currency = session.currency;
+
+            // Extract Sold Item Info from Metadata (Robustness)
+            const soldItemSlug = session.client_reference_id || session.metadata?.product_id || 'unknown';
+            const soldItemLabel = session.metadata?.product_label || 'Unknown Product';
+
+            console.log(JSON.stringify({
+                event: 'ORDER_RECEIVED',
+                sessionId: session.id,
+                email: customerEmail,
+                amount: amountTotal,
+                currency: currency,
+                itemSlug: soldItemSlug,
+                itemLabel: soldItemLabel
+            }));
 
             // Extract Shipping Details (if available)
             const shippingAddress = session.shipping_details?.address;
@@ -72,34 +86,36 @@ export const handler: Handler = async (event) => {
                 });
 
             if (error) {
-                console.error('Supabase Insert Error:', error);
-                // We return 500 to tell Stripe to retry
-                return { statusCode: 500, body: 'Database Error' };
+                console.error('[DB-ERROR] Supabase Insert Error:', error);
+                // We return 500 to tell Stripe to retry ONLY if we couldn't record the order
+                return { statusCode: 500, body: 'Database Error - Order Not Recorded' };
             }
 
-            console.log(`Order successfully recorded in Supabase: ${session.id}`);
+            console.log(`[ORDER-SAVED] Order successfully recorded in Supabase: ${session.id}`);
 
             // Increment Stock (Sold Count) if client_reference_id (slug) is present
-            if (session.client_reference_id) {
-                console.log(`Attempting to increment stock for slug: ${session.client_reference_id}`);
+            if (soldItemSlug && soldItemSlug !== 'unknown') {
+                console.log(`[STOCK-UPDATE] Attempting to increment stock for slug: ${soldItemSlug}`);
+
                 const { error: rpcError } = await supabase.rpc('increment_stock', {
-                    stock_slug: session.client_reference_id
+                    stock_slug: soldItemSlug
                 });
 
                 if (rpcError) {
-                    console.error(`FAILED to increment stock for ${session.client_reference_id}:`, rpcError);
-                    // We don't return 500 here to avoid failing the whole webhook if just the stock update fails,
-                    // but it should be logged for manual reconciliation.
+                    // CRITICAL: Log this deeply but DO NOT fail the webhook. The order is paid and recorded.
+                    // Stock discrepancy can be fixed manually.
+                    console.error(`[STOCK-ERROR] FAILED to increment stock for ${soldItemSlug}. Details:`, rpcError);
                 } else {
-                    console.log(`SUCCESS: Stock incremented for ${session.client_reference_id}`);
+                    console.log(`[STOCK-SUCCESS] Stock incremented for ${soldItemSlug}`);
                 }
             } else {
-                console.warn('No client_reference_id found in session, skipping stock update.');
+                console.warn('[STOCK-WARN] No client_reference_id or product_id found, skipping stock update.');
             }
 
-        } catch (error) {
-            console.error('Order Processing Error:', error);
-            return { statusCode: 500, body: 'Internal Server Error' };
+        } catch (error: any) {
+            console.error('[CRITICAL-ERROR] Order Processing Exception:', error);
+            // If we crash here, it's likely bad. Stripe should probably retry.
+            return { statusCode: 500, body: `Internal Server Error: ${error.message}` };
         }
     }
 

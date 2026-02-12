@@ -21,105 +21,67 @@ const pages = [
 ];
 
 // 2. Advanced Parsing of src/data/photos.ts
-// We need to extract Series IDs AND their Photos (url, title, caption)
 const photosFilePath = path.join(__dirname, '../src/data/photos.ts');
 let seriesData = [];
 
 try {
+  console.log(`📖 Reading ${photosFilePath}...`);
   const fileContent = fs.readFileSync(photosFilePath, 'utf-8');
 
-  // Strategy: Split by "id: 'series-id'" to handle each series block
-  // This is a naive but effective parser for the known file structure
-  const seriesBlocks = fileContent.split(/id:\s*'([a-z0-9-]+)',/g);
+  // Robust Parsing Strategy:
+  // 1. Find all "id: 'series-slug'" patterns which denote a Series definition
+  // 2. For each series, find the associated "photos: [...]" block
+  // 3. Extract url and title from the photos block
 
-  // seriesBlocks[0] is garbage before first match
-  // seriesBlocks[1] is id, seriesBlocks[2] is content, seriesBlocks[3] is id...
+  // Step 1: Normalize content to make regex easier (remove newlines inside objects potentially, but keeping it simple is better)
+  // We will iterate through the file looking for series blocks.
 
-  for (let i = 1; i < seriesBlocks.length; i += 2) {
-    const id = seriesBlocks[i];
-    const content = seriesBlocks[i + 1];
+  // Regex to find: { id: '...', ... photos: [ ... ] }
+  // We assume 'id' comes before 'photos'.
+  const seriesRegex = /id:\s*['"]([^'"]+)['"][\s\S]*?photos:\s*\[([\s\S]*?)\]/g;
 
-    const series = {
-      id: id,
+  let match;
+  while ((match = seriesRegex.exec(fileContent)) !== null) {
+    const seriesId = match[1]; // Captured ID
+    const photosBlock = match[2]; // Captured photos array content
+
+    const seriesObj = {
+      id: seriesId,
       photos: []
     };
 
-    // Extract photos in this series block
-    // Regex for photo objects: { ... url: '/images/...', title: '...', ... caption_artistic: { fr: "..." } }
-    // We look for url and title/caption specifically
-    const photoRegex = /url:\s*'([^']+)',\s*title:\s*(?:'([^']*)'|`([^`]*)`|"[^"]*").*?caption_artistic:\s*{\s*fr:\s*(?:"([^"]*)"|`([^`]*)`)/gs;
-
+    // Parse photos within the block
+    // Looking for: url: '...', title: '...'
+    const photoRegex = /url:\s*['"]([^'"]+)['"][\s\S]*?title:\s*['"]([^'"]+)['"]/g;
     let photoMatch;
-    // We need to limit the search to the current series content
-    // However, the split might be tricky if content overlaps. 
-    // Let's rely on the fact that series are defined sequentially.
 
-    // Actually, a safer regex approach for the whole file might be better to avoid boundaries issues.
-    // Let's stick to the previous robust ID extraction for the main pages, 
-    // and try a best-effort extraction for images, as strict parsing of TS without AST is hard.
-
-    // NEW STRATEGY: 
-    // 1. Get all series IDs (we already mastered this).
-    // 2. Extract ALL photos with their properties.
-    // 3. Map photos to series based on the file hierarchy or assumption.
-
-    // Let's refine the "Split" strategy which is actually decent if the file format is strict.
-    // The file format is: { id: 'slug', ..., photos: [ ... ] }
-
-    // Extracting photos from the content chunk
-    const urlRegex = /url:\s*'([^']+)'/g;
-    const titleRegex = /title:\s*(?:'([^']+)'|"([^"]+)")/g;
-
-    let matchUrl;
-    while ((matchUrl = urlRegex.exec(content)) !== null) {
-      // Find title near the URL? This is getting too loose.
-      // Let's go for a simpler approach: Just list all images found in the series block.
-
-      series.photos.push({
-        url: matchUrl[1],
-        title: `Photo ${id}` // Fallback if title parsing is too hard
+    while ((photoMatch = photoRegex.exec(photosBlock)) !== null) {
+      seriesObj.photos.push({
+        url: photoMatch[1],
+        title: photoMatch[2]
       });
     }
 
-    seriesData.push(series);
+    if (seriesObj.photos.length > 0) {
+      seriesData.push(seriesObj);
+    }
   }
 
-  // Refined Parsing to get titles and captions properly if possible
-  // We will re-read the file and use a global regex for photos
-  // pattern: url: '...', title: '...',
+  // VALIDATION: Fail if no data found
+  const totalPhotos = seriesData.reduce((acc, s) => acc + s.photos.length, 0);
 
-  const allPhotos = [];
-  const globalPhotoRegex = /url:\s*'([^']+)',\s*title:\s*(?:'([^']+)'|"([^"]+)")/g;
-  let pMatch;
-  while ((pMatch = globalPhotoRegex.exec(fileContent)) !== null) {
-    allPhotos.push({
-      url: pMatch[1],
-      title: pMatch[2] || pMatch[3]
-    });
+  console.log(`🔍 Found ${seriesData.length} series and ${totalPhotos} photos.`);
+
+  if (seriesData.length === 0) {
+    throw new Error("❌ CRITICAL: No series found in photos.ts. Sitemap generation aborted.");
   }
-
-  // Now we map these back to series? 
-  // Ideally, we want <image:loc>, <image:title>.
-  // Since we know the folder structure /images/series-name/..., we can map URL to series ID!
-
-  seriesData = seriesData.map(s => {
-    s.photos = allPhotos.filter(p => p.url.includes(`/${s.id}/`) || p.url.includes(`/${s.id.replace('puglia-famiglia', 'puglia')}/`)); // Handle aliases if any, e.g. puglia-famiglia vs puglia
-    return s;
-  });
+  if (totalPhotos === 0) {
+    throw new Error("❌ CRITICAL: No photos extracted. Sitemap generation aborted.");
+  }
 
 } catch (error) {
-  console.error('❌ Error parsing photos.ts:', error);
-  // Fallback
-  seriesData = [
-    { id: 'polish-hike', photos: [] },
-    { id: 'white-mounts', photos: [] },
-    { id: 'retro-mountain', photos: [] },
-    { id: 'winter-in-the-fruit', photos: [] },
-    { id: 'psychadelic-mtl', photos: [] },
-    { id: 'canadian-evasion', photos: [] },
-    { id: 'mauvais-garcons', photos: [] },
-    { id: 'puglia-famiglia', photos: [] }
-  ];
+  console.error(error.message);
+  process.exit(1); // Fail the build
 }
 
 // 3. Generate XML with Image Extension
@@ -147,7 +109,7 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
       ${series.photos.map(photo => `
         <image:image>
           <image:loc>${BASE_URL}${photo.url}</image:loc>
-          <image:title>${photo.title.replace(/&/g, '&amp;')}</image:title>
+          <image:title>${photo.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')}</image:title>
         </image:image>
       `).join('')}
     </url>
@@ -168,8 +130,7 @@ try {
     console.log(`✅ Sitemap ALSO generated at ${distPath}`);
   }
 
-  console.log(`📊 URLs: ${pages.length + seriesData.length}`);
-  console.log(`📸 Images Indexed: ${seriesData.reduce((acc, s) => acc + s.photos.length, 0)}`);
 } catch (error) {
   console.error('❌ Error writing sitemap.xml:', error);
+  process.exit(1);
 }

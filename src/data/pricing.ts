@@ -72,7 +72,14 @@ export const PRICING_CATALOG: Record<string, ProductRange> = {
     }
 };
 
-const applyPricingOverrides = (overrides: any[]) => {
+interface PricingOverride {
+    rangeId: string;
+    formatId: string;
+    price: number;
+    stripeUrl?: string;
+}
+
+const applyPricingOverrides = (overrides: PricingOverride[]) => {
     overrides.forEach(o => {
         const range = PRICING_CATALOG[o.rangeId];
         if (range) {
@@ -86,7 +93,7 @@ const applyPricingOverrides = (overrides: any[]) => {
 };
 
 const CACHE_KEY = 'pricing_cache_v2';
-const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24h
+const CACHE_DURATION = 60 * 60 * 1000; // 1h (3600000 ms)
 
 export const fetchExternalPrices = async (): Promise<void> => {
     // Check Cache
@@ -107,19 +114,23 @@ export const fetchExternalPrices = async (): Promise<void> => {
     try {
         // Call the Netlify Function
         const response = await fetch('/.netlify/functions/get-prices');
-        const json = await response.json();
+        if (!response.ok) throw new Error('Network response was not ok');
+
+        const json: { values?: string[][] } = await response.json();
 
         if (json.values && json.values.length > 1) {
             const rows = json.values.slice(1); // Skip header
             // Expected Columns: [RangeID, FormatID, Price, StripeURL]
             // Example: ['collection', '20x30', '45', 'https://...']
 
-            const overrides = rows.map((r: string[]) => ({
-                rangeId: r[0]?.toLowerCase().trim(),
-                formatId: r[1]?.trim(),
+            const overrides: PricingOverride[] = rows.map((r) => ({
+                rangeId: r[0]?.toLowerCase().trim() || '',
+                formatId: r[1]?.trim() || '',
                 price: Number(r[2]?.replace(/[€$ ]/g, '')),
                 stripeUrl: r[3]?.trim()
-            })).filter((o: any) => o.rangeId && o.formatId && !isNaN(o.price));
+            })).filter((o): o is PricingOverride & { stripeUrl: string } => {
+                return !!(o.rangeId && o.formatId && !isNaN(o.price) && o.stripeUrl);
+            });
 
             if (overrides.length > 0) {
                 // Cache

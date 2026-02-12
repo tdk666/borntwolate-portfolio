@@ -2,6 +2,7 @@ import { Handler } from '@netlify/functions';
 
 const GOOGLE_SHEETS_ID = process.env.GOOGLE_SHEETS_ID;
 const GOOGLE_SHEETS_API_KEY = process.env.GOOGLE_SHEETS_API_KEY;
+const ADMIN_API_SECRET = process.env.ADMIN_API_SECRET;
 
 export const handler: Handler = async (event, context) => {
     // Only allow POST
@@ -9,6 +10,16 @@ export const handler: Handler = async (event, context) => {
         return {
             statusCode: 405,
             body: 'Method Not Allowed',
+        };
+    }
+
+    // Security Check: Validate Admin Secret
+    const providedSecret = event.headers['x-admin-secret'] || event.headers['X-Admin-Secret'];
+    if (!ADMIN_API_SECRET || providedSecret !== ADMIN_API_SECRET) {
+        console.warn('Unauthorized access attempt to admin-sheets-proxy');
+        return {
+            statusCode: 401,
+            body: JSON.stringify({ error: 'Unauthorized' }),
         };
     }
 
@@ -22,18 +33,10 @@ export const handler: Handler = async (event, context) => {
 
     try {
         const body = JSON.parse(event.body || '{}');
-        const { orderId } = body;
+        // We can use the body for specific sheet queries if needed in the future
+        // const { orderId } = body; 
 
-        // Basic validation
-        // We could add auth checks here if we passed the token/hash
-
-        // Fetch "Suivi commandes"
-        // Note: The logic in the frontend was to fetch A:Z to find headers.
-        // We will replicate that behavior: fetch the whole sheet and let the frontend parse it,
-        // OR we could parse it here.
-        // To keep the change minimal on the frontend logic (which does the fuzzy matching of headers),
-        // we will return the raw data, just like the direct fetch did.
-
+        // Fetch "Suivi commandes" full sheet for client-side processing
         const response = await fetch(
             `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEETS_ID}/values/Suivi%20commandes!A:Z?key=${GOOGLE_SHEETS_API_KEY}`
         );
@@ -48,17 +51,16 @@ export const handler: Handler = async (event, context) => {
             statusCode: 200,
             headers: {
                 'Content-Type': 'application/json',
-                // No cache for admin data, or very short
-                'Cache-Control': 'no-cache',
+                'Cache-Control': 'no-cache, no-store, must-revalidate', // Never cache admin data
             },
             body: JSON.stringify(data),
         };
 
     } catch (error: any) {
-        console.error('Error proxying to Google Sheets:', error);
+        console.error('Error proxying to Google Sheets:', error.message); // Log only message to avoid leaking data
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'Failed to fetch order data', details: error.message }),
+            body: JSON.stringify({ error: 'Failed to fetch order data' }),
         };
     }
 };
