@@ -68,7 +68,12 @@ try {
                 seriesId: seriesId,
                 url: url,
                 title: title,
-                description: caption.replace(/\s+/g, ' ').trim()
+                description: caption
+                    .replace(/\\/g, '') // Retire les backslashes parasites
+                    .replace(/\s+/g, ' ') // Normalise les espaces
+                    .replace(/['"]+/g, '') // Retire les quotes qui cassent le XML
+                    .trim()
+                    .slice(0, 4997) + '...' // Coupe proprement
             });
         }
     }

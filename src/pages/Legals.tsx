@@ -37,7 +37,7 @@ const Legals = () => {
                                 16 rue de la Grande Chaumière<br />
                                 75006 Paris, France<br />
                                 Email : <a href="mailto:theophile.dequecker@gmail.com" className="hover:text-darkroom-red transition-colors underline">theophile.dequecker@gmail.com</a><br />
-                                <span className="text-xs opacity-50 italic">{t('legals.section1.status')}</span>
+                                <span className="text-xs opacity-50 italic">Statut : Micro-entreprise en cours d'immatriculation</span>
                             </p>
                         </div>
                         <div>
