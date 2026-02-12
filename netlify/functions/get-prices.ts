@@ -37,7 +37,7 @@ export const handler: Handler = async (event, context) => {
             headers: {
                 'Content-Type': 'application/json',
                 // Optional: Cache for 1 hour to reduce API calls
-                'Cache-Control': 'public, max-age=3600',
+                'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=600',
             },
             body: JSON.stringify(data),
         };
