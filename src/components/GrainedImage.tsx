@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 interface GrainedImageProps {
@@ -22,7 +21,7 @@ export const GrainedImage = ({
     onClick,
     aspectRatio
 }: GrainedImageProps) => {
-    const [isLoaded, setIsLoaded] = useState(false);
+
 
     // Determine aspect ratio class or style
     let ratioStyle = {};
@@ -57,17 +56,18 @@ export const GrainedImage = ({
                 }}
             />
 
-            <motion.img
-                src={src}
-                alt={alt}
-                loading={loading}
-                decoding="async"
-                fetchPriority={fetchPriority}
-                className={`w-full h-full object-cover transition-opacity duration-700 ease-in-out ${isLoaded ? 'opacity-100' : 'opacity-0'}`}
-                onLoad={() => setIsLoaded(true)}
-                draggable="false"
-                onContextMenu={(e) => e.preventDefault()}
-            />
+            <picture>
+                <source srcSet={src.replace(/\.(jpg|jpeg|png)$/i, '.webp')} type="image/webp" />
+                <motion.img
+                    src={src}
+                    alt={alt}
+                    loading={loading}
+                    decoding="async"
+                    fetchPriority={fetchPriority}
+                    draggable="false"
+                    onContextMenu={(e) => e.preventDefault()}
+                />
+            </picture>
             {/* BRAND PROTECTION: Subtle Overlay */}
             <div className="absolute inset-0 flex items-center justify-center opacity-[0.03] pointer-events-none select-none mix-blend-difference overflow-hidden">
                 <span className="text-[10vw] font-serif font-bold text-white -rotate-12 whitespace-nowrap">

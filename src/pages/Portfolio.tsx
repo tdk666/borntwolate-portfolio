@@ -207,7 +207,13 @@ const Portfolio = () => {
 
             <AnimatePresence>
                 {selectedPhotoIndex !== null && (
-                    <Lightbox photo={filteredPhotos[selectedPhotoIndex]} onClose={closeLightbox} onNext={handleNext} onPrev={handlePrev} />
+                    <Lightbox
+                        photo={filteredPhotos[selectedPhotoIndex]}
+                        onClose={closeLightbox}
+                        onNext={handleNext}
+                        onPrev={handlePrev}
+                        showContextualLink={true}
+                    />
                 )}
             </AnimatePresence>
         </div>

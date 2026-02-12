@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import './i18n';
 import App from './App.tsx'
+
 import { DarkroomProvider } from './context/DarkroomContext';
 import { CurrencyProvider } from './context/CurrencyContext';
 import { SearchProvider } from './context/SearchContext';
@@ -49,6 +50,7 @@ if (import.meta.env.PROD || import.meta.env.DEV) {
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <HelmetProvider>
+
       <DarkroomProvider>
         <CurrencyProvider>
           <SearchProvider>

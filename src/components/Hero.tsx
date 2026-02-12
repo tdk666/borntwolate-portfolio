@@ -78,25 +78,9 @@ const Hero = () => {
             <AnimatePresence mode='wait'>
                 <motion.div
                     key={`${isMobile ? 'mobile' : 'desktop'}-${currentIndex}`}
-                    initial={{
-                        clipPath: 'inset(0 50% 0 50%)',
-                        scale: 1.1,
-                        filter: 'grayscale(100%) blur(5px)'
-                    }}
-                    animate={{
-                        clipPath: 'inset(0 0% 0 0%)',
-                        scale: 1,
-                        filter: 'grayscale(0%) blur(0px)',
-                        transition: {
-                            duration: 1.8,
-                            ease: [0.25, 1, 0.5, 1],
-                            filter: { duration: 2.5 }
-                        }
-                    }}
-                    exit={{
-                        opacity: 0,
-                        transition: { duration: 1 }
-                    }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1, transition: { duration: 2.0, ease: "easeInOut" } }}
+                    exit={{ opacity: 0, transition: { duration: 2.0, ease: "easeInOut" } }}
                     className="absolute inset-0 w-full h-full"
                 >
                     {currentPhotos.length > 0 && (

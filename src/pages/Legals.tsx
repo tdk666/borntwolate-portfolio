@@ -94,6 +94,14 @@ const Legals = () => {
                             <h3 className="font-bold text-off-white">{t('legals.section4.article2.title')}</h3>
                             <p dangerouslySetInnerHTML={{ __html: t('legals.section4.article2.text') }}></p>
                         </article>
+                        <article>
+                            <h3 className="font-bold text-off-white">{t('legals.section4.article3.title')}</h3>
+                            <p dangerouslySetInnerHTML={{ __html: t('legals.section4.article3.text') }}></p>
+                        </article>
+                        <article>
+                            <h3 className="font-bold text-off-white">{t('legals.section4.article4.title')}</h3>
+                            <p dangerouslySetInnerHTML={{ __html: t('legals.section4.article4.text') }}></p>
+                        </article>
                     </div>
                 </section>
             </motion.div>

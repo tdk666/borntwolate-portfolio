@@ -1,9 +1,9 @@
 import { useParams, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { SEO } from '../components/SEO';
 import NotFound from './NotFound';
 import { motion, AnimatePresence } from 'framer-motion';
 import { seriesData } from '../data/photos';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import Masonry from 'react-masonry-css';
 import Lightbox from '../components/Lightbox';
@@ -27,6 +27,16 @@ const SeriesDetail = () => {
     if (!currentSeries) {
         return <NotFound />;
     }
+
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://borntwolate.com" },
+            { "@type": "ListItem", "position": 2, "name": "Portfolio", "item": "https://borntwolate.com/portfolio" },
+            { "@type": "ListItem", "position": 3, "name": currentSeries.title, "item": `https://borntwolate.com/series/${currentSeries.id}` }
+        ]
+    };
 
     const series = currentSeries;
     const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
@@ -87,6 +97,9 @@ const SeriesDetail = () => {
 
     return (
         <div key={id} className="min-h-screen pt-24 px-4 md:px-8 pb-12 transition-colors duration-1000 ease-in-out">
+            <Helmet>
+                <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
+            </Helmet>
             <SEO
                 title={series.seo_title?.[currentLang] || `Série ${series.title} | Photographie Argentique | Born Too Late`}
                 description={series.description[currentLang].substring(0, 160)}
@@ -218,14 +231,19 @@ const SeriesDetail = () => {
                 </div>
             </FadeIn>
 
-            <div className="max-w-[90%] mx-auto mt-20 flex justify-between items-center border-t border-current pt-8 opacity-60 hover:opacity-100 transition-opacity">
-                <Link to={`/series/${prevSeries.id}`} className="flex items-center gap-4 group"><ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-1" /><span className="font-space-mono">{prevSeries.title}</span></Link>
-                <Link to={`/series/${nextSeries.id}`} className="flex items-center gap-4 text-right group"><span className="font-space-mono">{nextSeries.title}</span><ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" /></Link>
-            </div>
+
+
+            {/* Redundant navigation removed as per user request (replaced by Semantic Linking above) */}
 
             <AnimatePresence>
                 {selectedPhotoIndex !== null && (
-                    <Lightbox photo={series.photos[selectedPhotoIndex as number]} onClose={() => setSelectedPhotoIndex(null)} onNext={handleNextPhoto} onPrev={handlePrevPhoto} />
+                    <Lightbox
+                        photo={series.photos[selectedPhotoIndex as number]}
+                        onClose={() => setSelectedPhotoIndex(null)}
+                        onNext={handleNextPhoto}
+                        onPrev={handlePrevPhoto}
+                        showContextualLink={false}
+                    />
                 )}
             </AnimatePresence>
         </div >

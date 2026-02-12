@@ -132,7 +132,7 @@ i18n
                     },
                     legals: {
                         title: "Mentions Légales & CGV",
-                        update: "Dernière mise à jour : Janvier 2026",
+                        update: "Dernière mise à jour : Février 2026",
                         section1: {
                             title: "1. Mentions Légales",
                             editor: "Éditeur du Site",
@@ -167,6 +167,14 @@ i18n
                             article2: {
                                 title: "4.2 Droit de Rétractation",
                                 text: "Conformément à l'article L221-18 du Code de la consommation, vous disposez de <strong>14 jours</strong> à réception pour exercer votre droit de rétractation (frais de retour à votre charge), sauf pour les œuvres nettement personnalisées."
+                            },
+                            article3: {
+                                title: "4.3 Livraison",
+                                text: "Les tirages sont produits à la demande par le laboratoire Picto Paris. Le délai moyen de production est de 5 à 7 jours ouvrés, auquel s'ajoute le délai d'expédition (Colissimo Suivi ou Transporteur Spécialisé). Born Too Late ne saurait être tenu responsable des retards liés au transporteur."
+                            },
+                            article4: {
+                                title: "4.4 Paiement Sécurisé",
+                                text: "Les paiements par carte bancaire sont traités par notre partenaire <strong>Stripe</strong>, utilisant le protocole de cryptage SSL/TLS. Aucune donnée bancaire n'est conservée sur nos serveurs."
                             }
                         }
                     },
@@ -389,7 +397,7 @@ i18n
                     },
                     legals: {
                         title: "Legal Notice & Terms",
-                        update: "Last updated: January 2026",
+                        update: "Last updated: February 2026",
                         section1: {
                             title: "1. Legal Notice",
                             editor: "Site Editor",
@@ -424,6 +432,14 @@ i18n
                             article2: {
                                 title: "4.2 Right of Withdrawal",
                                 text: "In accordance with Article L221-18 of the Consumer Code, you have <strong>14 days</strong> upon receipt to exercise your right of withdrawal (return costs at your expense), except for clearly personalized works."
+                            },
+                            article3: {
+                                title: "4.3 Delivery",
+                                text: "Prints are produced on demand by the Picto Paris laboratory. The average production time is 5 to 7 business days, plus shipping time (Tracked Colissimo or Specialized Carrier). Born Too Late cannot be held responsible for carrier delays."
+                            },
+                            article4: {
+                                title: "4.4 Secure Payment",
+                                text: "Credit card payments are processed by our partner <strong>Stripe</strong>, using SSL/TLS encryption protocol. No banking data is stored on our servers."
                             }
                         }
                     },

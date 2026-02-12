@@ -10,8 +10,9 @@ export default defineConfig({
     tailwindcss(),
     ViteImageOptimizer({
       png: { quality: 80 },
-      jpeg: { quality: 70 },
+      jpeg: { quality: 75 },
       webp: { quality: 80, lossless: false },
+      avif: { quality: 70, lossless: false },
     }),
   ],
 })
