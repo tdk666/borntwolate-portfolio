@@ -34,8 +34,8 @@ const Legals = () => {
                             <h3 className="font-bold text-off-white mb-2">{t('legals.section1.editor')}</h3>
                             <p>
                                 <strong>Théophile Dequecker</strong> (Born Two Late)<br />
-                                16 rue de la Grande Chaumière<br />
-                                75006 Paris, France<br />
+                                40 rue du Père Corentin<br />
+                                75014 Paris, France<br />
                                 Email : <a href="mailto:theophile.dequecker@gmail.com" className="hover:text-darkroom-red transition-colors underline">theophile.dequecker@gmail.com</a><br />
                                 <span className="text-xs opacity-50 italic">Statut : Micro-entreprise en cours d'immatriculation</span>
                             </p>
