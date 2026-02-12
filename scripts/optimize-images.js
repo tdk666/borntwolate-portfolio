@@ -43,7 +43,6 @@ async function processDirectory(directory) {
                 }
 
                 // Check if AVIF exists
-                /* AVIF DISABLED FOR SPEED 
                 if (!fs.existsSync(avifPath)) {
                     console.log(`Generating AVIF for: ${entry.name}`);
                     await sharp(fullPath)
@@ -51,7 +50,6 @@ async function processDirectory(directory) {
                         .toFile(avifPath)
                         .catch(err => console.error(`Error converting ${entry.name} to AVIF:`, err));
                 }
-                */
             }
         }
     }

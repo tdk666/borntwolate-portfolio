@@ -56,7 +56,7 @@ export const GrainedImage = ({
                 }}
             />
 
-            <picture>
+            <picture className="block w-full h-full">
                 <source srcSet={src.replace(/\.(jpg|jpeg|png)$/i, '.avif')} type="image/avif" />
                 <source srcSet={src.replace(/\.(jpg|jpeg|png)$/i, '.webp')} type="image/webp" />
                 <motion.img
