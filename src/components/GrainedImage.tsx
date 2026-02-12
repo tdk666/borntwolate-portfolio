@@ -65,6 +65,7 @@ export const GrainedImage = ({
                     loading={loading}
                     decoding="async"
                     fetchPriority={fetchPriority}
+                    className="w-full h-full object-cover"
                     draggable="false"
                     onContextMenu={(e) => e.preventDefault()}
                 />
