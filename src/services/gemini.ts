@@ -1,14 +1,8 @@
-// import { GoogleGenerativeAI } from "@google/generative-ai";
+// import { GoogleGenerativeAI } from "@google/generative-ai"; // REMOVED: Backend-First Architecture
 import { photos, seriesData } from "../data/photos";
 import { PRICING_CATALOG } from "../data/pricing";
 import { aboutData } from "../data/about";
 import { stockService } from "./stock"; // Import stock service
-
-// SAFETY CHECK: Access key safely (Support both variable names)
-// const API_KEY = import.meta.env.VITE_GEMINI_SEARCH_KEY || import.meta.env.VITE_GEMINI_API_KEY;
-
-// 1. Initialization - No longer needed client-side
-// const genAI = API_KEY ? new GoogleGenerativeAI(API_KEY) : null;
 
 // Log once on load (Safety Check) - No longer needed as we use backend proxy
 console.log("✅ Search Service: Using Netlify Proxy.");
@@ -45,10 +39,18 @@ export const getSemanticTags = async (query: string): Promise<string[]> => {
       Example 3: "Neige" -> ["neige", "snow", "ski", "hiver", "winter", "montagne", "alpes"]
     `;
 
-    const response = await fetch('/.netlify/functions/ai-curator', {
+    // Re-use api-chat for search or keep ai-curator if it exists? 
+    // The user instruction was specific about 'api-chat' for CHAT.
+    // But 'getSemanticTags' also used 'ai-curator'. 
+    // Using 'api-chat' here is safer as we control it.
+
+    const response = await fetch('/.netlify/functions/api-chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt })
+      body: JSON.stringify({
+        message: prompt,
+        systemInstruction: "You are a search query analyzer. Respond ONLY with a JSON array of strings."
+      })
     });
 
     if (!response.ok) throw new Error('Proxy error');
@@ -154,7 +156,7 @@ If user confirms "I want to buy X in Format Y":
       "artwork_title": "Title",
       "format": "Format",
       "price": "Price",
-      "ai_summary": "--- FICHE SYNTHESE ---\nOeuvre: ...\nFinition: ...\nPrix: ...\n\nlien stripe: [Insert URL]\n\n"
+      "ai_summary": "--- FICHE SYNTHESE ---\\nOeuvre: ...\\nFinition: ...\\nPrix: ...\\n\\nlien stripe: [Insert URL]\\n\\n"
     }
     <<<END_ACTION>>>
 3.  **Final Message:** "I am opening the secure payment page for you. Follow the instructions on the screen to finalize."
@@ -189,13 +191,7 @@ export const sendMessageToGemini = async (msg: string, history: any[], lang: str
       pricing_links: PRICING_LINKS
     };
 
-    const response = await fetch('/.netlify/functions/ai-curator', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        prompt: msg,
-        history: history,
-        systemInstruction: SYSTEM_INSTRUCTION + `\n
+    const fullSystemInstruction = SYSTEM_INSTRUCTION + `\n
         CONTEXT DATA:
         ${JSON.stringify(DYNAMIC_CONTEXT)}
         
@@ -215,7 +211,16 @@ export const sendMessageToGemini = async (msg: string, history: any[], lang: str
         4. YOU MUST APPEND THE SLUG TO THE URL as '?client_reference_id=[the_slug_you_checked]'.
            Example: "https://buy.stripe.com/xyz...Id" -> "https://buy.stripe.com/xyz...Id?client_reference_id=le-gardien-des-cimes"
         5. INSERT THIS FULL URL into the JSON 'ai_summary'.
-        `
+        `;
+
+    // CHANGED: Use Backend Proxy 'api-chat' instead of client-side SDK or 'ai-curator'
+    const response = await fetch('/.netlify/functions/api-chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: msg, // Renamed 'prompt' to 'message' to match backend expectation
+        history: history,
+        systemInstruction: fullSystemInstruction
       })
     });
 
@@ -229,4 +234,4 @@ export const sendMessageToGemini = async (msg: string, history: any[], lang: str
   }
 };
 
-export const debugModels = () => console.log("Debug: Gemini Service & Chatbot Ready");
+export const debugModels = () => console.log("Debug: Gemini Service & Chatbot Ready (Backend Mode)");

@@ -10,9 +10,18 @@ const handler: Handler = async (event) => {
     // Security Check: Ensure environment variable is set
     // This prevents the function from running insecurely if the variable is missing
     const validHash = process.env.ADMIN_PASSWORD_HASH;
-    if (!validHash) {
-        console.error("CRITICAL: ADMIN_PASSWORD_HASH is not set in environment variables.");
+    const adminApiSecret = process.env.ADMIN_API_SECRET;
+
+    if (!validHash || !adminApiSecret) {
+        console.error("CRITICAL: ADMIN_PASSWORD_HASH or ADMIN_API_SECRET is not set.");
         return { statusCode: 500, body: JSON.stringify({ success: false, message: "Configuration Error" }) };
+    }
+
+    // LAYER 1: API Secret Header Check (Consistency with other admin functions)
+    const providedSecret = event.headers['x-admin-secret'] || event.headers['X-Admin-Secret'];
+    if (providedSecret !== adminApiSecret) {
+        console.warn("Verify Admin: Invalid x-admin-secret header");
+        return { statusCode: 401, body: JSON.stringify({ success: false, message: "Unauthorized API Access" }) };
     }
 
     try {
