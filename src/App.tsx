@@ -25,6 +25,7 @@ const Chatbot = lazy(() => import('./components/chatbot/Chatbot').then(module =>
 const PhotographeArgentique = lazy(() => import('./pages/PhotographeArgentique'));
 import { CookieConsent } from './components/CookieConsent';
 import Success from './pages/Success';
+import { PageLoader } from './components/PageLoader';
 
 
 function AnimatedRoutes() {
@@ -37,6 +38,7 @@ function AnimatedRoutes() {
         <Route path="/portfolio" element={<Portfolio />} />
         <Route path="/series" element={<Series />} />
         <Route path="/series/:id" element={<SeriesDetail />} />
+        <Route path="/series/:id/:photoId" element={<SeriesDetail />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/prints" element={<Prints />} />
@@ -107,7 +109,9 @@ function App() {
         <ScrollToTop />
         <Navbar />
         <main id="main-content" className="flex-grow">
-          <AnimatedRoutes />
+          <Suspense fallback={<PageLoader />}>
+            <AnimatedRoutes />
+          </Suspense>
         </main>
         <Footer />
         <ErrorBoundary fallback={null}>

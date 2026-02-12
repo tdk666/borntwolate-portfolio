@@ -15,7 +15,7 @@ import { GrainedImage } from '../components/GrainedImage';
 import { StructuredData } from '../components/StructuredData';
 
 const SeriesDetail = () => {
-    const { id } = useParams<{ id: string }>();
+    const { id, photoId } = useParams<{ id: string; photoId?: string }>();
     const { isDarkroom } = useDarkroom();
     const { t, i18n } = useTranslation();
     const currentLang = i18n.language.split('-')[0] as 'fr' | 'en';
@@ -54,6 +54,14 @@ const SeriesDetail = () => {
             if (root) { root.style.backgroundColor = ''; root.style.color = ''; }
         };
     }, [series, id, isDarkroom]);
+
+    // Deep Linking Effect
+    useEffect(() => {
+        if (photoId && series) {
+            const index = series.photos.findIndex(p => p.slug === photoId);
+            if (index !== -1) setSelectedPhotoIndex(index);
+        }
+    }, [photoId, series]);
 
 
     const nextSeries = seriesData[(seriesIndex + 1) % seriesData.length];
@@ -242,7 +250,7 @@ const SeriesDetail = () => {
                         onClose={() => setSelectedPhotoIndex(null)}
                         onNext={handleNextPhoto}
                         onPrev={handlePrevPhoto}
-                        showContextualLink={false}
+                        showContextualLink={true}
                     />
                 )}
             </AnimatePresence>

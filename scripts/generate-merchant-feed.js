@@ -44,26 +44,31 @@ try {
         // We might have to fetch it separately or extend the regex.
 
         // Let's use a simpler regex to identify photos and then extract details from the match
-        const detailedPhotoRegex = /{\s*id:\s*(\d+),.*?url:\s*'([^']+)'.*?title:\s*(?:'([^']+)'|"([^"]+)").*?caption_artistic:\s*{\s*fr:\s*(?:"([^"]*)"|`([^`]*)`)/gs;
+        // Updated Regex to capture 'slug' property as well.
+        // Needs to match: slug: 'my-slug'
+        const detailedPhotoRegex = /{\s*id:\s*(\d+),.*?slug:\s*'([^']+)'.*?url:\s*'([^']+)'.*?title:\s*(?:'([^']+)'|"([^"]+)").*?caption_artistic:\s*{\s*fr:\s*(?:"([^"]*)"|`([^`]*)`)/gs;
 
         let match;
         while ((match = detailedPhotoRegex.exec(content)) !== null) {
             // match[1] = id
-            // match[2] = url
-            // match[3] or [4] = title
-            // match[5] or [6] = caption (fr)
+            // match[2] = slug
+            // match[3] = url
+            // match[4] or [5] = title
+            // match[6] or [7] = caption (fr)
 
             const photoId = match[1];
-            const url = match[2];
-            const title = match[3] || match[4];
-            const caption = match[5] || match[6] || "";
+            const slug = match[2];
+            const url = match[3];
+            const title = match[4] || match[5];
+            const caption = match[6] || match[7] || "";
 
             products.push({
                 id: photoId,
+                slug: slug,
                 seriesId: seriesId,
                 url: url,
                 title: title,
-                description: caption.replace(/\s+/g, ' ').trim() // Clean up newlines
+                description: caption.replace(/\s+/g, ' ').trim()
             });
         }
     }
@@ -85,7 +90,7 @@ ${products.map(product => `
     <g:id>${product.id}</g:id>
     <g:title>${product.title.replace(/&/g, '&amp;')}</g:title>
     <g:description>${product.description.replace(/&/g, '&amp;').slice(0, 5000)}</g:description>
-    <g:link>${BASE_URL}/portfolio?open=${product.id}</g:link>
+    <g:link>${BASE_URL}/series/${product.seriesId}/${product.slug}</g:link>
     <g:image_link>${BASE_URL}${product.url}</g:image_link>
     <g:brand>BornTwoLate</g:brand>
     <g:condition>new</g:condition>
