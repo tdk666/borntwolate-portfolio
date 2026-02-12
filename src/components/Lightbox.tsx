@@ -25,22 +25,21 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
     const isNavigatingRef = useRef(false);
     const [showInfo, setShowInfo] = useState(false);
     const [isAcquisitionOpen, setIsAcquisitionOpen] = useState(false);
-    const [stockCount, setStockCount] = useState<number | null>(null);
-    const [isStockFallback, setIsStockFallback] = useState(false);
+    const [stockData, setStockData] = useState<{ remaining: number; total: number; isFallback: boolean } | null>(null);
 
     useEffect(() => {
         const fetchStock = async () => {
-            const slug = stockService.getSlug(photo.title);
-            const { count, isFallback } = await stockService.getStock(slug);
-            setStockCount(count);
-            setIsStockFallback(isFallback);
+            const slug = photo.slug;
+            const data = await stockService.getStock(slug);
+            setStockData(data);
         };
         fetchStock();
-    }, [photo.title]);
+    }, [photo.title, photo.slug]);
 
-    const remaining = stockCount !== null ? 30 - stockCount : 30;
-    const isSoldOut = remaining <= 0;
+    const remaining = stockData ? stockData.remaining : 30; // Default to 30 if loading/null, logic below handles null check for display
+    const isSoldOut = stockData ? stockData.remaining === 0 : false;
     const isLowStock = remaining <= 5 && !isSoldOut;
+    const isStockFallback = stockData?.isFallback ?? false;
 
     const handleNavigate = useCallback((direction: 'next' | 'prev') => {
         // Si déjà en cours de navigation, on bloque immédiatement
@@ -180,7 +179,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                     {/* Acquisition Link */}
                     {/* Acquisition Link */}
                     <div className="mt-8 flex flex-col items-center gap-2">
-                        {stockCount !== null && (
+                        {stockData && (
                             <span className={`text-[10px] uppercase tracking-widest font-space-mono ${isSoldOut ? 'text-gray-500 line-through' : isLowStock ? 'text-red-500 animate-pulse' : 'text-white/40'}`}>
                                 {isSoldOut
                                     ? (currentLang === 'fr' ? "ÉPUISÉ / SOLD OUT" : "SOLD OUT")
@@ -257,7 +256,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                                     {photo.technical_info && <p className="font-mono text-xs text-darkroom-red uppercase tracking-widest">{photo.technical_info}</p>}
                                     {photo.caption_artistic && <p className="font-inter font-light text-sm text-silver leading-relaxed text-justify whitespace-pre-line">{getLocalizedText(photo.caption_artistic)}</p>}
                                     <div className="pt-4 flex flex-col items-center gap-4">
-                                        {stockCount !== null && (
+                                        {stockData && (
                                             <span className={`text-[10px] uppercase tracking-widest font-space-mono ${isSoldOut ? 'text-gray-500' : isLowStock ? 'text-red-500 animate-pulse' : 'text-white/40'}`}>
                                                 {isSoldOut
                                                     ? (currentLang === 'fr' ? "ÉPUISÉ / SOLD OUT" : "SOLD OUT")
@@ -296,6 +295,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev }: LightboxProps) => {
                 isOpen={isAcquisitionOpen}
                 onClose={() => setIsAcquisitionOpen(false)}
                 photoTitle={photo.title || "Tirage d'Art"}
+                photoSlug={photo.slug}
                 imageSrc={photo.url}
             />
         </motion.div>

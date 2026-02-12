@@ -167,8 +167,10 @@ export const sendMessageToGemini = async (msg: string, history: any[], lang: str
 
     // 2. Map Stock to Normalized Title (Slug) for AI Context
     const STOCK_CONTEXT: Record<string, number> = {};
+
     Object.keys(stocks).forEach(slug => {
-      STOCK_CONTEXT[slug] = stocks[slug];
+      const stock = stocks[slug];
+      STOCK_CONTEXT[slug] = stock.total - stock.remaining;
     });
 
     // 3. Flatten Pricing Links for AI
@@ -210,7 +212,9 @@ export const sendMessageToGemini = async (msg: string, history: any[], lang: str
         1. Identify the Range ID (collection, elegance, exception).
         2. Identify the Variant ID (20x30, 40x60, etc.).
         3. Look up the key "range_variant" in 'pricing_links' (e.g., "exception_40x60").
-        4. INSERT THAT URL directly into the JSON 'ai_summary'.
+        4. YOU MUST APPEND THE SLUG TO THE URL as '?client_reference_id=[the_slug_you_checked]'.
+           Example: "https://buy.stripe.com/xyz...Id" -> "https://buy.stripe.com/xyz...Id?client_reference_id=le-gardien-des-cimes"
+        5. INSERT THIS FULL URL into the JSON 'ai_summary'.
         `
       })
     });

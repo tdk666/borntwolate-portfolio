@@ -1,1 +1,1 @@
-{"root":["./admin-sheets-proxy.ts","./ai-curator.ts","./get-prices.ts","./stripe-webhook.ts","./verify-admin.ts"],"errors":true,"version":"5.9.3"}
+{"root":["./admin-sheets-proxy.ts","./ai-curator.ts","./get-prices.ts","./stripe-webhook.ts","./verify-admin.ts"],"version":"5.9.3"}

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { ShieldCheck, Printer, AlertCircle, Lock, TrendingUp, CloudDownload } from 'lucide-react';
+import { ShieldCheck, Printer, AlertCircle, Lock, CloudDownload } from 'lucide-react';
 import { SEO } from '../../components/SEO';
 import { stockService } from '../../services/stock';
 import toast, { Toaster } from 'react-hot-toast';
@@ -71,17 +71,7 @@ const CertificateGenerator = () => {
         return series ? series.title : "Série Inconnue";
     };
 
-    // Robust Slug Generation (Same as previous fix)
-    const getSlug = (title: string) => {
-        const t = title.toLowerCase();
-        if (t.includes("vespa") || t.includes("libertà")) return "liberta-bianca";
-        if (t.includes("heure bleue")) return "l-heure-bleue";
-        return t
-            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-            .replace(/['’]/g, "-")
-            .replace(/ /g, "-")
-            .replace(/-+/g, "-");
-    };
+
 
     const handlePhotoSelect = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const id = e.target.value;
@@ -89,8 +79,9 @@ const CertificateGenerator = () => {
 
         const photo = photos.find(p => p.id === Number(id)) || photos.find(p => p.title === id);
         if (photo) {
-            const slug = getSlug(photo.title);
-            const { count: soldCount } = await stockService.getStock(slug);
+            const slug = photo.slug;
+            const { remaining, total } = await stockService.getStock(slug);
+            const soldCount = total - remaining;
             const nextEdition = soldCount + 1;
 
             setData(prev => ({
@@ -98,9 +89,10 @@ const CertificateGenerator = () => {
                 title: photo.title,
                 series: getSeriesTitle(photo.seriesId),
                 number: String(nextEdition).padStart(2, '0'),
+                total: String(total)
             }));
 
-            toast.success(`Chargé : ${photo.title}\nStock vendu : ${soldCount} → Édition suggérée : ${nextEdition}/${data.total}`);
+            toast.success(`Chargé : ${photo.title}\nStock vendu : ${soldCount} → Édition suggérée : ${nextEdition}/${total}`);
         }
     };
 
@@ -205,13 +197,14 @@ const CertificateGenerator = () => {
                         setSelectedPhotoId(match.id);
 
                         // Update extra metadata
-                        const slug = getSlug(match.title);
-                        const { count } = await stockService.getStock(slug);
+                        const slug = match.slug;
+                        const { remaining, total } = await stockService.getStock(slug);
                         setData(prev => ({
                             ...prev,
                             title: match.title,
                             series: getSeriesTitle(match.seriesId),
-                            number: String(count + 1).padStart(2, '0')
+                            number: String(total - remaining + 1).padStart(2, '0'),
+                            total: String(total)
                         }));
                     }
                 }
@@ -226,29 +219,6 @@ const CertificateGenerator = () => {
             toast.error("Erreur API Sheets");
         } finally {
             setIsFetchingOrder(false);
-        }
-    };
-
-    const handleStockIncrement = async () => {
-        if (!data.title) {
-            toast.error("Veuillez sélectionner une œuvre.");
-            return;
-        }
-
-        const slug = getSlug(data.title);
-        const confirm = window.confirm(`Valider une vente pour "${data.title}" (slug: ${slug}) ?\nCela ajoutera +1 au stock vendu.`);
-
-        if (confirm) {
-            const result = await stockService.incrementStock(slug);
-            if (result.success) {
-                toast.success(`Stock mis à jour !\nNouveau total vendu : ${result.newCount}`);
-                if (result.newCount) {
-                    setData(prev => ({ ...prev, number: String(result.newCount).padStart(2, '0') }));
-                }
-            } else {
-                toast.error(`Erreur : ${result.error || "Inconnue"}`);
-                console.error(result.error);
-            }
         }
     };
 
@@ -483,10 +453,13 @@ const CertificateGenerator = () => {
                         </button>
 
                         <div className="pt-4 border-t border-white/10 mt-4">
-                            <h3 className="text-xs uppercase tracking-widest text-silver mb-3">Gestion Stock (Supabase)</h3>
-                            <button onClick={handleStockIncrement} className="w-full bg-red-900/50 border border-red-500/30 text-red-200 py-3 font-space-mono uppercase text-xs font-bold hover:bg-red-900 hover:text-white transition-colors flex items-center justify-center gap-2">
-                                <TrendingUp size={16} /> Valider une Vente (+1)
-                            </button>
+                            <div className="pt-4 border-t border-white/10 mt-4">
+                                <h3 className="text-xs uppercase tracking-widest text-silver mb-3">Zone de Danger (Lecture Seule)</h3>
+                                <p className="text-[10px] text-silver/60">
+                                    La gestion des stocks est désormais automatisée via Stripe.
+                                    Ce générateur ne modifie plus la base de données.
+                                </p>
+                            </div>
                         </div>
                     </div>
                 </div>

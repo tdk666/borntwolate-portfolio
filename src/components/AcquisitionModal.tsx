@@ -12,10 +12,11 @@ interface AcquisitionModalProps {
   isOpen: boolean;
   onClose: () => void;
   photoTitle: string;
+  photoSlug: string;
   imageSrc?: string;
 }
 
-export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc }: AcquisitionModalProps) {
+export default function AcquisitionModal({ isOpen, onClose, photoTitle, photoSlug, imageSrc }: AcquisitionModalProps) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<keyof typeof PRICING_CATALOG>('collection');
@@ -23,22 +24,21 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
   const [isWallPreviewOpen, setIsWallPreviewOpen] = useState(false);
   const [currency, setCurrency] = useState<'EUR' | 'USD' | 'GBP'>('EUR');
   const [isLoading, setIsLoading] = useState(false);
-  const [stockCount, setStockCount] = useState<number | null>(null);
+  const [stockData, setStockData] = useState<{ remaining: number; total: number } | null>(null);
 
   // Stock Fetching
   useEffect(() => {
-    if (isOpen && photoTitle) {
+    if (isOpen && photoSlug) {
       const fetchStock = async () => {
         // Dynamic import to avoid cycles or load issues if service is broken? No, standard import is fine.
         // We assume stockService handles errors now.
         const { stockService } = await import('../services/stock');
-        const slug = stockService.getSlug(photoTitle);
-        const { count } = await stockService.getStock(slug);
-        setStockCount(count);
+        const { remaining, total } = await stockService.getStock(photoSlug);
+        setStockData({ remaining, total });
       };
       fetchStock();
     }
-  }, [isOpen, photoTitle]);
+  }, [isOpen, photoSlug]);
 
   if (!isOpen) return null;
 
@@ -46,8 +46,7 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
   // Protection pour s'assurer que la variante existe dans la gamme sélectionnée
   const currentVariant = currentRange.variants.find(v => v.id === selectedVariantId) || currentRange.variants[0];
 
-  const cleanTitle = encodeURIComponent(photoTitle.trim());
-  const finalStripeUrl = `${currentVariant.stripeUrl}?client_reference_id=${cleanTitle}`;
+  const finalStripeUrl = `${currentVariant.stripeUrl}?client_reference_id=${photoSlug}`;
 
   // Helper to translate dynamic keys
   const getTranslatedRange = (key: string) => {
@@ -75,6 +74,8 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
       default: return `${price} €`;
     }
   };
+
+  const isSoldOut = stockData && stockData.remaining === 0;
 
   return (
     <>
@@ -116,7 +117,7 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
                 <div className="text-[10px] uppercase tracking-widest text-white/60 mb-1 md:mb-2">{t('acquisition.selected_work')}</div>
                 <h2 className="font-serif text-2xl md:text-3xl text-white leading-tight shadow-black drop-shadow-md md:drop-shadow-none">{photoTitle}</h2>
                 <p className="text-xs md:text-sm text-white/80 md:text-white/60 mt-1">
-                  {t('acquisition.limited_edition')}
+                  {t('acquisition.limited_edition')} {stockData ? `(${stockData.remaining}/${stockData.total})` : ''}
                 </p>
               </div>
             </div>
@@ -129,18 +130,18 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
             <div className="flex-1 overflow-y-auto p-6 md:p-8 overscroll-contain">
 
               {/* Stock Status Indicator */}
-              {stockCount !== null && (
-                <div className={`mb-6 p-3 rounded-lg flex items-center gap-3 ${(30 - stockCount) <= 0 ? 'bg-red-500/10 border border-red-500/20' : 'bg-white/5'
+              {stockData && (
+                <div className={`mb-6 p-3 rounded-lg flex items-center gap-3 ${stockData.remaining === 0 ? 'bg-red-500/10 border border-red-500/20' : 'bg-white/5'
                   }`}>
-                  <div className={`w-2 h-2 rounded-full ${(30 - stockCount) <= 5 ? 'bg-red-500 animate-pulse' : 'bg-emerald-500'
+                  <div className={`w-2 h-2 rounded-full ${stockData.remaining <= 5 ? 'bg-red-500 animate-pulse' : 'bg-emerald-500'
                     }`} />
-                  <span className={`text-xs uppercase tracking-widest font-space-mono ${(30 - stockCount) <= 5 ? 'text-red-400' : 'text-white/60'
+                  <span className={`text-xs uppercase tracking-widest font-space-mono ${stockData.remaining <= 5 ? 'text-red-400' : 'text-white/60'
                     }`}>
-                    {(30 - stockCount) <= 0
-                      ? (t('acquisition.sold_out') || 'SOLD OUT')
-                      : (30 - stockCount) <= 5
-                        ? t('acquisition.stock_remaining', { count: 30 - stockCount })
-                        : t('acquisition.stock_limited', { count: 30 - stockCount })
+                    {stockData.remaining === 0
+                      ? (t('acquisition.sold_out') || 'ŒUVRE ÉPUISÉE')
+                      : stockData.remaining <= 5
+                        ? t('acquisition.stock_remaining', { count: stockData.remaining })
+                        : `${stockData.remaining} Exemplaires Restants`
                     }
                   </span>
                 </div>
@@ -268,13 +269,18 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
               </div>
 
               <a
-                href={finalStripeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`w-full bg-white text-black py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-gray-200 transition-colors shadow-lg shadow-white/5 active:scale-[0.98] ${isLoading ? 'opacity-70 cursor-wait' : ''}`}
+                href={isSoldOut ? '#' : finalStripeUrl}
+                target={isSoldOut ? undefined : "_blank"}
+                rel={isSoldOut ? undefined : "noopener noreferrer"}
+                className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-colors shadow-lg shadow-white/5 active:scale-[0.98] 
+                  ${isSoldOut
+                    ? 'bg-neutral-800 text-neutral-500 cursor-not-allowed opacity-50'
+                    : 'bg-white text-black hover:bg-gray-200'
+                  } 
+                  ${isLoading ? 'opacity-70 cursor-wait' : ''}`}
                 onClick={async (e) => {
                   e.preventDefault();
-                  if (isLoading) return;
+                  if (isLoading || isSoldOut) return;
 
                   setIsLoading(true);
                   try {
@@ -300,7 +306,14 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, imageSrc
                   }
                 }}
               >
-                <span>{isLoading ? t('acquisition.redirecting') : t('acquisition.proceed_payment')}</span>
+                <span>
+                  {isSoldOut
+                    ? (t('acquisition.sold_out') || 'ŒUVRE ÉPUISÉE')
+                    : isLoading
+                      ? t('acquisition.redirecting')
+                      : t('acquisition.proceed_payment')
+                  }
+                </span>
                 {!isLoading && <ArrowRight className="w-5 h-5 ml-1" />}
               </a>
 

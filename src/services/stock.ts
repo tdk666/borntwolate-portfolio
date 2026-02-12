@@ -1,103 +1,59 @@
 
 import { supabase } from './supabase';
 
-interface StockData {
-    slug: string;
-    sold_count: number;
-}
+
 
 export const stockService = {
-    // Helper to generate consistent slugs from titles
-    getSlug: (title: string): string => {
-        return title.toLowerCase()
-            .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove accents
-            .trim()
-            .replace(/[^\w\s-]/g, '') // Remove special chars
-            .replace(/[\s_-]+/g, '-') // Replace spaces/underscores with hyphens
-            .replace(/^-+|-+$/g, ''); // Trim hyphens
-    },
 
-    getAllStocks: async (): Promise<Record<string, number>> => {
+
+    getAllStocks: async (): Promise<Record<string, { remaining: number; total: number }>> => {
         try {
-            // Inner try-catch to handle Supabase connection errors specifically
-            try {
-                const { data, error } = await supabase
-                    .from('art_stocks')
-                    .select('slug, sold_count');
+            const { data, error } = await supabase
+                .from('art_stocks')
+                .select('slug, sold_count, max_limit');
 
-                // If credentials were fake/missing, this will error
-                if (error) throw error;
+            if (error) throw error;
 
-                const stocks: Record<string, number> = {};
-                if (data) {
-                    data.forEach((item: StockData) => {
-                        stocks[item.slug] = item.sold_count;
-                    });
-                }
-                return stocks;
-            } catch (supaError) {
-                console.warn("Stock fetch failed (likely missing env vars):", supaError);
-                return {}; // Return empty object so app doesn't crash
+            const stocks: Record<string, { remaining: number; total: number }> = {};
+            if (data) {
+                data.forEach((item: any) => {
+                    stocks[item.slug] = {
+                        remaining: Math.max(0, (item.max_limit || 30) - (item.sold_count || 0)),
+                        total: item.max_limit || 30
+                    };
+                });
             }
+            return stocks;
         } catch (error) {
-            console.error('Error in getAllStocks wrapper:', error);
+            console.warn("Stock fetch failed:", error);
             return {};
         }
     },
 
-    getStock: async (slug: string): Promise<{ count: number; isFallback: boolean }> => {
+    getStock: async (slug: string): Promise<{ remaining: number; total: number; isFallback: boolean }> => {
         try {
             const { data, error } = await supabase
                 .from('art_stocks')
-                .select('sold_count')
+                .select('sold_count, max_limit')
                 .eq('slug', slug)
                 .single();
 
             if (error) {
-                // If error is PGRU-000 (no row), return 0 count, not fallback
-                if (error.code === 'PGRST116') return { count: 0, isFallback: false };
+                if (error.code === 'PGRST116') return { remaining: 30, total: 30, isFallback: false }; // Default if not found
                 throw error;
             }
 
-            return { count: data?.sold_count || 0, isFallback: false };
+            const total = data?.max_limit || 30;
+            const sold = data?.sold_count || 0;
+
+            return {
+                remaining: Math.max(0, total - sold),
+                total: total,
+                isFallback: false
+            };
         } catch (error) {
-            console.warn(`Error fetching stock for ${slug} (using fallback):`, error);
-            // Fallback: return 0 count but mark as fallback so UI knows to hide specific number
-            return { count: 0, isFallback: true };
-        }
-    },
-
-    incrementStock: async (slug: string): Promise<{ success: boolean; newCount?: number; error?: any }> => {
-        try {
-            // First, get current count or create row if not exists
-            const { data: currentData, error: fetchError } = await supabase
-                .from('art_stocks')
-                .select('sold_count')
-                .eq('slug', slug)
-                .single();
-
-            let currentCount = 0;
-
-            if (fetchError && fetchError.code !== 'PGRST116') {
-                throw fetchError;
-            }
-
-            if (currentData) {
-                currentCount = currentData.sold_count;
-            }
-
-            // Upsert with increment
-            const newCount = currentCount + 1;
-            const { error: upsertError } = await supabase
-                .from('art_stocks')
-                .upsert({ slug, sold_count: newCount }, { onConflict: 'slug' });
-
-            if (upsertError) throw upsertError;
-
-            return { success: true, newCount };
-        } catch (error) {
-            console.error(`Error incrementing stock for ${slug}:`, error);
-            return { success: false, error };
+            console.warn(`Error fetching stock for ${slug}:`, error);
+            return { remaining: 0, total: 30, isFallback: true }; // Fail safe
         }
     }
 };

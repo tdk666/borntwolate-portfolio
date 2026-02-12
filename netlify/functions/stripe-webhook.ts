@@ -79,6 +79,24 @@ export const handler: Handler = async (event) => {
 
             console.log(`Order successfully recorded in Supabase: ${session.id}`);
 
+            // Increment Stock (Sold Count) if client_reference_id (slug) is present
+            if (session.client_reference_id) {
+                console.log(`Attempting to increment stock for slug: ${session.client_reference_id}`);
+                const { error: rpcError } = await supabase.rpc('increment_stock', {
+                    stock_slug: session.client_reference_id
+                });
+
+                if (rpcError) {
+                    console.error(`FAILED to increment stock for ${session.client_reference_id}:`, rpcError);
+                    // We don't return 500 here to avoid failing the whole webhook if just the stock update fails,
+                    // but it should be logged for manual reconciliation.
+                } else {
+                    console.log(`SUCCESS: Stock incremented for ${session.client_reference_id}`);
+                }
+            } else {
+                console.warn('No client_reference_id found in session, skipping stock update.');
+            }
+
         } catch (error) {
             console.error('Order Processing Error:', error);
             return { statusCode: 500, body: 'Internal Server Error' };
