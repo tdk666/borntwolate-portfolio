@@ -296,12 +296,10 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, photoSlu
                       reply_details: `Œuvre : ${photoTitle}\nFormat : ${currentVariant.label}`
                     });
 
-                    // 2. Redirect to Stripe Payment Link
-                    window.location.href = finalStripeUrl;
-
                   } catch (error) {
-                    console.error("Error during checkout process:", error);
-                    // Fallback redirect even if email fails
+                    console.error("Error during checkout notification (non-blocking):", error);
+                  } finally {
+                    // 2. Redirect to Stripe Payment Link (Always)
                     window.location.href = finalStripeUrl;
                   }
                 }}

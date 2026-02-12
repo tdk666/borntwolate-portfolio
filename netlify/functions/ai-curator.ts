@@ -13,11 +13,23 @@ export const handler: Handler = async (event, context) => {
         };
     }
 
-    if (!GEMINI_API_KEY) {
-        console.error('Missing Gemini API Key');
+    const adminApiSecret = process.env.ADMIN_API_SECRET;
+
+    if (!GEMINI_API_KEY || !adminApiSecret) {
+        console.error('Missing GEMINI_API_KEY or ADMIN_API_SECRET');
         return {
             statusCode: 500,
             body: JSON.stringify({ error: 'Server Configuration Error' }),
+        };
+    }
+
+    // Security Check: Verify Admin Secret Header
+    const providedSecret = event.headers['x-admin-secret'] || event.headers['X-Admin-Secret'];
+    if (providedSecret !== adminApiSecret) {
+        console.warn("AI Curator: Invalid x-admin-secret header");
+        return {
+            statusCode: 401,
+            body: JSON.stringify({ error: 'Unauthorized' }),
         };
     }
 
