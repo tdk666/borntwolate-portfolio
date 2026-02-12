@@ -187,6 +187,7 @@ const Portfolio = () => {
                                                     fetchPriority={isPriority ? "high" : "auto"}
                                                     decoding={isPriority ? "sync" : "async"}
                                                     draggable="false"
+                                                    style={{ aspectRatio: photo.orientation === 'portrait' ? '2/3' : '3/2' }}
                                                 />
                                                 <figcaption className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-[60]">
                                                     <div className="text-center p-2">

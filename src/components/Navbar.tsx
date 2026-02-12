@@ -97,7 +97,7 @@ const Navbar = () => {
                                         ref={searchInputRef}
                                         type="text"
                                         placeholder="Search..."
-                                        className="w-full bg-white/10 border border-white/20 rounded-full px-4 py-1 text-xs text-white placeholder:text-white/50 focus:outline-none focus:border-white/50"
+                                        className="w-full bg-white/10 border border-white/20 rounded-full px-4 py-1 text-xs text-white placeholder:text-white/70 focus:outline-none focus:border-white/50"
                                         autoFocus
                                         onBlur={() => !searchInputRef.current?.value && setIsSearchVisible(false)}
                                     />
@@ -177,7 +177,7 @@ const Navbar = () => {
                                         ref={mobileSearchInputRef}
                                         type="text"
                                         placeholder="Search..."
-                                        className="w-full bg-black/50 backdrop-blur-md border border-white/20 rounded-full px-3 py-1 text-xs text-white placeholder:text-white/50 focus:outline-none focus:border-white/50"
+                                        className="w-full bg-black/50 backdrop-blur-md border border-white/20 rounded-full px-3 py-1 text-xs text-white placeholder:text-white/70 focus:outline-none focus:border-white/50"
                                         onBlur={() => !mobileSearchInputRef.current?.value && setIsSearchVisible(false)}
                                     />
                                 </motion.form>

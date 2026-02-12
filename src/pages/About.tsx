@@ -59,7 +59,7 @@ const About = () => {
                     <h2 className="text-2xl font-serif italic text-off-white mb-8">
                         {t('about.tech')}
                     </h2>
-                    <ul className="space-y-4 font-space-mono text-sm text-silver/80">
+                    <ul className="space-y-4 font-space-mono text-sm text-silver">
                         <li className="flex justify-between items-center group border-b border-white/5 pb-2">
                             <span className="group-hover:text-darkroom-red transition-colors">{t('about.cameras')}</span>
                             <span className="text-off-white">Rollei 35, Nikon F-301</span>

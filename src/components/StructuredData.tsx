@@ -37,7 +37,7 @@ export const StructuredData: React.FC<StructuredDataProps> = ({ type = 'website'
 
                 return {
                     "@context": "https://schema.org",
-                    "@type": "Product",
+                    "@type": ["Product", "VisualArtwork"],
                     "name": title,
                     "description": description,
                     "image": {
@@ -52,6 +52,9 @@ export const StructuredData: React.FC<StructuredDataProps> = ({ type = 'website'
                         },
                         "copyrightNotice": "© Borntwolate"
                     },
+                    "artform": "Photography",
+                    "artMedium": "Analog Photography (Film)",
+                    "surface": "Paper",
                     "sku": photoSlug,
                     "brand": {
                         "@type": "Brand",

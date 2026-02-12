@@ -1,117 +1,380 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+        
+  <!-- Static Pages -->
   
     <url>
       <loc>https://borntwolate.com</loc>
-      <lastmod>2026-02-10</lastmod>
+      <lastmod>2026-02-12</lastmod>
       <changefreq>monthly</changefreq>
       <priority>1.0</priority>
     </url>
   
     <url>
       <loc>https://borntwolate.com/about</loc>
-      <lastmod>2026-02-10</lastmod>
+      <lastmod>2026-02-12</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8</priority>
     </url>
   
     <url>
       <loc>https://borntwolate.com/portfolio</loc>
-      <lastmod>2026-02-10</lastmod>
+      <lastmod>2026-02-12</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8</priority>
     </url>
   
     <url>
       <loc>https://borntwolate.com/series</loc>
-      <lastmod>2026-02-10</lastmod>
+      <lastmod>2026-02-12</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8</priority>
     </url>
   
     <url>
       <loc>https://borntwolate.com/contact</loc>
-      <lastmod>2026-02-10</lastmod>
+      <lastmod>2026-02-12</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8</priority>
     </url>
   
     <url>
       <loc>https://borntwolate.com/prints</loc>
-      <lastmod>2026-02-10</lastmod>
+      <lastmod>2026-02-12</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8</priority>
     </url>
   
     <url>
       <loc>https://borntwolate.com/legals</loc>
-      <lastmod>2026-02-10</lastmod>
+      <lastmod>2026-02-12</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8</priority>
     </url>
   
     <url>
       <loc>https://borntwolate.com/photographe-argentique</loc>
-      <lastmod>2026-02-10</lastmod>
+      <lastmod>2026-02-12</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8</priority>
     </url>
   
+
+  <!-- Dynamic Series Pages with Images -->
   
     <url>
       <loc>https://borntwolate.com/series/polish-hike</loc>
-      <lastmod>2026-02-10</lastmod>
+      <lastmod>2026-02-12</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.9</priority>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/polish-hike/the-hills.jpg</image:loc>
+          <image:title>Crête Verte</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/polish-hike/tiny-stonhedge.jpg</image:loc>
+          <image:title>Équilibre Minéral</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/polish-hike/the-lakes.jpg</image:loc>
+          <image:title>Miroir Jumeau</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/polish-hike/the-valley.jpg</image:loc>
+          <image:title>La Vallée</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/polish-hike/the-trees.jpg</image:loc>
+          <image:title>Cathédrale Verte</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/polish-hike/the-spot.jpg</image:loc>
+          <image:title>L'Émeraude</image:title>
+        </image:image>
+      
     </url>
   
     <url>
       <loc>https://borntwolate.com/series/white-mounts</loc>
-      <lastmod>2026-02-10</lastmod>
+      <lastmod>2026-02-12</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.9</priority>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/white-mounts/like-sugar.jpg</image:loc>
+          <image:title>Sucre Glace</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/white-mounts/cig-man.jpg</image:loc>
+          <image:title>L'Insolence</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/white-mounts/the-ascension.jpg</image:loc>
+          <image:title>L'Ascension</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/white-mounts/carmel-mount.jpg</image:loc>
+          <image:title>Mont Caramel</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/white-mounts/cloudy.jpg</image:loc>
+          <image:title>Cimes et Brume</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/white-mounts/above-the-wall.jpg</image:loc>
+          <image:title>La Muraille</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/white-mounts/hello-moon.jpg</image:loc>
+          <image:title>L'Apparition</image:title>
+        </image:image>
+      
     </url>
   
     <url>
       <loc>https://borntwolate.com/series/puglia-famiglia</loc>
-      <lastmod>2026-02-10</lastmod>
+      <lastmod>2026-02-12</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.9</priority>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/puglia/vespa.jpg</image:loc>
+          <image:title>Libertà Bianca</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/puglia/ombrello.jpg</image:loc>
+          <image:title>L'Ombrello</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/puglia/le-due-sorelle.jpg</image:loc>
+          <image:title>Le Due Sorelle</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/puglia/carlota.jpg</image:loc>
+          <image:title>L'Attesa</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/puglia/il-salto.jpg</image:loc>
+          <image:title>Il Salto</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/puglia/problema-della-benzina.jpg</image:loc>
+          <image:title>Problema della Benzina</image:title>
+        </image:image>
+      
     </url>
   
     <url>
       <loc>https://borntwolate.com/series/retro-mountain</loc>
-      <lastmod>2026-02-10</lastmod>
+      <lastmod>2026-02-12</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.9</priority>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/retro-mountain/tree-shape.jpg</image:loc>
+          <image:title>Géométrie Naturelle</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/retro-mountain/lawrence.jpg</image:loc>
+          <image:title>Lawrence d'Hiver</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/retro-mountain/contre-plongee.jpg</image:loc>
+          <image:title>L'Observatoire</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/retro-mountain/la-raclette.jpg</image:loc>
+          <image:title>Le Rituel</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/retro-mountain/contemplation.jpg</image:loc>
+          <image:title>Mise en Abyme</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/retro-mountain/mountain-retro.jpg</image:loc>
+          <image:title>Le Gardien des Cimes</image:title>
+        </image:image>
+      
     </url>
   
     <url>
       <loc>https://borntwolate.com/series/winter-in-the-fruit</loc>
-      <lastmod>2026-02-10</lastmod>
+      <lastmod>2026-02-12</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.9</priority>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/winter-in-the-fruit/empire-state.jpg</image:loc>
+          <image:title>King of Midtown</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/winter-in-the-fruit/central-park-reading.jpg</image:loc>
+          <image:title>Quiet Central</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/winter-in-the-fruit/central-park-night.jpg</image:loc>
+          <image:title>Midnight City</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/winter-in-the-fruit/central-park-day.jpg</image:loc>
+          <image:title>Colors of December</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/winter-in-the-fruit/jaguar-soho.jpg</image:loc>
+          <image:title>Fawn in Town</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/winter-in-the-fruit/highline-taxi.jpg</image:loc>
+          <image:title>High Line View</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/winter-in-the-fruit/underground.jpg</image:loc>
+          <image:title>Underground</image:title>
+        </image:image>
+      
     </url>
   
     <url>
       <loc>https://borntwolate.com/series/psychadelic-mtl</loc>
-      <lastmod>2026-02-10</lastmod>
+      <lastmod>2026-02-12</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.9</priority>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/psychadelic-mtl/montreal-vis-versa.JPG</image:loc>
+          <image:title>Monde Inversé</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/psychadelic-mtl/kapital-circle.JPG</image:loc>
+          <image:title>Oeil Urbain</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/psychadelic-mtl/plots.JPG</image:loc>
+          <image:title>Mutation Signalétique</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/psychadelic-mtl/sharp-contrast.JPG</image:loc>
+          <image:title>Sharp Contrast</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/psychadelic-mtl/frvr-in-d-r.JPG</image:loc>
+          <image:title>Forever in the Air</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/psychadelic-mtl/duo-on-cliff.JPG</image:loc>
+          <image:title>Duo on Cliff</image:title>
+        </image:image>
+      
     </url>
   
     <url>
       <loc>https://borntwolate.com/series/canadian-evasion</loc>
-      <lastmod>2026-02-10</lastmod>
+      <lastmod>2026-02-12</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.9</priority>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/canadian-evasion/intrus.JPG</image:loc>
+          <image:title>Bivouac</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/canadian-evasion/infinity.JPG</image:loc>
+          <image:title>Route Infinie</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/canadian-evasion/Mirroir-vert.JPG</image:loc>
+          <image:title>Miroir Boréal</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/canadian-evasion/contemplation.jpg</image:loc>
+          <image:title>Contemplation</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/canadian-evasion/bout-du-monde.JPG</image:loc>
+          <image:title>Le Saint-Laurent</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/canadian-evasion/autoportrait.JPG</image:loc>
+          <image:title>Face au Large</image:title>
+        </image:image>
+      
     </url>
   
     <url>
       <loc>https://borntwolate.com/series/mauvais-garcons</loc>
-      <lastmod>2026-02-10</lastmod>
+      <lastmod>2026-02-12</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.9</priority>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/mauvais-garcons/gab-moto-debout.jpg</image:loc>
+          <image:title>L'Attente</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/mauvais-garcons/gab-bouquin.jpg</image:loc>
+          <image:title>Lecture Urbaine</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/mauvais-garcons/gab-lampadaire.jpg</image:loc>
+          <image:title>L'Heure Bleue</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/mauvais-garcons/moto-seine.jpg</image:loc>
+          <image:title>Astor sur Seine</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/mauvais-garcons/gab-seine.jpg</image:loc>
+          <image:title>Regard Rive Droite</image:title>
+        </image:image>
+      
+        <image:image>
+          <image:loc>https://borntwolate.com/images/mauvais-garcons/le-rendez-vous.jpg</image:loc>
+          <image:title>Le Rendez-vous</image:title>
+        </image:image>
+      
     </url>
   
 </urlset>

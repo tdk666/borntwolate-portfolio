@@ -176,7 +176,7 @@ const SeriesDetail = () => {
                             <div className="group-hover:scale-[1.01] transition-transform duration-700 ease-out">
                                 <GrainedImage
                                     src={photo.url}
-                                    alt={photo.alt_accessible?.[currentLang] || photo.title}
+                                    alt={photo.alt_accessible?.[currentLang] || `Photographie argentique grainée, ${series.title}, ${photo.title}, tirage limité`}
                                     orientation={photo.orientation}
                                     loading={index < 2 ? "eager" : "lazy"}
                                     fetchPriority={index < 2 ? "high" : "auto"}
@@ -192,7 +192,31 @@ const SeriesDetail = () => {
                         </motion.figure>
                     ))}
                 </Masonry>
+
             </div>
+
+            {/* MAILLAGE SÉMANTIQUE (Semantic Linking) */}
+            <FadeIn delay={0.8} className="w-full max-w-4xl mx-auto mt-24 mb-12 border-t border-white/10 pt-12 px-6">
+                <h3 className="font-serif italic text-2xl text-off-white mb-6 text-center">{t('series_detail.see_also', { defaultValue: "Dans la même atmosphère..." })}</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <Link to={`/series/${prevSeries.id}`} className="group relative block overflow-hidden aspect-[3/2]">
+                        <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-500 z-10" />
+                        <img src={prevSeries.coverImage} alt={prevSeries.title} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 grayscale group-hover:grayscale-0" />
+                        <div className="absolute bottom-4 left-4 z-20">
+                            <span className="font-space-mono text-xs text-darkroom-red uppercase tracking-widest block mb-1">{t('series_detail.previous_series', { defaultValue: "Série Précédente" })}</span>
+                            <span className="font-space-mono text-xl text-off-white uppercase tracking-widest">{prevSeries.title}</span>
+                        </div>
+                    </Link>
+                    <Link to={`/series/${nextSeries.id}`} className="group relative block overflow-hidden aspect-[3/2]">
+                        <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-500 z-10" />
+                        <img src={nextSeries.coverImage} alt={nextSeries.title} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 grayscale group-hover:grayscale-0" />
+                        <div className="absolute bottom-4 right-4 z-20 text-right">
+                            <span className="font-space-mono text-xs text-darkroom-red uppercase tracking-widest block mb-1">{t('series_detail.next_series', { defaultValue: "Série Suivante" })}</span>
+                            <span className="font-space-mono text-xl text-off-white uppercase tracking-widest">{nextSeries.title}</span>
+                        </div>
+                    </Link>
+                </div>
+            </FadeIn>
 
             <div className="max-w-[90%] mx-auto mt-20 flex justify-between items-center border-t border-current pt-8 opacity-60 hover:opacity-100 transition-opacity">
                 <Link to={`/series/${prevSeries.id}`} className="flex items-center gap-4 group"><ArrowLeft className="w-5 h-5 transition-transform group-hover:-translate-x-1" /><span className="font-space-mono">{prevSeries.title}</span></Link>
@@ -201,10 +225,10 @@ const SeriesDetail = () => {
 
             <AnimatePresence>
                 {selectedPhotoIndex !== null && (
-                    <Lightbox photo={series.photos[selectedPhotoIndex]} onClose={() => setSelectedPhotoIndex(null)} onNext={handleNextPhoto} onPrev={handlePrevPhoto} />
+                    <Lightbox photo={series.photos[selectedPhotoIndex as number]} onClose={() => setSelectedPhotoIndex(null)} onNext={handleNextPhoto} onPrev={handlePrevPhoto} />
                 )}
             </AnimatePresence>
-        </div>
+        </div >
     );
 };
 export default SeriesDetail;

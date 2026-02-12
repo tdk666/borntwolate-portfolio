@@ -6,7 +6,7 @@ const Footer = () => {
     const { t } = useTranslation();
     return (
         <footer className="w-full py-8 mt-auto border-t border-white/5 bg-deep-black z-10 relative">
-            <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-space-mono text-silver/60 uppercase tracking-widest">
+            <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-space-mono text-silver uppercase tracking-widest">
 
                 {/* Copyright */}
                 <div className="order-2 md:order-1">

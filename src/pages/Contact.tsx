@@ -353,7 +353,7 @@ const Contact = () => {
                                 </label>
 
                                 {selectedPhotos.length === 0 ? (
-                                    <p className="text-silver/40 text-sm italic font-inter px-2">{t('contact.no_selection')}</p>
+                                    <p className="text-silver text-sm italic font-inter px-2">{t('contact.no_selection')}</p>
                                 ) : (
                                     <div className="grid gap-3">
                                         <AnimatePresence>
@@ -375,7 +375,7 @@ const Contact = () => {
                                                     <button
                                                         type="button"
                                                         onClick={() => handleRemovePhoto(photo.id)}
-                                                        className="text-silver/40 hover:text-darkroom-red transition-colors p-2 self-end sm:self-auto"
+                                                        className="text-silver hover:text-darkroom-red transition-colors p-2 self-end sm:self-auto"
                                                         title={t('contact.remove_selection')}
                                                         aria-label={t('contact.remove_selection')}
                                                     >
@@ -457,7 +457,7 @@ const Contact = () => {
                             required
                             className="mt-1 appearance-none min-w-[16px] w-4 h-4 border border-white/20 rounded-sm bg-transparent checked:bg-darkroom-red checked:border-darkroom-red cursor-pointer transition-colors relative after:content-['✓'] after:absolute after:text-white after:text-xs after:top-[-2px] after:left-[2px] after:opacity-0 checked:after:opacity-100"
                         />
-                        <label htmlFor="consent" className="text-xs font-inter text-silver/60 cursor-pointer hover:text-silver transition-colors leading-tight text-left">
+                        <label htmlFor="consent" className="text-xs font-inter text-silver cursor-pointer hover:text-silver transition-colors leading-tight text-left">
                             {t('contact.consent_text')} <a href="/legals" className="underline hover:text-darkroom-red text-silver">{t('contact.consent_link')}</a>.
                         </label>
                     </div>
@@ -475,7 +475,7 @@ const Contact = () => {
 
                     {/* Back to Gallery Link - "Cerise sur le gâteau" */}
                     <div className="text-center mt-12">
-                        <a href="/" className="text-xs font-space-mono text-silver/40 hover:text-off-white transition-colors uppercase tracking-widest">
+                        <a href="/" className="text-xs font-space-mono text-silver hover:text-off-white transition-colors uppercase tracking-widest">
                             {t('contact.back_gallery')}
                         </a>
                     </div>
