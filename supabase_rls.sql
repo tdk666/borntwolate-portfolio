@@ -1,7 +1,8 @@
 -- ==============================================================================
 -- 1. NETTOYAGE RADICAL (On repart d'une base saine)
 -- ==============================================================================
-DROP TABLE IF EXISTS public.art_stocks CASCADE;
+-- SAFETY: Commented out to prevent accidental deletion in Production
+-- DROP TABLE IF EXISTS public.art_stocks CASCADE;
 
 -- ==============================================================================
 -- 2. CRÉATION DE LA TABLE (Structure optimisée)

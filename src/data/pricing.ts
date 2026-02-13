@@ -126,7 +126,7 @@ export const fetchExternalPrices = async (): Promise<void> => {
             const overrides: PricingOverride[] = rows.map((r) => ({
                 rangeId: r[0]?.toLowerCase().trim() || '',
                 formatId: r[1]?.trim() || '',
-                price: Number(r[2]?.replace(/[€$ ]/g, '')),
+                price: Number(r[2]?.replace(/[€$ ]/g, '').replace(',', '.')),
                 stripeUrl: r[3]?.trim()
             })).filter((o): o is PricingOverride & { stripeUrl: string } => {
                 return !!(o.rangeId && o.formatId && !isNaN(o.price) && o.stripeUrl);
