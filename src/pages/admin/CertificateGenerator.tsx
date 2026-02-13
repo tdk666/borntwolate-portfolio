@@ -5,7 +5,7 @@ import { stockService } from '../../services/stock';
 import toast, { Toaster } from 'react-hot-toast';
 import { photos, seriesData } from '../../data/photos';
 import { PRICING_CATALOG } from '../../data/pricing';
-// import { verifyAdminCode } from '../../utils/auth'; // Deprecated for Serverless
+
 
 
 const CertificateGenerator = () => {
