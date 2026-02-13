@@ -38,7 +38,7 @@ export const handler: Handler = async (event) => {
         const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
         // Using flash model for speed and efficiency
         const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
+            model: "gemini-2.0-flash",
             systemInstruction: systemInstruction
         });
 
