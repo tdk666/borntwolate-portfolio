@@ -229,6 +229,7 @@ export const sendMessageToGemini = async (msg: string, history: any[], lang: str
       try {
         const errData = await response.json();
         if (errData.error) errorMsg = errData.error;
+        if (errData.details) errorMsg += ` | Details: ${errData.details}`;
       } catch (e) {
         // ignore json parse error
       }

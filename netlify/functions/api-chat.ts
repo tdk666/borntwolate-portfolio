@@ -57,9 +57,15 @@ export const handler: Handler = async (event) => {
 
     } catch (error: any) {
         console.error('Gemini API Error:', error);
+        // Safe logging of key presence
+        console.log('DEBUG: API Key present?', !!GEMINI_API_KEY);
+
         return {
             statusCode: 500,
-            body: JSON.stringify({ error: 'Failed to process chat request', details: error.message }),
+            body: JSON.stringify({
+                error: 'Failed to process chat request',
+                details: error.message || error.toString()
+            }),
         };
     }
 };
