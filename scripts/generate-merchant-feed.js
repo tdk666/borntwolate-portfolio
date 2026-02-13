@@ -162,7 +162,7 @@ ${products.map(product => {
         <g:price>35.00 EUR</g:price>
     </g:shipping>
 </item>
-`).join('\n')}
+`}).join('\n')}
 </channel>
 </rss>`;
 
