@@ -82,7 +82,12 @@ export const handler: Handler = async (event) => {
                     status: session.payment_status, // usually 'paid'
                     shipping_address: formattedAddress,
                     created_at: new Date().toISOString(),
-                    metadata: session.metadata // Custom metadata (e.g. photo_id, artwork_title) passed from checkout
+                    // Merge Stripe Metadata with essential top-level info like client_reference_id (The Slug)
+                    metadata: {
+                        ...session.metadata,
+                        client_reference_id: session.client_reference_id,
+                        payment_intent: session.payment_intent
+                    }
                 });
 
             if (error) {

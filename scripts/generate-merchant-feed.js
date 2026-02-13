@@ -7,82 +7,164 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const BASE_URL = 'https://borntwolate.com';
-const PRICE_EUR = '45.00 EUR';
 
-// Parsing Logic (Copied/Adapted from sitemap generator)
+// ------------------------------------------------------------------
+// 1. DEFINITION DU CATALOGUE (Hardcoded pour éviter de parser pricing.ts)
+// ------------------------------------------------------------------
+const PRICING_CATALOG = {
+    collection: {
+        id: 'collection',
+        label: "La Collection",
+        description: "Tirage Fine Art sur papier Canson Infinity Platine Fibre Rag 310g. Marge blanche incluse.",
+        shipping_category: 'print', // Lightweight
+        variants: [
+            { id: '20x30', label: '20x30 cm', price: '45.00' },
+            { id: '30x45', label: '30x45 cm', price: '80.00' },
+            { id: '40x60', label: '40x60 cm', price: '135.00' },
+            { id: '60x90', label: '60x90 cm', price: '270.00' },
+            { id: '70x105', label: '70x105 cm', price: '370.00' }
+        ]
+    },
+    elegance: {
+        id: 'elegance',
+        label: "L'Élégance (Cadre)",
+        description: "Tirage encadré Nielsen Alpha Noir avec Passe-Partout blanc musée.",
+        shipping_category: 'frame', // Heavy
+        variants: [
+            { id: '30x40', label: 'Cadre 30x40 cm', price: '290.00' },
+            { id: '40x60', label: 'Cadre 40x60 cm', price: '495.00' },
+            { id: '60x80', label: 'Cadre 60x80 cm', price: '890.00' }
+        ]
+    },
+    exception: {
+        id: 'exception',
+        label: "Exception (Caisse)",
+        description: "Tirage contrecollé sur Alu dans une Caisse Américaine en bois noir. Finition Galerie.",
+        shipping_category: 'frame', // Heavy
+        variants: [
+            { id: '24x36', label: 'Caisse 24x36 cm', price: '290.00' },
+            { id: '40x60', label: 'Caisse 40x60 cm', price: '490.00' },
+            { id: '50x75', label: 'Caisse 50x75 cm', price: '690.00' }
+        ]
+    }
+};
+
+// ------------------------------------------------------------------
+// 2. LOGIQUE D'EXPÉDITION
+// ------------------------------------------------------------------
+function getShippingRules(category) {
+    const rules = [];
+
+    // FRANCE (Toujours offert)
+    rules.push(`
+    <g:shipping>
+        <g:country>FR</g:country>
+        <g:service>Standard</g:service>
+        <g:price>0.00 EUR</g:price>
+    </g:shipping>`);
+
+    // EUROPE (Zone 1)
+    const europePrice = category === 'frame' ? '50.00' : '20.00';
+    ['DE', 'BE', 'IT', 'ES', 'GB'].forEach(country => {
+        rules.push(`
+    <g:shipping>
+        <g:country>${country}</g:country>
+        <g:service>Standard</g:service>
+        <g:price>${europePrice} EUR</g:price>
+    </g:shipping>`);
+    });
+
+    // MONDE (Uniquement pour les TIRAGES - Trop risqué/cher pour les cadres)
+    if (category === 'print') {
+        ['US', 'CA', 'CH'].forEach(country => {
+            rules.push(`
+    <g:shipping>
+        <g:country>${country}</g:country>
+        <g:service>International</g:service>
+        <g:price>35.00 EUR</g:price>
+    </g:shipping>`);
+        });
+    }
+
+    return rules.join('');
+}
+
+
+// ------------------------------------------------------------------
+// 3. PARSING DES PHOTOS
+// ------------------------------------------------------------------
 const photosFilePath = path.join(__dirname, '../src/data/photos.ts');
 let products = [];
 
 try {
     const fileContent = fs.readFileSync(photosFilePath, 'utf-8');
 
-    // Strategy: Extract all photos with regex to capture properties
-    // We need: id, seriesId context, title, caption, url
-
-    // First, split by series to get seriesId context
+    // Regex pour extraire les blocs "photos: [...]" et le contexte de la série
     const seriesBlocks = fileContent.split(/id:\s*'([a-z0-9-]+)',/g);
 
     for (let i = 1; i < seriesBlocks.length; i += 2) {
         const seriesId = seriesBlocks[i];
         const content = seriesBlocks[i + 1];
 
-        // Regex for photos within the series block
-        // Looking for: id: 9105 ... url: ... title: ... caption_artistic: { fr: "..." }
-        // We iterate through the content looking for photo objects
-
-        // Simplification: We will just extract individual properties via global regex on the chunk
-        // This assumes properties are somewhat close or we can parse objects.
-        // Parsing JS object literals with regex is hard.
-
-        // Better approach for Feed: We need correct descriptions.
-        // Let's match the whole photo block if possible. 
-        // Photo block starts with `{` and ends with `}` inside `photos: [...]`
-
-        // Fallback: Let's use a capture group that grabs the content between `{` and `}` that looks like a photo
-        const photoRegex = /{\s*id:\s*(\d+).*?url:\s*'([^']+)'.*?title:\s*(?:'([^']+)'|"([^"]+)")/gs;
-        // Note: caption is harder because it's further down and multiline. 
-        // We might have to fetch it separately or extend the regex.
-
-        // Let's use a simpler regex to identify photos and then extract details from the match
-        // Updated Regex to capture 'slug' property as well.
-        // Needs to match: slug: 'my-slug'
+        // Regex pour extraire chaque photo
         const detailedPhotoRegex = /{\s*id:\s*(\d+),.*?slug:\s*'([^']+)'.*?url:\s*'([^']+)'.*?title:\s*(?:'([^']+)'|"([^"]+)").*?caption_artistic:\s*{\s*fr:\s*(?:"([^"]*)"|`([^`]*)`)/gs;
 
         let match;
         while ((match = detailedPhotoRegex.exec(content)) !== null) {
-            // match[1] = id
-            // match[2] = slug
-            // match[3] = url
-            // match[4] or [5] = title
-            // match[6] or [7] = caption (fr)
-
             const photoId = match[1];
             const slug = match[2];
             const url = match[3];
             const title = match[4] || match[5];
             const caption = match[6] || match[7] || "";
 
-            products.push({
-                id: photoId,
-                slug: slug,
-                seriesId: seriesId,
-                url: url,
-                title: title,
-                description: caption
-                    .replace(/\\/g, '') // Retire les backslashes parasites
-                    .replace(/\s+/g, ' ') // Normalise les espaces
-                    .replace(/['"]+/g, '') // Retire les quotes qui cassent le XML
-                    .trim()
-                    .slice(0, 4997) + '...' // Coupe proprement
+            const cleanDescription = caption
+                .replace(/\\/g, '')
+                .replace(/\s+/g, ' ')
+                .replace(/['"]+/g, '')
+                .trim();
+
+            // ------------------------------------------------------------------
+            // 4. GÉNÉRATION DES VARIANTES
+            // ------------------------------------------------------------------
+
+            // Pour chaque Gamme (Collection, Elegance, Exception)
+            Object.values(PRICING_CATALOG).forEach(range => {
+
+                // Pour chaque Format dans la Gamme
+                range.variants.forEach(variant => {
+                    const variantId = `${photoId}-${range.id}-${variant.id}`; // Unique ID
+                    const variantTitle = `${title} - ${range.label} - ${variant.label}`;
+                    const variantDescription = `${range.description} - ${cleanDescription}`.slice(0, 5000);
+
+                    // URL vers la page produit (avec pré-sélection si possible via query params, sinon page photo standard)
+                    // Note: Le site actuel ne gère pas les query params pour la sélection, mais l'URL canonique reste la page photo.
+                    const link = `${BASE_URL}/series/${seriesId}/${slug}`;
+                    const imageLink = `${BASE_URL}${url}`;
+
+                    products.push({
+                        gId: variantId,
+                        gItemGroupId: photoId, // Grouper les variantes
+                        title: variantTitle,
+                        description: variantDescription,
+                        link: link,
+                        imageLink: imageLink,
+                        price: `${variant.price} EUR`,
+                        shipping: getShippingRules(range.shipping_category),
+                        customLabel0: seriesId,
+                        customLabel1: range.id
+                    });
+                });
             });
         }
     }
 
 } catch (error) {
-    console.error('❌ Error parsing photos.ts for merchant feed:', error);
+    console.error('❌ Error parsing photos.ts:', error);
 }
 
-// Generate XML (RSS 2.0 / Atom)
+// ------------------------------------------------------------------
+// 5. GÉNÉRATION XML
+// ------------------------------------------------------------------
 const xml = `<?xml version="1.0"?>
 <rss xmlns:g="http://base.google.com/ns/1.0" version="2.0">
 <channel>
@@ -90,97 +172,43 @@ const xml = `<?xml version="1.0"?>
 <link>${BASE_URL}</link>
 <description>Limited Edition Analog Photography Prints</description>
 
-${products.map(product => {
-    // Safety Check: Validate Price
-    const priceString = PRICE_EUR;
-    const priceValue = parseFloat(priceString.replace(/[^0-9.]/g, ''));
-
-    if (isNaN(priceValue)) {
-        console.warn(`⚠️ Skipping product ${product.id} due to invalid price.`);
-        return '';
-    }
-
-    return `
+${products.map(p => `
 <item>
-    <g:id>${product.id}</g:id>
-    <g:title>${product.title.replace(/&/g, '&amp;')}</g:title>
-    <g:description>${product.description.replace(/&/g, '&amp;').slice(0, 5000)}</g:description>
-    <g:link>${BASE_URL}/series/${product.seriesId}/${product.slug}</g:link>
-    <g:image_link>${BASE_URL}${product.url}</g:image_link>
+    <g:id>${p.gId}</g:id>
+    <g:item_group_id>${p.gItemGroupId}</g:item_group_id>
+    <g:title>${p.title.replace(/&/g, '&amp;')}</g:title>
+    <g:description>${p.description.replace(/&/g, '&amp;')}</g:description>
+    <g:link>${p.link}</g:link>
+    <g:image_link>${p.imageLink}</g:image_link>
     <g:brand>BornTwoLate</g:brand>
     <g:condition>new</g:condition>
     <g:availability>in_stock</g:availability>
-    <g:price>${priceString}</g:price>
+    <g:price>${p.price}</g:price>
     <g:google_product_category>821</g:google_product_category>
-    <g:shipping_weight>0.5 kg</g:shipping_weight>
-    <g:custom_label_0>${product.seriesId}</g:custom_label_0>
-    
-    <!-- Shipping Rules -->
-    <g:shipping>
-        <g:country>FR</g:country>
-        <g:service>Standard</g:service>
-        <g:price>0.00 EUR</g:price>
-    </g:shipping>
-    <g:shipping>
-        <g:country>DE</g:country>
-        <g:service>Standard</g:service>
-        <g:price>20.00 EUR</g:price>
-    </g:shipping>
-    <g:shipping>
-        <g:country>BE</g:country>
-        <g:service>Standard</g:service>
-        <g:price>20.00 EUR</g:price>
-    </g:shipping>
-    <g:shipping>
-        <g:country>IT</g:country>
-        <g:service>Standard</g:service>
-        <g:price>20.00 EUR</g:price>
-    </g:shipping>
-    <g:shipping>
-        <g:country>ES</g:country>
-        <g:service>Standard</g:service>
-        <g:price>20.00 EUR</g:price>
-    </g:shipping>
-    <g:shipping>
-        <g:country>GB</g:country>
-        <g:service>Standard</g:service>
-        <g:price>20.00 EUR</g:price>
-    </g:shipping>
-    <g:shipping>
-        <g:country>US</g:country>
-        <g:service>International</g:service>
-        <g:price>35.00 EUR</g:price>
-    </g:shipping>
-    <g:shipping>
-        <g:country>CA</g:country>
-        <g:service>International</g:service>
-        <g:price>35.00 EUR</g:price>
-    </g:shipping>
-    <g:shipping>
-        <g:country>CH</g:country>
-        <g:service>International</g:service>
-        <g:price>35.00 EUR</g:price>
-    </g:shipping>
+    <g:custom_label_0>${p.customLabel0}</g:custom_label_0>
+    <g:custom_label_1>${p.customLabel1}</g:custom_label_1>
+    ${p.shipping}
 </item>
-`}).join('\n')}
+`).join('')}
 </channel>
 </rss>`;
 
-// Write to public/products.xml
+// ------------------------------------------------------------------
+// 6. ÉCRITURE DU FICHIER
+// ------------------------------------------------------------------
 try {
     const publicPath = path.join(__dirname, '../public/products.xml');
     fs.writeFileSync(publicPath, xml);
-    console.log(`✅ Merchant Feed generated at ${publicPath} `);
+    console.log(`✅ Merchant Feed generated at ${publicPath}`);
 
-    // ALSO Write to dist/products.xml if it exists (for post-build execution)
     const distDir = path.join(__dirname, '../dist');
     if (fs.existsSync(distDir)) {
         const distPath = path.join(distDir, 'products.xml');
         fs.writeFileSync(distPath, xml);
-        console.log(`✅ Merchant Feed ALSO generated at ${distPath} `);
+        console.log(`✅ Merchant Feed ALSO generated at ${distPath}`);
     }
 
-    console.log(`🛍️  Products: ${products.length} `);
+    console.log(`🛍️  Total Products Generated: ${products.length}`);
 } catch (error) {
-    console.error('❌ Error writing products.xml:', error);
+    console.error('❌ Error writing XML:', error);
 }

@@ -3,6 +3,8 @@ import { ShieldCheck, Printer, AlertCircle, Lock, CloudDownload } from 'lucide-r
 import { SEO } from '../../components/SEO';
 import { stockService } from '../../services/stock';
 import toast, { Toaster } from 'react-hot-toast';
+import { supabase } from '../../services/supabase';
+
 import { photos, seriesData } from '../../data/photos';
 import { PRICING_CATALOG } from '../../data/pricing';
 
@@ -11,7 +13,6 @@ import { PRICING_CATALOG } from '../../data/pricing';
 const CertificateGenerator = () => {
     // --- ÉTATS ---
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [adminToken, setAdminToken] = useState("");
     const [passwordInput, setPasswordInput] = useState("");
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -48,7 +49,7 @@ const CertificateGenerator = () => {
             const data = await response.json();
 
             if (response.ok && data.success) {
-                setAdminToken(data.token);
+                // Token is returned but not used in front-end as we rely on Supabase Service Role for critical ops or IP restrictions
                 setIsAuthenticated(true);
             } else {
                 setError(true);
@@ -139,89 +140,72 @@ const CertificateGenerator = () => {
 
 
     const handleFetchOrder = async () => {
-        if (!orderId) return; // Removed client-side key checks
+        if (!orderId) return;
         setIsFetchingOrder(true);
 
         try {
-            // Fetch "Suivi commandes" via Netlify Proxy
-            const response = await fetch('/.netlify/functions/admin-sheets-proxy', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-admin-secret': adminToken
-                },
-                body: JSON.stringify({ orderId }) // Sending orderId though currently the proxy fetches all and lets frontend filter.
-            });
+            // REFACTOR: Query Supabase 'orders' table directly instead of Google Sheets Proxy
+            const { data, error } = await supabase
+                .from('orders')
+                .select('*')
+                .ilike('stripe_session_id', `%${orderId}%`)
+                .single();
 
-            if (!response.ok) {
-                throw new Error(`Proxy Error: ${response.statusText}`);
-            }
+            if (error) throw error;
 
-            const json = await response.json();
-
-            if (!json.values || json.values.length < 2) {
-                toast.error("Format feuille invalide ou vide.");
-                return;
-            }
-
-            const headers = json.values[0].map((h: string) => h.toLowerCase().trim());
-            const rows = json.values.slice(1);
-
-            // Identify Columns (Loose matching)
-            const idxId = headers.findIndex((h: string) => h.includes("commande") || h.includes("order"));
-            // const idxName = headers.findIndex((h: string) => h.includes("client") || h.includes("nom"));
-            const idxTitle = headers.findIndex((h: string) => h.includes("produit") || h.includes("titre") || h.includes("oeuvre"));
-            const idxDate = headers.findIndex((h: string) => h.includes("date"));
-
-            if (idxId === -1) {
-                toast.error("Colonne 'Commande' introuvable.");
-                return;
-            }
-
-            // Find Row
-            const row = rows.find((r: string[]) => r[idxId]?.toString().trim() === orderId.trim());
-
-            if (row) {
-                const title = idxTitle > -1 ? row[idxTitle] : "";
-                const date = idxDate > -1 ? row[idxDate] : new Date().toLocaleDateString('fr-FR');
-                // const client = idxName > -1 ? row[idxName] : ""; // Retrieved but currently only used for toast/verification
-
-                // Update Data
-                setData(prev => ({
-                    ...prev,
-                    title: title || prev.title,
-                    date: date || prev.date
-                }));
-
-                // Try to auto-select photo in dropdown if title matches
-                if (title) {
-                    const match = photos.find(p => p.title.toLowerCase() === title.toLowerCase());
-                    if (match) {
-                        // Trigger stock fetch logic conceptually similar to handlePhotoSelect mechanism
-                        // We simulate the select event or just call logic directly
-                        setSelectedPhotoId(match.id);
-
-                        // Update extra metadata
-                        const slug = match.slug;
-                        const { remaining, total } = await stockService.getStock(slug);
-                        setData(prev => ({
-                            ...prev,
-                            title: match.title,
-                            series: getSeriesTitle(match.seriesId),
-                            number: String(total - remaining + 1).padStart(2, '0'),
-                            total: String(total)
-                        }));
-                    }
-                }
-
-                toast.success(`Commande #${orderId} trouvée !`);
-            } else {
+            if (!data) {
                 toast.error("Commande introuvable.");
+                return;
             }
+
+            // Map Supabase metadata to state
+            // Map Supabase metadata to state
+            // Priority: metadata.product_label -> metadata.artwork_title -> Infer from Slug
+            let title = data.metadata?.product_label || data.metadata?.artwork_title || "";
+            // Date from created_at
+            const date = new Date(data.created_at).toLocaleDateString('fr-FR');
+
+            // Try to resolve stock info from metadata.client_reference_id (slug)
+            // fallback to product_id for backward compatibility
+            const slug = data.metadata?.client_reference_id || data.metadata?.product_id;
+
+            if (slug) {
+                // Try to find matching Photo from Slug
+                const match = photos.find(p => p.slug === slug);
+
+                if (match) {
+                    // If title was missing in metadata, use the one from our DB
+                    if (!title) {
+                        title = match.title;
+                    }
+
+                    setSelectedPhotoId(match.id);
+
+                    // Fetch Stock Status
+                    const { remaining, total } = await stockService.getStock(slug);
+
+                    setData(prev => ({
+                        ...prev,
+                        title: title, // Ensure exact title
+                        series: getSeriesTitle(match.seriesId),
+                        number: String(total - remaining).padStart(2, '0'), // Sold Count is total - remaining. If remaining is 29/30, sold is 1. Edition is 1.
+                        total: String(total)
+                    }));
+                }
+            }
+
+            // Update Basic Data (if we didn't enter the if(match) block, or to set date)
+            setData(prev => ({
+                ...prev,
+                title: title || prev.title,
+                date: date || prev.date
+            }));
+
+            toast.success(`Commande trouvée :\n${title}`);
 
         } catch (err) {
-            console.error(err);
-            toast.error("Erreur API Sheets");
+            console.error("Supabase Error:", err);
+            toast.error("Erreur lors de la récupération (Supabase)");
         } finally {
             setIsFetchingOrder(false);
         }
@@ -352,7 +336,7 @@ const CertificateGenerator = () => {
                     <div className="grid gap-4">
                         {/* ORDER ID FETCH */}
                         <div className="bg-white/5 p-4 rounded border border-white/10 mb-2">
-                            <label className="block text-[10px] uppercase tracking-widest text-silver mb-2">Import Commande (Google Sheets)</label>
+                            <label className="block text-[10px] uppercase tracking-widest text-silver mb-2">Import Commande (Supabase)</label>
                             <div className="flex gap-2">
                                 <input
                                     type="text"

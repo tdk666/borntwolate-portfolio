@@ -105,6 +105,43 @@ INSERT INTO public.art_stocks (slug, title, series, release_date, sold_count) VA
 ('l-emeraude', 'L''Émeraude', 'Polish Hike', '2025-08-01', 0);
 
 -- ==============================================================================
+-- 4b. TABLE DES COMMANDES (Pour le Générateur de Certificats et Webhook)
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS public.orders (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  created_at timestamptz DEFAULT now(),
+  stripe_session_id text UNIQUE NOT NULL,
+  customer_email text,
+  amount_total integer,
+  currency text default 'eur',
+  status text,
+  metadata jsonb
+);
+
+-- RLS: Orders
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+
+-- ADMIN ONLY: Lecture seule pour l'admin authentifié
+CREATE POLICY "Admin Read Orders"
+ON public.orders FOR SELECT
+TO authenticated
+USING (true);
+
+-- SERVICE ROLE ONLY: Insertion par le Webhook (Stripe)
+CREATE POLICY "Service Role Insert Orders"
+ON public.orders FOR INSERT
+TO service_role
+WITH CHECK (true);
+
+-- SERVICE ROLE ONLY: Update par le Webhook (si besoin)
+CREATE POLICY "Service Role Update Orders"
+ON public.orders FOR UPDATE
+TO service_role
+USING (true)
+WITH CHECK (true);
+
+
+-- ==============================================================================
 -- 5. FONCTION DE STOCK (Critique pour Stripe)
 -- ==============================================================================
 CREATE OR REPLACE FUNCTION public.increment_stock(stock_slug text)

@@ -35,25 +35,11 @@ const PhotographeArgentique = () => {
                 }))
             },
             {
-                "@type": "Product",
-                "name": "Tirage d'Art Argentique Borntwolate",
-                "brand": { "@type": "Brand", "name": "Borntwolate" },
-                "description": "Tirage d'art issu de négatif argentique sur papier Canson Infinity Platine Fibre Rag. Édition limitée.",
-                "image": "https://borntwolate.com/images/puglia/vespa.jpg",
-                "material": "Canson Infinity Platine Fibre Rag 310g",
-                "offers": {
-                    "@type": "Offer",
-                    "availability": "https://schema.org/InStock",
-                    "price": "45.00",
-                    "priceCurrency": "EUR"
-                }
-            },
-            {
                 "@type": "ProfessionalService",
                 "name": "BornTwoLate",
                 "image": "https://borntwolate.com/images/portrait.jpg",
                 "url": "https://borntwolate.com",
-                "priceRange": "€€",
+                "priceRange": "45€ - 450€",
                 "address": {
                     "@type": "PostalAddress",
                     "addressLocality": "Paris",

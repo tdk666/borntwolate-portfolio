@@ -6,6 +6,7 @@ import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
 import AcquisitionModal from './AcquisitionModal';
 import { stockService } from '../services/stock';
+import { trackEvent } from '../components/GoogleAnalytics';
 
 interface LightboxProps {
     photo: Photo;
@@ -346,7 +347,10 @@ const Lightbox = ({ photo, onClose, onNext, onPrev, showContextualLink = true }:
                                         <button
                                             onClick={(e) => {
                                                 e.stopPropagation();
-                                                if (!isSoldOut) setIsAcquisitionOpen(true);
+                                                if (!isSoldOut) {
+                                                    setIsAcquisitionOpen(true);
+                                                    trackEvent('begin_checkout', 'Ecommerce', `${photo.title} - ${currentSeries?.title || 'Série'}`, 45);
+                                                }
                                             }}
                                             disabled={isSoldOut}
                                             className={`bg-white text-black px-8 py-3 rounded-full font-medium transition-colors uppercase tracking-widest text-xs ${isSoldOut
