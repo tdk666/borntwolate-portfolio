@@ -9,8 +9,9 @@ const __dirname = path.dirname(__filename);
 const BASE_URL = 'https://borntwolate.com';
 
 // ------------------------------------------------------------------
-// 1. DEFINITION DU CATALOGUE (Hardcoded pour éviter de parser pricing.ts)
+// 1. DEFINITION DU CATALOGUE (Hardcoded pour stabilité Build Script)
 // ------------------------------------------------------------------
+// Copie conforme de src/data/pricing.ts
 const PRICING_CATALOG = {
     collection: {
         id: 'collection',
@@ -89,7 +90,6 @@ function getShippingRules(category) {
     return rules.join('');
 }
 
-
 // ------------------------------------------------------------------
 // 3. PARSING DES PHOTOS
 // ------------------------------------------------------------------
@@ -99,14 +99,14 @@ let products = [];
 try {
     const fileContent = fs.readFileSync(photosFilePath, 'utf-8');
 
-    // Regex pour extraire les blocs "photos: [...]" et le contexte de la série
+    // Split par séries pour garder le contexte
     const seriesBlocks = fileContent.split(/id:\s*'([a-z0-9-]+)',/g);
 
     for (let i = 1; i < seriesBlocks.length; i += 2) {
         const seriesId = seriesBlocks[i];
         const content = seriesBlocks[i + 1];
 
-        // Regex pour extraire chaque photo
+        // Regex robuste pour capturer les objets photo
         const detailedPhotoRegex = /{\s*id:\s*(\d+),.*?slug:\s*'([^']+)'.*?url:\s*'([^']+)'.*?title:\s*(?:'([^']+)'|"([^"]+)").*?caption_artistic:\s*{\s*fr:\s*(?:"([^"]*)"|`([^`]*)`)/gs;
 
         let match;
@@ -115,16 +115,16 @@ try {
             const slug = match[2];
             const url = match[3];
             const title = match[4] || match[5];
-            const caption = match[6] || match[7] || "";
+            const rawCaption = match[6] || match[7] || "";
 
-            const cleanDescription = caption
+            const caption = rawCaption
                 .replace(/\\/g, '')
                 .replace(/\s+/g, ' ')
                 .replace(/['"]+/g, '')
                 .trim();
 
             // ------------------------------------------------------------------
-            // 4. GÉNÉRATION DES VARIANTES
+            // 4. BOUCLE PRINCIPALE DES VARIANTES
             // ------------------------------------------------------------------
 
             // Pour chaque Gamme (Collection, Elegance, Exception)
@@ -132,26 +132,33 @@ try {
 
                 // Pour chaque Format dans la Gamme
                 range.variants.forEach(variant => {
-                    const variantId = `${photoId}-${range.id}-${variant.id}`; // Unique ID
-                    const variantTitle = `${title} - ${range.label} - ${variant.label}`;
-                    const variantDescription = `${range.description} - ${cleanDescription}`.slice(0, 5000);
 
-                    // URL vers la page produit (avec pré-sélection si possible via query params, sinon page photo standard)
-                    // Note: Le site actuel ne gère pas les query params pour la sélection, mais l'URL canonique reste la page photo.
+                    // ID Unique: slug-range-variant (ex: crete-verte-collection-20x30)
+                    const gId = `${slug}-${range.id}-${variant.id}`;
+
+                    // Titre SEO Friendly
+                    const variantTitle = `Tirage Argentique ${title} - ${variant.label} - ${range.label}`;
+
+                    // Description Concaténée
+                    const variantDescription = `${range.description} ${caption}`.slice(0, 5000);
+
+                    // URL Canonique (Page Photo)
                     const link = `${BASE_URL}/series/${seriesId}/${slug}`;
                     const imageLink = `${BASE_URL}${url}`;
 
                     products.push({
-                        gId: variantId,
-                        gItemGroupId: photoId, // Grouper les variantes
+                        gId: gId,
+                        gItemGroupId: slug, // CRUCIAL: Group by Photo Slug
                         title: variantTitle,
                         description: variantDescription,
                         link: link,
                         imageLink: imageLink,
                         price: `${variant.price} EUR`,
                         shipping: getShippingRules(range.shipping_category),
-                        customLabel0: seriesId,
-                        customLabel1: range.id
+                        customLabel0: seriesId, // Campaign filtering
+                        customLabel1: range.id,  // Range filtering
+                        availability: 'in_stock', // SHARED STOCK LOGIC: Assume in stock
+                        quantity: 30 // SHARED STOCK LOGIC: Default max
                     });
                 });
             });
@@ -160,6 +167,7 @@ try {
 
 } catch (error) {
     console.error('❌ Error parsing photos.ts:', error);
+    process.exit(1);
 }
 
 // ------------------------------------------------------------------
@@ -182,9 +190,10 @@ ${products.map(p => `
     <g:image_link>${p.imageLink}</g:image_link>
     <g:brand>BornTwoLate</g:brand>
     <g:condition>new</g:condition>
-    <g:availability>in_stock</g:availability>
+    <g:availability>${p.availability}</g:availability>
+    <g:quantity>${p.quantity}</g:quantity>
     <g:price>${p.price}</g:price>
-    <g:google_product_category>821</g:google_product_category>
+    <g:google_product_category>2155</g:google_product_category>
     <g:custom_label_0>${p.customLabel0}</g:custom_label_0>
     <g:custom_label_1>${p.customLabel1}</g:custom_label_1>
     ${p.shipping}
@@ -208,7 +217,8 @@ try {
         console.log(`✅ Merchant Feed ALSO generated at ${distPath}`);
     }
 
-    console.log(`🛍️  Total Products Generated: ${products.length}`);
+    console.log(`🛍️  Total Products Generated: ${products.length} (Groups: ${products.length / 11})`);
 } catch (error) {
     console.error('❌ Error writing XML:', error);
+    process.exit(1);
 }
