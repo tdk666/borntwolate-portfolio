@@ -164,7 +164,6 @@ ${products.map(product => {
 </item>
 `).join('\n')}
 
-
 </channel>
 </rss>`;
 
