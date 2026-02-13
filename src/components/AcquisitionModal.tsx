@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { X, ShieldCheck, ArrowRight, Eye, Globe, Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { sendEmail } from '../services/email';
+import { trackEvent } from './GoogleAnalytics';
 import { PRICING_CATALOG } from '../data/pricing';
 import { FadeIn } from './animations/FadeIn';
 import WallPreview from './WallPreview';
@@ -284,6 +285,14 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, photoSlu
 
                   setIsLoading(true);
                   try {
+                    // 0. Track Event in GA4
+                    trackEvent(
+                      'begin_checkout',
+                      'Ecommerce',
+                      `Artwork: ${photoTitle} - ${currentVariant.label} (${activeTab})`,
+                      currentVariant.price
+                    );
+
                     // 1. Send Email Notification (Chameleon Strategy)
                     await sendEmail({
                       contact_type: "COMMANDE",

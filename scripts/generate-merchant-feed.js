@@ -90,7 +90,17 @@ const xml = `<?xml version="1.0"?>
 <link>${BASE_URL}</link>
 <description>Limited Edition Analog Photography Prints</description>
 
-${products.map(product => `
+${products.map(product => {
+    // Safety Check: Validate Price
+    const priceString = PRICE_EUR;
+    const priceValue = parseFloat(priceString.replace(/[^0-9.]/g, ''));
+
+    if (isNaN(priceValue)) {
+        console.warn(`⚠️ Skipping product ${product.id} due to invalid price.`);
+        return '';
+    }
+
+    return `
 <item>
     <g:id>${product.id}</g:id>
     <g:title>${product.title.replace(/&/g, '&amp;')}</g:title>
@@ -100,7 +110,7 @@ ${products.map(product => `
     <g:brand>BornTwoLate</g:brand>
     <g:condition>new</g:condition>
     <g:availability>in_stock</g:availability>
-    <g:price>${PRICE_EUR}</g:price>
+    <g:price>${priceString}</g:price>
     <g:google_product_category>821</g:google_product_category>
     <g:shipping_weight>0.5 kg</g:shipping_weight>
     <g:custom_label_0>${product.seriesId}</g:custom_label_0>
@@ -153,6 +163,7 @@ ${products.map(product => `
     </g:shipping>
 </item>
 `).join('\n')}
+
 
 </channel>
 </rss>`;

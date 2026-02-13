@@ -55,10 +55,26 @@ export const GoogleAnalytics = () => {
         window.addEventListener('cookie-consent-updated', handleStorageChange);
 
         return () => {
-            window.removeEventListener('storage', handleStorageChange);
-            window.removeEventListener('cookie-consent-updated', handleStorageChange);
         };
     }, [location]);
 
     return null;
+};
+
+// Exported helper for manual event tracking
+export const trackEvent = (
+    action: string,
+    category: string,
+    label: string,
+    value?: number
+) => {
+    if (typeof window.gtag !== "undefined") {
+        window.gtag("event", action, {
+            event_category: category,
+            event_label: label,
+            value: value,
+        });
+    } else {
+        console.warn("Google Analytics (gtag) not loaded. Event not tracked:", { action, category, label, value });
+    }
 };

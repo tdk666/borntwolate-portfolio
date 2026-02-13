@@ -47,6 +47,18 @@ const PhotographeArgentique = () => {
                     "price": "45.00",
                     "priceCurrency": "EUR"
                 }
+            },
+            {
+                "@type": "ProfessionalService",
+                "name": "BornTwoLate",
+                "image": "https://borntwolate.com/images/portrait.jpg",
+                "url": "https://borntwolate.com",
+                "priceRange": "€€",
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressLocality": "Paris",
+                    "addressCountry": "FR"
+                }
             }
         ]
     };
