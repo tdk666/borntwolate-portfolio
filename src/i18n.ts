@@ -190,7 +190,8 @@ i18n
                         err_api_missing: "Configuration manquante : Clé API (VITE_GEMINI_API_KEY) introuvable dans le laboratoire.",
                         err_quota: "Le Labo est surchargé (Quota dépassé). Veuillez attendre quelques instants avant de reposer votre question.",
                         order_success: "✅ Commande transmise avec succès à l'atelier. Vous allez recevoir un email de confirmation.",
-                        order_error: "⚠️ Erreur technique : La commande a été notée par l'IA mais l'email de confirmation n'a pas pu partir. Veuillez nous contacter via la page Contact."
+                        order_error: "⚠️ Erreur technique : La commande a été notée par l'IA mais l'email de confirmation n'a pas pu partir. Veuillez nous contacter via la page Contact.",
+                        err_generic_human: "Je rencontre un petit souci technique passager. Mon cerveau est en surchauffe ! 🤯 Essayez de recharger la page ou réessayez dans quelques minutes."
                     },
                     pricing: {
                         collection: {
@@ -455,7 +456,8 @@ i18n
                         err_api_missing: "Missing configuration: API Key (VITE_GEMINI_API_KEY) not found in the lab.",
                         err_quota: "The Lab is overloaded (Quota exceeded). Please wait a few moments before asking your question again.",
                         order_success: "✅ Order successfully sent to the workshop. You will receive a confirmation email.",
-                        order_error: "⚠️ Technical error: The order was noted by the AI but the confirmation email could not be sent. Please contact us via the Contact page."
+                        order_error: "⚠️ Technical error: The order was noted by the AI but the confirmation email could not be sent. Please contact us via the Contact page.",
+                        err_generic_human: "I'm having a temporary technical glitch. My brain is overheating! 🤯 Please try refreshing the page or try again in a few minutes."
                     },
                     pricing: {
                         collection: {

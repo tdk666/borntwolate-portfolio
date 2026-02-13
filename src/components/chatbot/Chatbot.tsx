@@ -145,7 +145,8 @@ export const Chatbot = () => {
                 errorMsg = t('chatbot.err_quota');
             } else if (err.message) {
                 // Temporary debugging: show the real error
-                errorMsg = `Erreur technique: ${err.message}`;
+                errorMsg = t('chatbot.err_generic_human');
+                console.error(`Erreur technique: ${err.message}`); // Keep logging for dev
             }
 
             setMessages(prev => [...prev, { sender: 'bot', text: errorMsg }]);

@@ -224,7 +224,16 @@ export const sendMessageToGemini = async (msg: string, history: any[], lang: str
       })
     });
 
-    if (!response.ok) throw new Error('Proxy chat error');
+    if (!response.ok) {
+      let errorMsg = 'Proxy chat error';
+      try {
+        const errData = await response.json();
+        if (errData.error) errorMsg = errData.error;
+      } catch (e) {
+        // ignore json parse error
+      }
+      throw new Error(errorMsg);
+    }
 
     const data = await response.json();
     return data.text;
