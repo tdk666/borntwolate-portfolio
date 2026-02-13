@@ -11,6 +11,7 @@ import { PRICING_CATALOG } from '../../data/pricing';
 const CertificateGenerator = () => {
     // --- ÉTATS ---
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [adminToken, setAdminToken] = useState("");
     const [passwordInput, setPasswordInput] = useState("");
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -47,6 +48,7 @@ const CertificateGenerator = () => {
             const data = await response.json();
 
             if (response.ok && data.success) {
+                setAdminToken(data.token);
                 setIsAuthenticated(true);
             } else {
                 setError(true);
@@ -144,7 +146,10 @@ const CertificateGenerator = () => {
             // Fetch "Suivi commandes" via Netlify Proxy
             const response = await fetch('/.netlify/functions/admin-sheets-proxy', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-admin-secret': adminToken
+                },
                 body: JSON.stringify({ orderId }) // Sending orderId though currently the proxy fetches all and lets frontend filter.
             });
 

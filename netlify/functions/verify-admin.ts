@@ -17,12 +17,8 @@ const handler: Handler = async (event) => {
         return { statusCode: 500, body: JSON.stringify({ success: false, message: "Configuration Error" }) };
     }
 
-    // LAYER 1: API Secret Header Check (Consistency with other admin functions)
-    const providedSecret = event.headers['x-admin-secret'] || event.headers['X-Admin-Secret'];
-    if (providedSecret !== adminApiSecret) {
-        console.warn("Verify Admin: Invalid x-admin-secret header");
-        return { statusCode: 401, body: JSON.stringify({ success: false, message: "Unauthorized API Access" }) };
-    }
+    // LAYER 1: API Secret Header Check REMOVED for verify-admin (bootstrap problem)
+    // We only rely on the password hash here to issue the token.
 
     try {
         const { password } = JSON.parse(event.body || "{}");
@@ -37,7 +33,7 @@ const handler: Handler = async (event) => {
         if (hash === validHash) {
             return {
                 statusCode: 200,
-                body: JSON.stringify({ success: true }),
+                body: JSON.stringify({ success: true, token: adminApiSecret }),
             };
         } else {
             // Intentionally generic error for security
