@@ -1,13 +1,15 @@
 -- ==============================================================================
--- 1. NETTOYAGE RADICAL (On repart d'une base saine)
+-- 1. INITIALISATION SÉCURISÉE (Pas de suppression destructive)
 -- ==============================================================================
--- SAFETY: Commented out to prevent accidental deletion in Production
+-- ⚠️ ATTENTION : La table actuelle n'a pas la bonne structure (pas de colonne 'slug').
+-- On la supprime pour repartir propre. C'est nécessaire ici.
+-- SAFETY: Commented out after successful migration.
 -- DROP TABLE IF EXISTS public.art_stocks CASCADE;
 
 -- ==============================================================================
--- 2. CRÉATION DE LA TABLE (Structure optimisée)
+-- 2. TABLE DES STOCKS (Structure optimisée)
 -- ==============================================================================
-CREATE TABLE public.art_stocks (
+CREATE TABLE IF NOT EXISTS public.art_stocks (
   slug text PRIMARY KEY,          -- ex: "crete-verte"
   title text NOT NULL,            -- ex: "Crête Verte"
   series text NOT NULL,           -- ex: "Polish Hike"
@@ -21,13 +23,14 @@ CREATE TABLE public.art_stocks (
 -- ==============================================================================
 ALTER TABLE public.art_stocks ENABLE ROW LEVEL SECURITY;
 
--- Lecture publique (Le site doit voir le stock)
+-- Politiques (On supprime d'abord pour éviter les erreurs "already exists")
+DROP POLICY IF EXISTS "Public Read Stocks" ON public.art_stocks;
 CREATE POLICY "Public Read Stocks"
 ON public.art_stocks FOR SELECT
 TO anon, authenticated
 USING (true);
 
--- Écriture sécurisée (Seul le serveur/Webhook peut toucher au stock)
+DROP POLICY IF EXISTS "Service Role Manage Stocks" ON public.art_stocks;
 CREATE POLICY "Service Role Manage Stocks"
 ON public.art_stocks FOR ALL
 TO service_role
@@ -35,8 +38,9 @@ USING (true)
 WITH CHECK (true);
 
 -- ==============================================================================
--- 4. INSERTION DU CATALOGUE (Chronologie & Photos Vérifiées)
+-- 4. INSERTION DU CATALOGUE (Préserve les données existantes)
 -- ==============================================================================
+-- ON CONFLICT (slug) DO NOTHING: Ne touche pas si la photo existe déjà (et garde ses ventes !)
 INSERT INTO public.art_stocks (slug, title, series, release_date, sold_count) VALUES
 
 -- 1. RUE DES MAUVAIS GARÇONS (Avril 2023)
@@ -103,7 +107,9 @@ INSERT INTO public.art_stocks (slug, title, series, release_date, sold_count) VA
 ('miroir-jumeau', 'Miroir Jumeau', 'Polish Hike', '2025-08-01', 0),
 ('la-vallee', 'La Vallée', 'Polish Hike', '2025-08-01', 0),
 ('cathedrale-verte', 'Cathédrale Verte', 'Polish Hike', '2025-08-01', 0),
-('l-emeraude', 'L''Émeraude', 'Polish Hike', '2025-08-01', 0);
+('l-emeraude', 'L''Émeraude', 'Polish Hike', '2025-08-01', 0)
+
+ON CONFLICT (slug) DO NOTHING;
 
 -- ==============================================================================
 -- 4b. TABLE DES COMMANDES (Pour le Générateur de Certificats et Webhook)
@@ -123,18 +129,21 @@ CREATE TABLE IF NOT EXISTS public.orders (
 ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
 
 -- ADMIN ONLY: Lecture seule pour l'admin authentifié
+DROP POLICY IF EXISTS "Admin Read Orders" ON public.orders;
 CREATE POLICY "Admin Read Orders"
 ON public.orders FOR SELECT
 TO authenticated
 USING (true);
 
 -- SERVICE ROLE ONLY: Insertion par le Webhook (Stripe)
+DROP POLICY IF EXISTS "Service Role Insert Orders" ON public.orders;
 CREATE POLICY "Service Role Insert Orders"
 ON public.orders FOR INSERT
 TO service_role
 WITH CHECK (true);
 
 -- SERVICE ROLE ONLY: Update par le Webhook (si besoin)
+DROP POLICY IF EXISTS "Service Role Update Orders" ON public.orders;
 CREATE POLICY "Service Role Update Orders"
 ON public.orders FOR UPDATE
 TO service_role
