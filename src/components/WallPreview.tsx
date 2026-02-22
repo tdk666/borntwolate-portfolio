@@ -140,8 +140,8 @@ export default function WallPreview({ isOpen, onClose, imageSrc, initialSize = '
                 // Cadre Alu Noir Mat + Reflet Blanc Inset + Ombre Murale Diffuse
                 return "bg-white ring-1 ring-[#1A1A1A] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border-[4px] border-[#1A1A1A]";
             case 'exception':
-                // Caisse Américaine: Profil 10mm (fin), Profondeur 28mm.
-                return "bg-[#161616] shadow-[0_30px_50px_-12px_rgba(0,0,0,0.7)] ring-1 ring-white/5 outline outline-[4px] outline-[#161616]";
+                // Caisse Américaine: Profil 10mm (fin) = border, Profondeur = gap (bg sombre).
+                return "bg-[#050505] shadow-[0_30px_50px_-12px_rgba(0,0,0,0.7)] border-[3px] border-[#1f1f1f] rounded-sm";
             default: return "bg-white shadow-lg";
         }
     };
@@ -240,13 +240,13 @@ export default function WallPreview({ isOpen, onClose, imageSrc, initialSize = '
                         </motion.div>
                     </div>
 
-                    {/* CONTROLS BAR - Glassmorphism Updated */}
+                    {/* CONTROLS BAR - Glassmorphism Updated (Right on Desktop, Bottom on Mobile) */}
                     <div
-                        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4 p-6 bg-black/80 backdrop-blur-md rounded-2xl border border-white/10 w-[90%] max-w-2xl z-[10000] shadow-2xl"
+                        className="absolute bottom-6 left-1/2 -translate-x-1/2 md:bottom-auto md:top-1/2 md:-translate-y-1/2 md:left-auto md:right-8 md:translate-x-0 flex flex-col items-center gap-4 p-5 md:p-6 bg-black/80 backdrop-blur-md rounded-2xl border border-white/10 w-[90%] md:w-auto max-w-2xl z-[10000] shadow-2xl transition-all"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {/* Ranges */}
-                        <div className="flex gap-2 flex-wrap justify-center border-b border-white/10 pb-4 w-full">
+                        <div className="flex gap-2 flex-wrap justify-center border-b border-white/10 pb-4 w-full md:flex-col md:border-b-0 md:border-r md:pb-0 md:pr-4">
                             {Object.entries(PRICING_CATALOG).map(([key]) => (
                                 <button
                                     key={key}
@@ -265,8 +265,8 @@ export default function WallPreview({ isOpen, onClose, imageSrc, initialSize = '
                         </div>
 
                         {/* Sizes */}
-                        <div className="flex flex-wrap items-center justify-center gap-4 w-full">
-                            <div className="flex gap-2 flex-wrap justify-center">
+                        <div className="flex flex-wrap items-center justify-center gap-4 w-full md:flex-col md:w-auto md:pl-2">
+                            <div className="flex gap-2 flex-wrap justify-center md:grid md:grid-cols-2">
                                 {availableSizes.map((size) => (
                                     <button
                                         key={size.id}

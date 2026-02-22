@@ -34,7 +34,7 @@ export const handler: Handler = async (event) => {
         if (event.httpMethod === 'GET') {
             const { data, error } = await supabase
                 .from('owners_legacy')
-                .select('owner_name, owner_city, message, lat, lng, art_slug, created_at')
+                .select('id, owner_name, owner_city, message, lat, lng, art_slug, created_at')
                 .eq('is_claimed', true);
 
             if (error) throw error;
