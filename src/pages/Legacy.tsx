@@ -23,7 +23,7 @@ interface LegacyOwner {
 
 const Legacy = () => {
     // STATES
-    const [step, setStep] = useState<'AUTH' | 'CLAIM' | 'MAP'>('MAP');
+    const [step, setStep] = useState<'AUTH' | 'CLAIM' | 'MAP'>('AUTH');
     const [code, setCode] = useState("");
     const [loading, setLoading] = useState(false);
     const [isClaimedMode, setIsClaimedMode] = useState(false);

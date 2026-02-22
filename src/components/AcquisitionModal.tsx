@@ -4,7 +4,7 @@ import { X, ShieldCheck, ArrowRight, Eye, Globe, Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { sendEmail } from '../services/email';
 import { trackEvent } from './GoogleAnalytics';
-import { PRICING_CATALOG } from '../data/pricing';
+import { PRICING_CATALOG, usePricing } from '../data/pricing';
 import { FadeIn } from './animations/FadeIn';
 import WallPreview from './WallPreview';
 
@@ -27,6 +27,7 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, photoSlu
   const [cgvAccepted, setCgvAccepted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [stockData, setStockData] = useState<{ remaining: number; total: number } | null>(null);
+  const pricingCatalog = usePricing();
 
   // Stock Fetching
   useEffect(() => {
@@ -44,7 +45,7 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, photoSlu
 
   if (!isOpen) return null;
 
-  const currentRange = PRICING_CATALOG[activeTab];
+  const currentRange = pricingCatalog[activeTab];
   // Protection pour s'assurer que la variante existe dans la gamme sélectionnée
   const currentVariant = currentRange.variants.find(v => v.id === selectedVariantId) || currentRange.variants[0];
 
@@ -151,7 +152,7 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, photoSlu
 
               {/* Tabs Finitions */}
               <div className="flex gap-2 mb-6 border-b border-white/10 pb-4 overflow-x-auto no-scrollbar mask-gradient-right">
-                {Object.entries(PRICING_CATALOG).map(([key, range]) => {
+                {Object.entries(pricingCatalog).map(([key, range]) => {
                   const trKey = key === 'galerie' ? 'exception' : key;
                   const trRange = getTranslatedRange(trKey);
                   return (

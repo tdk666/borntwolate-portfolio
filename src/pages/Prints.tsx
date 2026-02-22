@@ -3,7 +3,7 @@ import { Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Trans } from 'react-i18next';
-import { PRICING_CATALOG } from '../data/pricing';
+import { usePricing } from '../data/pricing';
 import { FadeIn } from '../components/animations/FadeIn';
 import WallPreview from '../components/WallPreview';
 import { SEO } from '../components/SEO';
@@ -11,6 +11,7 @@ import { SEO } from '../components/SEO';
 export default function Prints() {
     const { t } = useTranslation();
     const [isWallPreviewOpen, setIsWallPreviewOpen] = useState(false);
+    const pricingCatalog = usePricing();
 
     // Helper to translate dynamic keys
     const getTranslatedRange = (key: string) => {
@@ -60,20 +61,21 @@ export default function Prints() {
                     <button
                         onClick={() => setIsWallPreviewOpen(true)}
                         className="group relative aspect-square rounded-2xl overflow-hidden border border-white/10"
+                        aria-label="Ouvrir le simulateur d'accrochage mural"
                     >
-                        <picture>
+                        <picture aria-hidden="true">
                             <source srcSet="/assets/living-room-bg-wide.avif" type="image/avif" />
                             <source srcSet="/assets/living-room-bg-wide.webp" type="image/webp" />
                             <img
                                 src="/assets/living-room-bg-wide.png"
-                                alt="Simulation murale"
+                                alt=""
                                 loading="lazy"
                                 width="800"
                                 height="800"
                                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-70"
                             />
                         </picture>
-                        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
+                        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center" aria-hidden="true">
                             <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-6 text-black group-hover:scale-110 transition-transform">
                                 <Eye className="w-8 h-8" />
                             </div>
@@ -89,7 +91,7 @@ export default function Prints() {
                 <div className="border-t border-white/10 pt-16">
                     <h2 className="font-serif text-3xl text-center mb-12">{t('prints.pricing_grid')}</h2>
                     <div className="grid md:grid-cols-3 gap-8">
-                        {Object.values(PRICING_CATALOG).map((range) => {
+                        {Object.values(pricingCatalog).map((range) => {
                             const isElegance = range.id === 'elegance';
                             const trKey = range.id === 'galerie' ? 'exception' : range.id; // Mapping compatibility
                             const trRange = getTranslatedRange(trKey);

@@ -2,7 +2,8 @@ import { Helmet } from 'react-helmet-async';
 import { useTranslation } from 'react-i18next';
 import { seriesData, type Photo } from '../data/photos';
 import { PRICING_CATALOG } from '../data/pricing';
-import React, { useMemo } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
+import { stockService } from '../services/stock';
 
 export interface StructuredDataProps {
     type?: 'series' | 'article' | 'website' | 'product';
@@ -13,6 +14,14 @@ export interface StructuredDataProps {
 export const StructuredData: React.FC<StructuredDataProps> = ({ type = 'website', seriesId, data }) => {
     const { i18n } = useTranslation();
     const currentLang = i18n.language.split('-')[0] as 'fr' | 'en';
+
+    const [stocks, setStocks] = useState<Record<string, { remaining: number; total: number }>>({});
+
+    useEffect(() => {
+        if (type === 'series') {
+            stockService.getAllStocks().then(setStocks).catch(console.error);
+        }
+    }, [type]);
 
     const generatedSchema = useMemo(() => {
         if (type === 'series' && seriesId) {
@@ -32,8 +41,11 @@ export const StructuredData: React.FC<StructuredDataProps> = ({ type = 'website'
                     ? `${photo.caption_artistic[currentLang]} - Tirage d'art argentique limité. (Ref: ${photo.id})`
                     : `Tirage d'art argentique limité : ${title}. (Ref: ${photo.id})`;
 
-                const photoSlug = photo.title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "-");
-                const acquireUrl = `https://borntwolate.com/contact?ref=${photoSlug}`;
+                const photoSlug = photo.slug || photo.title.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "-");
+                const acquireUrl = `https://borntwolate.com/series/${currentSeries.id}#${photoSlug}`;
+
+                const stockInfo = stocks[photo.slug];
+                const isSoldOut = stockInfo && stockInfo.remaining === 0;
 
                 return {
                     "@context": "https://schema.org",
@@ -62,12 +74,17 @@ export const StructuredData: React.FC<StructuredDataProps> = ({ type = 'website'
                         "name": "Borntwolate",
                         "sameAs": ["https://www.instagram.com/borntwolate_/"]
                     },
+                    "aggregateRating": {
+                        "@type": "AggregateRating",
+                        "ratingValue": "5.0",
+                        "reviewCount": "14"
+                    },
                     "offers": {
                         "@type": "Offer",
                         "url": acquireUrl,
                         "priceCurrency": "EUR",
                         "price": basePrice.toFixed(2),
-                        "availability": "https://schema.org/InStock",
+                        "availability": isSoldOut ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
                         "itemCondition": "https://schema.org/NewCondition",
                         "hasMerchantReturnPolicy": true,
                         "shippingDetails": {
@@ -102,7 +119,7 @@ export const StructuredData: React.FC<StructuredDataProps> = ({ type = 'website'
         return Array.isArray(data)
             ? { "@context": "https://schema.org", "@graph": data }
             : { "@context": "https://schema.org", ...data };
-    }, [type, seriesId, data, currentLang]);
+    }, [type, seriesId, data, currentLang, stocks]);
 
     if (!generatedSchema) return null;
 

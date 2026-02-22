@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 
 export interface ProductVariant {
     id: string;
@@ -79,9 +80,10 @@ interface PricingOverride {
     stripeUrl?: string;
 }
 
-const applyPricingOverrides = (overrides: PricingOverride[]) => {
+const applyPricingOverrides = (baseCatalog: Record<string, ProductRange>, overrides: PricingOverride[]) => {
+    const updatedCatalog = JSON.parse(JSON.stringify(baseCatalog)) as Record<string, ProductRange>;
     overrides.forEach(o => {
-        const range = PRICING_CATALOG[o.rangeId];
+        const range = updatedCatalog[o.rangeId];
         if (range) {
             const variant = range.variants.find(v => v.id === o.formatId);
             if (variant) {
@@ -90,60 +92,63 @@ const applyPricingOverrides = (overrides: PricingOverride[]) => {
             }
         }
     });
+    return updatedCatalog;
 };
 
 const CACHE_KEY = 'pricing_cache_v2';
 const CACHE_DURATION = 60 * 60 * 1000; // 1h (3600000 ms)
 
-export const fetchExternalPrices = async (): Promise<void> => {
-    // Check Cache
-    const cached = localStorage.getItem(CACHE_KEY);
-    if (cached) {
-        try {
-            const { timestamp, data } = JSON.parse(cached);
-            if (Date.now() - timestamp < CACHE_DURATION) {
-                console.debug("Pricing: Using cached data.");
-                applyPricingOverrides(data);
-                return;
+export const usePricing = () => {
+    const [catalog, setCatalog] = useState<Record<string, ProductRange>>(PRICING_CATALOG);
+
+    useEffect(() => {
+        const loadPrices = async () => {
+            // Check Cache
+            const cached = localStorage.getItem(CACHE_KEY);
+            if (cached) {
+                try {
+                    const { timestamp, data } = JSON.parse(cached);
+                    if (Date.now() - timestamp < CACHE_DURATION) {
+                        setCatalog(applyPricingOverrides(PRICING_CATALOG, data));
+                        return;
+                    }
+                } catch (e) {
+                    localStorage.removeItem(CACHE_KEY);
+                }
             }
-        } catch (e) {
-            localStorage.removeItem(CACHE_KEY);
-        }
-    }
 
-    try {
-        // Call the Netlify Function
-        const response = await fetch('/.netlify/functions/get-prices');
-        if (!response.ok) throw new Error('Network response was not ok');
+            try {
+                const response = await fetch('/.netlify/functions/get-prices');
+                if (!response.ok) throw new Error('Network response was not ok');
 
-        const json: { values?: string[][] } = await response.json();
+                const json: { values?: string[][] } = await response.json();
 
-        if (json.values && json.values.length > 1) {
-            const rows = json.values.slice(1); // Skip header
-            // Expected Columns: [RangeID, FormatID, Price, StripeURL]
-            // Example: ['collection', '20x30', '45', 'https://...']
+                if (json.values && json.values.length > 1) {
+                    const rows = json.values.slice(1);
+                    const overrides: PricingOverride[] = rows.map((r) => ({
+                        rangeId: r[0]?.toLowerCase().trim() || '',
+                        formatId: r[1]?.trim() || '',
+                        price: Number(r[2]?.replace(/[€$ ]/g, '').replace(',', '.')),
+                        stripeUrl: r[3]?.trim()
+                    })).filter((o): o is PricingOverride & { stripeUrl: string } => {
+                        return !!(o.rangeId && o.formatId && !isNaN(o.price) && o.stripeUrl);
+                    });
 
-            const overrides: PricingOverride[] = rows.map((r) => ({
-                rangeId: r[0]?.toLowerCase().trim() || '',
-                formatId: r[1]?.trim() || '',
-                price: Number(r[2]?.replace(/[€$ ]/g, '').replace(',', '.')),
-                stripeUrl: r[3]?.trim()
-            })).filter((o): o is PricingOverride & { stripeUrl: string } => {
-                return !!(o.rangeId && o.formatId && !isNaN(o.price) && o.stripeUrl);
-            });
-
-            if (overrides.length > 0) {
-                // Cache
-                localStorage.setItem(CACHE_KEY, JSON.stringify({
-                    timestamp: Date.now(),
-                    data: overrides
-                }));
-
-                applyPricingOverrides(overrides);
-                console.debug(`Pricing: Updated ${overrides.length} prices from Netlify Function.`);
+                    if (overrides.length > 0) {
+                        localStorage.setItem(CACHE_KEY, JSON.stringify({
+                            timestamp: Date.now(),
+                            data: overrides
+                        }));
+                        setCatalog(applyPricingOverrides(PRICING_CATALOG, overrides));
+                    }
+                }
+            } catch (err) {
+                console.error("Pricing hook: API Error - using static data.", err);
             }
-        }
-    } catch (err) {
-        console.error("Pricing: API Error - using static data.", err);
-    }
+        };
+
+        loadPrices();
+    }, []);
+
+    return catalog;
 };

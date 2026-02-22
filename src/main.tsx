@@ -10,10 +10,7 @@ import { SearchProvider } from './context/SearchContext';
 import { HelmetProvider } from 'react-helmet-async';
 
 import { validatePricing } from './utils/validation';
-import { fetchExternalPrices } from './data/pricing';
-
-// Initialize V2 Features
-fetchExternalPrices().catch(console.error);
+// Initialize V2 Features (Pricing now handled reactively via usePricing hook)
 
 if (import.meta.env.PROD || import.meta.env.DEV) {
   // STRICT DATA VALIDATION HOOK
