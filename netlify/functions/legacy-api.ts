@@ -186,20 +186,13 @@ export const handler: Handler = async (event) => {
                 return { statusCode: 400, headers, body: JSON.stringify({ error: 'ID manquant' }) };
             }
 
-            // Reset the record instead of deleting it, so the code can be used again
-            const { error: resetError } = await supabase
+            // Delete the record completely so the secret code can no longer be used.
+            const { error: deleteError } = await supabase
                 .from('owners_legacy')
-                .update({
-                    is_claimed: false,
-                    owner_name: null,
-                    owner_city: null,
-                    message: null,
-                    lat: null,
-                    lng: null
-                })
+                .delete()
                 .eq('id', id);
 
-            if (resetError) throw resetError;
+            if (deleteError) throw deleteError;
 
             return {
                 statusCode: 200,
