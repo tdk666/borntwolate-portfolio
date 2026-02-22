@@ -125,9 +125,9 @@ export default function WallPreview({ isOpen, onClose, imageSrc, initialSize = '
         if (currentFinish === 'elegance') {
             return { padding: '4%' };
         }
-        // Exception: No padding here, handled by gap logic
+        // Exception: Gap is ~1cm.
         if (currentFinish === 'exception') {
-            return { padding: '3%' }; // Simulating the gap
+            return { padding: '3%' };
         }
         return {};
     };
@@ -140,9 +140,8 @@ export default function WallPreview({ isOpen, onClose, imageSrc, initialSize = '
                 // Cadre Alu Noir Mat + Reflet Blanc Inset + Ombre Murale Diffuse
                 return "bg-white ring-1 ring-[#1A1A1A] shadow-[0_20px_50px_-12px_rgba(0,0,0,0.5)] border-[4px] border-[#1A1A1A]";
             case 'exception':
-                // Caisse Américaine: Cadre Bois Noir Mat + Ombre Massive
-                // FIX: Use outline for frame and transparent border for gap
-                return "bg-[#1A1A1A] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.6)] border-[4px] border-transparent outline outline-[12px] outline-[#1A1A1A]";
+                // Caisse Américaine: Profil 10mm (fin), Profondeur 28mm.
+                return "bg-[#161616] shadow-[0_30px_50px_-12px_rgba(0,0,0,0.7)] ring-1 ring-white/5 outline outline-[4px] outline-[#161616]";
             default: return "bg-white shadow-lg";
         }
     };
@@ -155,8 +154,8 @@ export default function WallPreview({ isOpen, onClose, imageSrc, initialSize = '
                 // Ombre interne pour le biseau du passe-partout blanc
                 return "bg-white shadow-[inset_0_0_4px_rgba(0,0,0,0.15)]";
             case 'exception':
-                // Effet Flottant: L'image projette une ombre dans la caisse
-                return "shadow-[0_10px_20px_rgba(0,0,0,0.5)] ring-1 ring-white/5";
+                // The floating shadow is moved to the img tag itself to cast on the gap.
+                return "ring-1 ring-white/5";
             default: return "bg-white";
         }
     };
@@ -228,15 +227,14 @@ export default function WallPreview({ isOpen, onClose, imageSrc, initialSize = '
 
                             {/* Inner Image Container (Matte/Gap) - Applies Padding relative to Frame Size */}
                             <div
-                                className={`relative w-full h-full overflow-hidden ${getImageContainerClasses()}`}
-                                style={{ ...getPaddingStyle() }} // Padding applied here is relative to THIS container's width (which is 100% of Frame)
+                                className={`relative w-full h-full ${currentFinish !== 'exception' ? 'overflow-hidden' : ''} ${getImageContainerClasses()}`}
+                                style={{ ...getPaddingStyle() }}
                             >
                                 <img
                                     src={imageSrc || "/social-card.jpg"}
                                     alt="Preview"
-                                    className="w-full h-full object-contain block z-10"
+                                    className={`w-full h-full object-contain block z-10 ${currentFinish === 'exception' ? 'shadow-[0_15px_25px_rgba(0,0,0,0.85)] ring-1 ring-white/10' : ''}`}
                                     style={{ zIndex: 10 }}
-                                // Removed shadow-inner which was acting as a darkening filter
                                 />
                             </div>
                         </motion.div>

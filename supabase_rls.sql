@@ -166,3 +166,45 @@ BEGIN
   WHERE slug = stock_slug;
 END;
 $$;
+
+-- ==============================================================================
+-- 6. LEGACY MAP (Le Livre d'Or Géographique / Web3 Style)
+-- ==============================================================================
+CREATE TABLE IF NOT EXISTS public.owners_legacy (
+  id uuid DEFAULT gen_random_uuid() PRIMARY KEY,
+  created_at timestamptz DEFAULT now(),
+  stripe_session_id text UNIQUE NOT NULL, -- Lien vers la commande
+  code_secret text UNIQUE NOT NULL,       -- Code d'accès (ex: "WINTER-X92")
+  is_claimed boolean DEFAULT false,       -- A-t-il placé son point ?
+  owner_name text,                        -- Nom affiché (Editable par le client)
+  owner_city text,                        -- Ville (Editable par le client)
+  message text,                           -- Message (Editable par le client)
+  lat float,                              -- Latitude (Fixé par l'API)
+  lng float,                              -- Longitude (Fixé par l'API)
+  art_slug text                           -- Oeuvre possédée (pour filtrage)
+);
+
+-- RLS: Owners Legacy
+ALTER TABLE public.owners_legacy ENABLE ROW LEVEL SECURITY;
+
+-- PUBLIC: Tout le monde peut LIRE la carte (points validés uniquement)
+DROP POLICY IF EXISTS "Public Read Map" ON public.owners_legacy;
+CREATE POLICY "Public Read Map"
+ON public.owners_legacy FOR SELECT
+TO anon, authenticated
+USING (is_claimed = true);
+
+-- SERVICE ROLE: Le Webhook CRÉE les codes et l'API MODIFIE les points
+DROP POLICY IF EXISTS "Service Role Manage Legacy" ON public.owners_legacy;
+CREATE POLICY "Service Role Manage Legacy"
+ON public.owners_legacy FOR ALL
+TO service_role
+USING (true)
+WITH CHECK (true);
+
+-- ADMIN: Peut lire les codes secrets (via le Dashboard ou CertificateGenerator)
+DROP POLICY IF EXISTS "Admin Read Secrets" ON public.owners_legacy;
+CREATE POLICY "Admin Read Secrets"
+ON public.owners_legacy FOR SELECT
+TO authenticated
+USING (true);

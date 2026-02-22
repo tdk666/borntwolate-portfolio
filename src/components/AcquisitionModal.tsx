@@ -24,6 +24,7 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, photoSlu
   const [selectedVariantId, setSelectedVariantId] = useState<string>(PRICING_CATALOG['collection'].variants[0].id);
   const [isWallPreviewOpen, setIsWallPreviewOpen] = useState(false);
   const [currency, setCurrency] = useState<'EUR' | 'USD' | 'GBP'>('EUR');
+  const [cgvAccepted, setCgvAccepted] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [stockData, setStockData] = useState<{ remaining: number; total: number } | null>(null);
 
@@ -267,90 +268,106 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, photoSlu
                   </div>
                 </div>
 
-              </div>
+                {/* CGV CHECKBOX MANDATORY FOR GOOGLE MERCHANT CENTER */}
+                <div className="mb-4 text-xs text-white/70 bg-white/5 p-3 rounded-lg border border-white/10">
+                  <label className="flex items-start gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="mt-0.5 accent-darkroom-red w-4 h-4 rounded-sm border-white/20 bg-black"
+                      checked={cgvAccepted}
+                      onChange={(e) => setCgvAccepted(e.target.checked)}
+                      required
+                    />
+                    <span className="leading-snug">
+                      J'accepte les <a href="/legals" target="_blank" rel="noopener noreferrer" className="underline hover:text-white transition-colors">Conditions Générales de Vente</a> et la Politique de Confidentialité. Je reconnais que cette œuvre d'art est produite sur commande.
+                    </span>
+                  </label>
+                </div>
 
-              <a
-                href={isSoldOut ? '#' : finalStripeUrl}
-                target={isSoldOut ? undefined : "_blank"}
-                rel={isSoldOut ? undefined : "noopener noreferrer"}
-                className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-colors shadow-lg shadow-white/5 active:scale-[0.98] 
-                  ${isSoldOut
-                    ? 'bg-neutral-800 text-neutral-500 cursor-not-allowed opacity-50'
-                    : 'bg-white text-black hover:bg-gray-200'
-                  } 
+                <a
+                  href={isSoldOut || !cgvAccepted ? '#' : finalStripeUrl}
+                  target={isSoldOut || !cgvAccepted ? undefined : "_blank"}
+                  rel={isSoldOut || !cgvAccepted ? undefined : "noopener noreferrer"}
+                  className={`w-full py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 transition-colors shadow-lg shadow-white/5 active:scale-[0.98] 
+                  ${isSoldOut || !cgvAccepted
+                      ? 'bg-neutral-800 text-neutral-500 cursor-not-allowed opacity-50'
+                      : 'bg-white text-black hover:bg-gray-200'
+                    } 
                   ${isLoading ? 'opacity-70 cursor-wait' : ''}`}
-                onClick={async (e) => {
-                  e.preventDefault();
-                  if (isLoading || isSoldOut) return;
+                  onClick={async (e) => {
+                    e.preventDefault();
+                    if (isLoading || isSoldOut || !cgvAccepted) return;
 
-                  setIsLoading(true);
-                  try {
-                    // 0. Track Event in GA4
-                    trackEvent(
-                      'begin_checkout',
-                      'Ecommerce',
-                      `Artwork: ${photoTitle} - ${currentVariant.label} (${activeTab})`,
-                      currentVariant.price
-                    );
+                    setIsLoading(true);
+                    try {
+                      // 0. Track Event in GA4
+                      trackEvent(
+                        'begin_checkout',
+                        'Ecommerce',
+                        `Artwork: ${photoTitle} - ${currentVariant.label} (${activeTab})`,
+                        currentVariant.price
+                      );
 
-                    // 1. Send Email Notification (Chameleon Strategy)
-                    await sendEmail({
-                      contact_type: "COMMANDE",
-                      user_name: "Client Stripe (Pre-Checkout)",
-                      user_email: "attente_paiement@borntoolate.com",
-                      admin_subject: `NOUVELLE TENTATIVE D'ACHAT : ${photoTitle}`,
-                      message_content: `[TENTATIVE ACHAT STRIPE]\n\nŒuvre : ${photoTitle}\nFormat : ${currentVariant.label}\nFinition : ${activeTab}\nPrix : ${currentVariant.price}€`,
-                      reply_subject: "Votre sélection - Born Too Late",
-                      reply_message: "Vous avez initié un paiement pour une œuvre. Si vous n'avez pas finalisé la commande, n'hésitez pas à nous contacter.",
-                      reply_details: `Œuvre : ${photoTitle}\nFormat : ${currentVariant.label}`
+                      // 1. Send Email Notification (Chameleon Strategy)
+                      await sendEmail({
+                        contact_type: "COMMANDE",
+                        user_name: "Client Stripe (Pre-Checkout)",
+                        user_email: "attente_paiement@borntoolate.com",
+                        admin_subject: `NOUVELLE TENTATIVE D'ACHAT : ${photoTitle}`,
+                        message_content: `[TENTATIVE ACHAT STRIPE]\n\nŒuvre : ${photoTitle}\nFormat : ${currentVariant.label}\nFinition : ${activeTab}\nPrix : ${currentVariant.price}€`,
+                        reply_subject: "Votre sélection - Born Too Late",
+                        reply_message: "Vous avez initié un paiement pour une œuvre. Si vous n'avez pas finalisé la commande, n'hésitez pas à nous contacter.",
+                        reply_details: `Œuvre : ${photoTitle}\nFormat : ${currentVariant.label}`
+                      });
+
+                    } catch (error) {
+                      console.error("Error during checkout notification (non-blocking):", error);
+                    } finally {
+                      // 2. Redirect to Stripe Payment Link (Always)
+                      window.location.href = finalStripeUrl;
+                    }
+                  }}
+                >
+                  <span>
+                    {isSoldOut
+                      ? (t('acquisition.sold_out') || 'ŒUVRE ÉPUISÉE')
+                      : !cgvAccepted
+                        ? "ACCEPTEZ LES CGV"
+                        : isLoading
+                          ? t('acquisition.redirecting')
+                          : t('acquisition.proceed_payment')
+                    }
+                  </span>
+                  {!isLoading && <ArrowRight className="w-5 h-5 ml-1" />}
+                </a>
+
+                {/* Manual Transfer Option */}
+                <button
+                  onClick={() => {
+                    const finitionMapping: Record<string, string> = {
+                      collection: "Tirage Seul",
+                      elegance: "Encadré Nielsen",
+                      exception: "Caisse Américaine",
+                      galerie: "Caisse Américaine"
+                    };
+
+                    const params = new URLSearchParams({
+                      subject: 'acquisition',
+                      photo: photoTitle,
+                      format: currentVariant.label,
+                      finition: finitionMapping[activeTab] || "Non définie"
                     });
 
-                  } catch (error) {
-                    console.error("Error during checkout notification (non-blocking):", error);
-                  } finally {
-                    // 2. Redirect to Stripe Payment Link (Always)
-                    window.location.href = finalStripeUrl;
-                  }
-                }}
-              >
-                <span>
-                  {isSoldOut
-                    ? (t('acquisition.sold_out') || 'ŒUVRE ÉPUISÉE')
-                    : isLoading
-                      ? t('acquisition.redirecting')
-                      : t('acquisition.proceed_payment')
-                  }
-                </span>
-                {!isLoading && <ArrowRight className="w-5 h-5 ml-1" />}
-              </a>
+                    navigate(`/contact?${params.toString()}`);
+                    onClose();
+                  }}
+                  className="w-full mt-3 py-3 text-xs text-white/40 hover:text-white underline decoration-white/20 underline-offset-4 transition-colors uppercase tracking-widest"
+                >
+                  {t('acquisition.bank_transfer')}
+                </button>
+              </div>
 
-              {/* Manual Transfer Option */}
-              <button
-                onClick={() => {
-                  const finitionMapping: Record<string, string> = {
-                    collection: "Tirage Seul",
-                    elegance: "Encadré Nielsen",
-                    exception: "Caisse Américaine",
-                    galerie: "Caisse Américaine"
-                  };
-
-                  const params = new URLSearchParams({
-                    subject: 'acquisition',
-                    photo: photoTitle,
-                    format: currentVariant.label,
-                    finition: finitionMapping[activeTab] || "Non définie"
-                  });
-
-                  navigate(`/contact?${params.toString()}`);
-                  onClose();
-                }}
-                className="w-full mt-3 py-3 text-xs text-white/40 hover:text-white underline decoration-white/20 underline-offset-4 transition-colors uppercase tracking-widest"
-              >
-                {t('acquisition.bank_transfer')}
-              </button>
             </div>
-
-          </div>
         </FadeIn>
       </div>
 

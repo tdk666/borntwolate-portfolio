@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Eye } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -11,41 +11,6 @@ import { SEO } from '../components/SEO';
 export default function Prints() {
     const { t } = useTranslation();
     const [isWallPreviewOpen, setIsWallPreviewOpen] = useState(false);
-
-    // Force unlock scrolling using a style tag (only when modal is closed)
-    useEffect(() => {
-        if (isWallPreviewOpen) return;
-
-        // Immediate clean
-        document.body.style.overflow = '';
-        document.documentElement.style.overflow = ''; // Also clean html tag
-
-        // Persistent enforcement
-        const style = document.createElement('style');
-        style.innerHTML = `
-            html, body {
-                overflow-y: auto !important;
-                overflow-x: hidden; /* Keep x hidden for design */
-                height: auto !important;
-                min-height: 100% !important;
-                position: static !important;
-            }
-            #root {
-                height: auto !important;
-                overflow: visible !important;
-                min-height: 100vh;
-            }
-        `;
-        document.head.appendChild(style);
-
-        return () => {
-            // Cleanup if needed, but for this critical fix we might leave it if user navigates away? 
-            // No, always clean up to avoid breaking other pages.
-            if (document.head.contains(style)) {
-                document.head.removeChild(style);
-            }
-        };
-    }, [isWallPreviewOpen]);
 
     // Helper to translate dynamic keys
     const getTranslatedRange = (key: string) => {
@@ -96,11 +61,18 @@ export default function Prints() {
                         onClick={() => setIsWallPreviewOpen(true)}
                         className="group relative aspect-square rounded-2xl overflow-hidden border border-white/10"
                     >
-                        <img
-                            src="/assets/living-room-bg-wide.png"
-                            alt="Simulation"
-                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-70"
-                        />
+                        <picture>
+                            <source srcSet="/assets/living-room-bg-wide.avif" type="image/avif" />
+                            <source srcSet="/assets/living-room-bg-wide.webp" type="image/webp" />
+                            <img
+                                src="/assets/living-room-bg-wide.png"
+                                alt="Simulation murale"
+                                loading="lazy"
+                                width="800"
+                                height="800"
+                                className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-50 group-hover:opacity-70"
+                            />
+                        </picture>
                         <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
                             <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mb-6 text-black group-hover:scale-110 transition-transform">
                                 <Eye className="w-8 h-8" />

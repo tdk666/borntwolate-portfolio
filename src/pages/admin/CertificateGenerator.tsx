@@ -137,11 +137,12 @@ const CertificateGenerator = () => {
 
     const [orderId, setOrderId] = useState("");
     const [isFetchingOrder, setIsFetchingOrder] = useState(false);
-
+    const [legacyCode, setLegacyCode] = useState<string | null>(null);
 
     const handleFetchOrder = async () => {
         if (!orderId) return;
         setIsFetchingOrder(true);
+        setLegacyCode(null);
 
         try {
             // REFACTOR: Query Supabase 'orders' table directly instead of Google Sheets Proxy
@@ -152,6 +153,18 @@ const CertificateGenerator = () => {
                 .single();
 
             if (error) throw error;
+
+            // --- NEW: Fetch Legacy Code ---
+            const { data: legacyData } = await supabase
+                .from('owners_legacy')
+                .select('code_secret')
+                .eq('stripe_session_id', data.stripe_session_id)
+                .single();
+
+            if (legacyData) {
+                setLegacyCode(legacyData.code_secret);
+            }
+            // ------------------------------
 
             if (!data) {
                 toast.error("Commande introuvable.");
@@ -334,6 +347,15 @@ const CertificateGenerator = () => {
                     </div>
 
                     <div className="grid gap-4">
+                        {/* LEGACY CODE BADGE */}
+                        {legacyCode && (
+                            <div className="bg-darkroom-red/10 border border-darkroom-red/50 p-4 rounded mb-2 flex flex-col items-center">
+                                <span className="text-[10px] uppercase tracking-widest text-darkroom-red mb-1">Legacy Code</span>
+                                <span className="font-space-mono text-2xl font-bold text-white tracking-widest">{legacyCode}</span>
+                                <span className="text-[10px] text-silver/50 mt-1">À inscrire sur le certificat</span>
+                            </div>
+                        )}
+
                         {/* ORDER ID FETCH */}
                         <div className="bg-white/5 p-4 rounded border border-white/10 mb-2">
                             <label className="block text-[10px] uppercase tracking-widest text-silver mb-2">Import Commande (Supabase)</label>

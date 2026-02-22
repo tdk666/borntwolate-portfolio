@@ -117,6 +117,35 @@ export const handler: Handler = async (event) => {
                 console.warn('[STOCK-WARN] No client_reference_id or product_id found, skipping stock update.');
             }
 
+            // ==================================================================
+            // LEGACY MAP: Generate & Assign Secret Code
+            // ==================================================================
+            try {
+                const prefixes = ['ART', 'FILM', 'NOIR', 'KODAK', 'FUJI', 'LEICA', 'SILVER', 'GRAIN'];
+                const randomPrefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+                const randomSuffix = Math.floor(1000 + Math.random() * 9000); // 1000-9999
+                const secretCode = `${randomPrefix}-${randomSuffix}`;
+
+                const { error: legacyError } = await supabase
+                    .from('owners_legacy')
+                    .insert({
+                        stripe_session_id: session.id,
+                        code_secret: secretCode,
+                        art_slug: soldItemSlug !== 'unknown' ? soldItemSlug : null,
+                        is_claimed: false
+                    });
+
+                if (legacyError) {
+                    console.error('[LEGACY-ERROR] Failed to generate code:', legacyError);
+                } else {
+                    console.log(`[LEGACY-SUCCESS] Generated code ${secretCode} for session ${session.id}`);
+                }
+
+            } catch (legacyEx) {
+                console.error('[LEGACY-CRASH] Error generating legacy code:', legacyEx);
+            }
+            // ==================================================================
+
         } catch (error: any) {
             console.error('[CRITICAL-ERROR] Order Processing Exception:', error);
             // If we crash here, it's likely bad. Stripe should probably retry.

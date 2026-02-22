@@ -26,6 +26,7 @@ const PhotographeArgentique = lazy(() => import('./pages/PhotographeArgentique')
 import { CookieConsent } from './components/CookieConsent';
 import Success from './pages/Success';
 import { PageLoader } from './components/PageLoader';
+import Legacy from './pages/Legacy'; // Import once
 
 
 function AnimatedRoutes() {
@@ -46,15 +47,13 @@ function AnimatedRoutes() {
         <Route path="/admin/certificate" element={<CertificateGenerator />} />
         <Route path="/legals" element={<Legals />} />
         <Route path="/success" element={<Success />} />
+        <Route path="/legacy" element={<Legacy />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </AnimatePresence>
   );
 }
 
-// ... (other imports remain, but remove direct toast usage imports if checking specific lines)
-
-// ...
 
 function App() {
   const { isDarkroom } = useDarkroom();
@@ -92,6 +91,18 @@ function App() {
 
   return (
     <Router>
+      <LayoutContent isDarkroom={isDarkroom} />
+    </Router>
+  );
+}
+
+// Sub-component to use useLocation() inside Router context
+function LayoutContent({ isDarkroom }: { isDarkroom: boolean }) {
+  const location = useLocation();
+  const isLegacyPage = location.pathname === '/legacy';
+
+  return (
+    <>
       <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 z-[99999] bg-darkroom-red text-white px-4 py-2 font-mono uppercase text-xs">
         Skip to content
       </a>
@@ -100,28 +111,39 @@ function App() {
         containerStyle={{
           zIndex: 99999, // Force on top of everything
         }}
+        toastOptions={{
+          style: {
+            background: '#111',
+            color: '#fff',
+            border: '1px solid #333'
+          }
+        }}
       />
       <div
         className={`min-h-screen transition-colors duration-700 font-sans selection:bg-darkroom-red selection:text-off-white ${isDarkroom ? 'darkroom-mode' : ''} flex flex-col`}
       >
         <div className="film-grain" style={{ backgroundImage: 'url("/assets/noise.svg")' }}></div>
         <GoogleAnalytics />
-        <ScrollToTop />
-        <Navbar />
+        
+        {!isLegacyPage && <ScrollToTop />}
+        {!isLegacyPage && <Navbar />}
+        
         <main id="main-content" className="flex-grow">
           <Suspense fallback={<PageLoader />}>
             <AnimatedRoutes />
           </Suspense>
         </main>
-        <Footer />
+        
+        {!isLegacyPage && <Footer />}
+        
         <ErrorBoundary fallback={null}>
           <Suspense fallback={null}>
             <Chatbot />
           </Suspense>
         </ErrorBoundary>
       </div>
-      <CookieConsent />
-    </Router>
+      {!isLegacyPage && <CookieConsent />}
+    </>
   );
 }
 

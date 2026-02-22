@@ -48,7 +48,8 @@ export const StructuredData: React.FC<StructuredDataProps> = ({ type = 'website'
                         "creditText": "Born Too Late Photography",
                         "creator": {
                             "@type": "Person",
-                            "name": "Théophile Dequecker"
+                            "name": "Théophile Dequecker",
+                            "sameAs": ["https://www.instagram.com/borntwolate_/"]
                         },
                         "copyrightNotice": "© Borntwolate"
                     },
@@ -58,7 +59,8 @@ export const StructuredData: React.FC<StructuredDataProps> = ({ type = 'website'
                     "sku": photoSlug,
                     "brand": {
                         "@type": "Brand",
-                        "name": "Borntwolate"
+                        "name": "Borntwolate",
+                        "sameAs": ["https://www.instagram.com/borntwolate_/"]
                     },
                     "offers": {
                         "@type": "Offer",
@@ -67,6 +69,7 @@ export const StructuredData: React.FC<StructuredDataProps> = ({ type = 'website'
                         "price": basePrice.toFixed(2),
                         "availability": "https://schema.org/InStock",
                         "itemCondition": "https://schema.org/NewCondition",
+                        "hasMerchantReturnPolicy": true,
                         "shippingDetails": {
                             "@type": "OfferShippingDetails",
                             "shippingRate": {

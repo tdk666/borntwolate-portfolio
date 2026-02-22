@@ -4,11 +4,23 @@ import { Handler } from '@netlify/functions';
 const GOOGLE_SHEETS_ID = process.env.GOOGLE_SHEETS_ID;
 const GOOGLE_SHEETS_API_KEY = process.env.GOOGLE_SHEETS_API_KEY;
 
+const headers = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Access-Control-Allow-Methods': 'GET, OPTIONS'
+};
+
 export const handler: Handler = async (event, context) => {
+    // Handle OPTIONS request for CORS
+    if (event.httpMethod === 'OPTIONS') {
+        return { statusCode: 200, headers, body: '' };
+    }
+
     // Only allow GET
     if (event.httpMethod !== 'GET') {
         return {
             statusCode: 405,
+            headers,
             body: 'Method Not Allowed',
         };
     }
@@ -17,6 +29,7 @@ export const handler: Handler = async (event, context) => {
         console.error('Missing Google Sheets Credentials');
         return {
             statusCode: 500,
+            headers,
             body: JSON.stringify({ error: 'Server Configuration Error' }),
         };
     }
@@ -35,6 +48,7 @@ export const handler: Handler = async (event, context) => {
         return {
             statusCode: 200,
             headers: {
+                ...headers,
                 'Content-Type': 'application/json',
                 // Optional: Cache for 1 hour to reduce API calls
                 'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=600',
@@ -46,6 +60,7 @@ export const handler: Handler = async (event, context) => {
         console.error('Error fetching prices:', error);
         return {
             statusCode: 500,
+            headers,
             body: JSON.stringify({ error: 'Failed to fetch prices' }),
         };
     }

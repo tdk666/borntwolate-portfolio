@@ -84,10 +84,10 @@ export const handler: Handler = async (event) => {
 
         // Initialize Gemini
         const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-        // CRITICAL: process.env.GEMINI_MODEL must be "gemini-2.0-flash" 
-        // "gemini-1.5-flash" returns 404 Not Found on this endpoint.
+        // CRITICAL: process.env.GEMINI_MODEL must be "gemini-2.5-flash" 
+        // to match the validated configuration format.
         const model = genAI.getGenerativeModel({
-            model: "gemini-2.0-flash",
+            model: "gemini-2.5-flash",
             systemInstruction: CORE_SYSTEM_INSTRUCTION + (body.context ? `\nCONTEXT DATA:\n${JSON.stringify(body.context)}` : "")
         });
 

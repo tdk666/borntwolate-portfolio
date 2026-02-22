@@ -163,3 +163,23 @@ textarea {
   color: var(--color-darkroom-red);
   font-style: italic;
 }
+
+/* Custom Scrollbar for Info Panels */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(139, 0, 0, 0.5); /* darkroom red */
+  border-radius: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 0, 0, 0.8);
+}
+.custom-scrollbar {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}

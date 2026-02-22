@@ -2,30 +2,10 @@
 <html lang="fr">
 
 <head>
-  <!-- Google Consent Mode v2 (Default Denied) -->
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag() { dataLayer.push(arguments); }
-
-    // Default consent to denied
-    gtag('consent', 'default', {
-      'ad_storage': 'denied',
-      'ad_user_data': 'denied',
-      'ad_personalization': 'denied',
-      'analytics_storage': 'denied',
-      'wait_for_update': 500
-    });
-  </script>
-
+  <!-- Google Consent Mode v2 & Analytics Configuration (Externalized) -->
+  <script async src="/analytics.js"></script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q3VNSP006H"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    // function gtag() { dataLayer.push(arguments); } // Defined above
-    gtag('js', new Date());
-
-    gtag('config', 'G-Q3VNSP006H');
-  </script>
   <meta charset="UTF-8" />
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -48,7 +28,7 @@
   <!-- Moved to src/components/SEO.tsx for dynamic handling -->
 
   <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.emailjs.com https://www.googletagmanager.com https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.google-analytics.com https://stats.g.doubleclick.net; connect-src 'self' https://api.emailjs.com https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://region1.google-analytics.com https://stats.g.doubleclick.net https://generativelanguage.googleapis.com https://*.googleapis.com https://*.google.com https://naypugqytjwdmcvtocel.supabase.co https://ingesteer.services-prod.nsvcs.net; frame-src 'self' https://js.stripe.com https://hooks.stripe.com;">
+    content="default-src 'self'; script-src 'self' https://cdn.emailjs.com https://www.googletagmanager.com https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.google-analytics.com https://stats.g.doubleclick.net; connect-src 'self' https://api.emailjs.com https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://region1.google-analytics.com https://stats.g.doubleclick.net https://generativelanguage.googleapis.com https://*.googleapis.com https://*.google.com https://naypugqytjwdmcvtocel.supabase.co https://ingesteer.services-prod.nsvcs.net; frame-src 'self' https://js.stripe.com https://hooks.stripe.com;">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -47,7 +47,7 @@ export const handler: Handler = async (event, context) => {
         const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 
         // Default to a model, can be made configurable if needed
-        const modelName = 'gemini-2.0-flash';
+        const modelName = 'gemini-2.5-flash';
         const model = genAI.getGenerativeModel({
             model: modelName,
             systemInstruction: systemInstruction || undefined
