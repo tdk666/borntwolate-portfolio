@@ -319,17 +319,17 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, photoSlu
               </div>
 
               {/* CGV CHECKBOX MANDATORY FOR GOOGLE MERCHANT CENTER */}
-              <div className="mb-4 text-xs text-white/70 bg-white/5 p-3 rounded-lg border border-white/10">
-                <label className="flex items-start gap-3 cursor-pointer">
+              <div className="mb-3 text-[10px] text-white/50">
+                <label className="flex items-start gap-2 cursor-pointer">
                   <input
                     type="checkbox"
-                    className="mt-0.5 accent-darkroom-red w-4 h-4 rounded-sm border-white/20 bg-black"
+                    className="mt-0.5 accent-darkroom-red w-3 h-3 rounded-sm border-white/20 bg-black shrink-0"
                     checked={cgvAccepted}
                     onChange={(e) => setCgvAccepted(e.target.checked)}
                     required
                   />
-                  <span className="leading-snug">
-                    J'accepte les <a href="/legals" target="_blank" rel="noopener noreferrer" className="underline hover:text-white transition-colors">Conditions Générales de Vente</a> et la Politique de Confidentialité. Je reconnais que cette œuvre d'art est produite sur commande.
+                  <span className="leading-tight">
+                    J'accepte les <a href="/legals" target="_blank" rel="noopener noreferrer" className="underline hover:text-white transition-colors">CGV</a> et <a href="/legals" target="_blank" rel="noopener noreferrer" className="underline hover:text-white transition-colors">Confidentialité</a>. Œuvre produite sur commande.
                   </span>
                 </label>
               </div>
@@ -411,7 +411,7 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, photoSlu
                   navigate(`/contact?${params.toString()}`);
                   onClose();
                 }}
-                className="w-full mt-3 py-3 text-xs text-white/40 hover:text-white underline decoration-white/20 underline-offset-4 transition-colors uppercase tracking-widest"
+                className="w-full mt-2 py-2 text-[10px] text-white/40 hover:text-white underline decoration-white/20 underline-offset-4 transition-colors uppercase tracking-widest"
               >
                 {t('acquisition.bank_transfer')}
               </button>

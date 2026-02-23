@@ -2,6 +2,10 @@
   GIT_LFS_SKIP_SMUDGE = "1"
   GIT_LFS_ENABLED = "false"
 
+[[edge_functions]]
+  function = "og-image"
+  path = "/series/*"
+
 [[headers]]
   for = "/*"
   [headers.values]
