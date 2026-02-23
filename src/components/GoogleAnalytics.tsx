@@ -16,56 +16,56 @@ export const GoogleAnalytics = () => {
     const location = useLocation();
 
     useEffect(() => {
-        // Vérifie si on est en PROD
         if (!import.meta.env.PROD) {
             return;
-            const trackingId = "G-Q3VNSP006H";
-            const injectScript = () => {
-                // Only inject once
-                if (document.getElementById('ga-script')) return;
+        }
 
-                const script = document.createElement('script');
-                script.id = 'ga-script';
-                script.async = true;
-                script.src = `https://www.googletagmanager.com/gtag/js?id=${trackingId}`;
-                document.head.appendChild(script);
-            };
+        const trackingId = "G-Q3VNSP006H";
+        const injectScript = () => {
+            if (document.getElementById('ga-script')) return;
 
-            const executeTracking = () => {
-                if (typeof window.gtag === "undefined") {
-                    console.warn("Google Analytics script not loaded yet.");
-                    return;
-                }
-                window.gtag("config", trackingId, {
-                    page_path: location.pathname + location.search,
-                });
-            };
+            const script = document.createElement('script');
+            script.id = 'ga-script';
+            script.async = true;
+            script.src = `https://www.googletagmanager.com/gtag/js?id=${trackingId}`;
+            document.head.appendChild(script);
+        };
 
-            const consent = localStorage.getItem('cookie-consent');
+        const executeTracking = () => {
+            if (typeof window.gtag === "undefined") {
+                console.warn("Google Analytics script not loaded yet.");
+                return;
+            }
+            window.gtag("config", trackingId, {
+                page_path: location.pathname + location.search,
+            });
+        };
 
-            // Initial Page View check
-            if (consent === 'accepted') {
+        const consent = localStorage.getItem('cookie-consent');
+
+        // Initial Page View check
+        if (consent === 'accepted') {
+            injectScript();
+            // Allow script to load before firing config
+            setTimeout(executeTracking, 500);
+        }
+
+        const handleStorageChange = () => {
+            if (localStorage.getItem('cookie-consent') === 'accepted') {
                 injectScript();
-                // Allow script to load before firing config
                 setTimeout(executeTracking, 500);
             }
+        };
 
-            const handleStorageChange = () => {
-                if (localStorage.getItem('cookie-consent') === 'accepted') {
-                    injectScript();
-                    setTimeout(executeTracking, 500);
-                }
-            };
+        window.addEventListener('storage', handleStorageChange);
+        window.addEventListener('cookie-consent-updated', handleStorageChange);
 
-            window.addEventListener('storage', handleStorageChange);
-            window.addEventListener('cookie-consent-updated', handleStorageChange);
-
-            return () => {
-                // PREVENTION DE FUITE MEMOIRE 
-                window.removeEventListener('storage', handleStorageChange);
-                window.removeEventListener('cookie-consent-updated', handleStorageChange);
-            };
-        }, [location]);
+        return () => {
+            // PREVENTION DE FUITE MEMOIRE 
+            window.removeEventListener('storage', handleStorageChange);
+            window.removeEventListener('cookie-consent-updated', handleStorageChange);
+        };
+    }, [location]);
 
     return null;
 };
