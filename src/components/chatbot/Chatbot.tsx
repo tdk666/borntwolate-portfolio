@@ -23,8 +23,11 @@ export const Chatbot = () => {
 
     useEffect(() => {
         console.log("Chatbot mounted. VITE_GEMINI_API_KEY present:", !!import.meta.env.VITE_GEMINI_API_KEY);
-        // Debug models
+        // Debug models once on mount
         import('../../services/gemini').then(({ debugModels }) => debugModels());
+    }, []);
+
+    useEffect(() => {
         scrollToBottom();
     }, [messages]);
 
@@ -249,6 +252,11 @@ export const Chatbot = () => {
                             <button onClick={() => setIsOpen(false)} className="text-silver hover:text-off-white transition-colors">
                                 <X size={18} />
                             </button>
+                        </div>
+
+                        {/* LEGAL AI DISCLAIMER (AI ACT) */}
+                        <div className="bg-darkroom-red/10 border-b border-white/5 py-1.5 px-4 flex items-center justify-center text-[10px] text-white/50 uppercase tracking-widest text-center">
+                            {t('chatbot.ai_disclaimer', "Vous discutez avec une Intelligence Artificielle d'orientation.")}
                         </div>
 
                         {/* Messages Area */}

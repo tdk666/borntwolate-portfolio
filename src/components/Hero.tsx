@@ -88,7 +88,7 @@ const Hero = () => {
                             src={currentPhotos[currentIndex]?.url}
                             alt={currentPhotos[currentIndex]?.alt_accessible?.[i18n.language.startsWith('en') ? 'en' : 'fr'] || "Photographie argentique d'art - Théophile Dequecker"}
                             className="w-full h-full object-cover opacity-50"
-                            loading={currentIndex === 0 ? "eager" : "lazy"}
+                            loading={currentIndex === 0 ? "eager" : undefined}
                             fetchPriority={currentIndex === 0 ? "high" : "auto"}
                             decoding={currentIndex === 0 ? "sync" : "async"}
                         />

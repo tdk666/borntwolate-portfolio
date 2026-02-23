@@ -80,6 +80,7 @@ const Series = () => {
                                         className="block focus:outline-none focus:ring-2 focus:ring-darkroom-red focus:ring-offset-4 focus:ring-offset-black rounded-sm"
                                         aria-label={t('series_seo.aria_view', { title: seriesItem.title })}
                                     >
+                                        <span className="sr-only">Découvrir les photographies et tirages d'art limités de la série {seriesItem.title}</span>
                                         <div className="overflow-hidden mb-6 bg-gray-900 border border-white/10"> {/* Fond gris pour éviter flash */}
                                             <img
                                                 src={seriesItem.coverImage}

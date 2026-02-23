@@ -53,6 +53,7 @@ export default function Prints() {
                         <div className="pt-4">
                             <Link to="/series" className="text-white underline underline-offset-4 hover:text-white/70 transition-colors">
                                 {t('prints.explore_series')}
+                                <span className="sr-only">Découvrir l'ensemble des séries photographiques et tirages d'art limités</span>
                             </Link>
                         </div>
                     </div>
@@ -83,6 +84,7 @@ export default function Prints() {
                             <p className="text-sm text-white/60 max-w-xs">
                                 {t('prints.compare_finish')}
                             </p>
+                            <span className="sr-only">Lancer le simulateur de mur interactif pour comparer les cadres et les formats de tirages</span>
                         </div>
                     </button>
                 </div>
