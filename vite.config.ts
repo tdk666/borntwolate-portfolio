@@ -15,6 +15,9 @@ export default defineConfig({
       avif: { quality: 70, lossless: false },
     }),
   ],
+  esbuild: {
+    drop: ['console', 'debugger'],
+  },
   build: {
     rollupOptions: {
       output: {

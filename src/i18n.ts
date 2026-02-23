@@ -161,8 +161,8 @@ i18n
                             title: "4. Conditions Générales de Vente (CGV)",
                             subtitle: "Applicables aux ventes de tirages d'art.",
                             article1: {
-                                title: "4.1 Commande",
-                                text: "Les produits sont des œuvres photographiques originales. La commande s'effectue soit par paiement direct via lien sécurisé (pour la Collection), soit sur devis (pour les formats spécifiques). Le contrat est conclu à la réception du paiement."
+                                title: "4.1 Commande & Conformité AGEC",
+                                text: "Les produits sont des œuvres photographiques originales. Le contrat est conclu à la réception du paiement. Conformément à la loi AGEC, nous garantissons une démarche éco-responsable : tirages réalisés par Picto Paris sur papier d'art sans acide (100% coton, certifié FSC) et emballages 100% recyclables."
                             },
                             article2: {
                                 title: "4.2 Droit de Rétractation",
@@ -275,7 +275,13 @@ i18n
                         compare_finish: "Visualiser les formats et finitions",
                         pricing_grid: "Tarifs & Finitions"
                     },
-
+                    footer: {
+                        newsletter_desc: "Inscrivez-vous pour être notifié en avant-première de la sortie de nos nouveaux tirages d'art limités.",
+                        newsletter_placeholder: "votre@email.com",
+                        newsletter_btn: "S'inscrire",
+                        newsletter_success: "Inscription confirmée. Merci.",
+                        newsletter_error: "Erreur technique. Veuillez réessayer."
+                    }
                 },
             },
             en: {
@@ -427,8 +433,8 @@ i18n
                             title: "4. Terms of Sale (CGV)",
                             subtitle: "Applicable to art print sales.",
                             article1: {
-                                title: "4.1 Order",
-                                text: "Products are original photographic works. Orders are made either via direct secure payment link (for The Collection) or by quote (for specific formats). The contract is concluded upon receipt of payment."
+                                title: "4.1 Order & AGEC Compliance",
+                                text: "Products are original photographic works. The contract is concluded upon receipt of payment. In accordance with the French AGEC law, we guarantee an eco-responsible approach: prints made by Picto Paris on acid-free art paper (100% cotton, FSC certified) and 100% recyclable packaging."
                             },
                             article2: {
                                 title: "4.2 Right of Withdrawal",
@@ -544,7 +550,13 @@ i18n
                         compare_finish: "Compare Nielsen Frame and Shadow Box",
                         pricing_grid: "Pricing Grid & Finishes"
                     },
-
+                    footer: {
+                        newsletter_desc: "Sign up to be notified in advance of the release of our new limited art prints.",
+                        newsletter_placeholder: "your@email.com",
+                        newsletter_btn: "Subscribe",
+                        newsletter_success: "Subscription confirmed. Thank you.",
+                        newsletter_error: "Technical error. Please try again."
+                    }
                 },
             },
         },

@@ -50,8 +50,8 @@ export const handler: Handler = async (event, context) => {
             headers: {
                 ...headers,
                 'Content-Type': 'application/json',
-                // Optional: Cache for 1 hour to reduce API calls
-                'Cache-Control': 'public, s-maxage=3600, stale-while-revalidate=600',
+                // Tier-1 Edge Caching: Cache for 1 hour locally, up to 24h stale-while-revalidate on CDN
+                'Cache-Control': 'public, max-age=3600, s-maxage=3600, stale-while-revalidate=86400',
             },
             body: JSON.stringify(data),
         };

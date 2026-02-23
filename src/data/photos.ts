@@ -17,7 +17,7 @@ export interface Photo {
 export interface Series {
     id: string;
     title: string;
-    year: string;
+    year: string | LocalizedText;
     description: LocalizedText;
     coverImage: string;
     photos: Photo[];
@@ -29,7 +29,7 @@ export const seriesData: Series[] = [
     {
         id: 'polish-hike',
         title: 'Polish Hike',
-        year: 'Août 2025',
+        year: { fr: 'Août 2025', en: 'August 2025' },
         description: {
             fr: "Août 2025. Zakopane. Entre la Pologne et la Hongrie, les montagnes des Tatras dressent une barrière de granit. Cette série documente une parenthèse d'effort et de contemplation. Loin de l'agitation urbaine, le Rollei 35 a accompagné chaque pas de cette ascension en duo. Le choix de la pellicule Kodak Gold n'est pas anodin : elle baigne ces paysages austères d'une lumière chaude et familière, conférant aux souvenirs de randonnée une patine intemporelle. Ici, la roche, les lacs et les vallées ne sont pas seulement des décors, mais les témoins silencieux d'une marche vers les sommets.",
             en: "August 2025. Zakopane. Between Poland and Hungary, the Tatra mountains erect a granite barrier. This series documents a parenthesis of effort and contemplation. Far from urban agitation, the Rollei 35 accompanied every step of this duo ascent. The choice of Kodak Gold film is not insignificant: it bathes these austere landscapes in warm and familiar light, giving hiking memories a timeless patina. Here, rock, lakes, and valleys are not just settings, but silent witnesses of a march towards the summits."
@@ -73,7 +73,7 @@ export const seriesData: Series[] = [
     {
         id: 'white-mounts',
         title: 'White Mounts',
-        year: 'Janvier 2025',
+        year: { fr: 'Janvier 2025', en: 'January 2025' },
         description: {
             fr: "Janvier 2025. Alpes du Sud. Loin de l'austérité graphique, cette série est une ode à l'énergie collective. Le temps d'un week-end, le Rollei 35 a capturé l'insouciance d'une évasion entre amis. Le choix technique est ici crucial : la pellicule Portra 400. Habituellement louée pour son rendu des carnations, elle est ici détournée pour sublimer la matière de l'hiver. Elle transforme la neige en sucre glace, adoucit les bleus du ciel et enveloppe les paysages d'une chaleur subtile. \"White Mounts\", c'est la montagne vécue non pas comme un défi, mais comme un terrain de jeu.",
             en: "January 2025. Southern Alps. Far from graphic austerity, this series is an ode to collective energy. For a weekend, the Rollei 35 captured the carelessness of an escape with friends. The technical choice is crucial here: Portra 400 film. Usually praised for its skin tone rendering, here it is diverted to sublimate the winter texture. It turns snow into icing sugar, softens sky blues and wraps landscapes in subtle warmth. \"White Mounts\" is the mountain experienced not as a challenge, but as a playground."
@@ -122,7 +122,7 @@ export const seriesData: Series[] = [
     {
         id: 'puglia-famiglia',
         title: 'Puglia Famiglia',
-        year: 'Août 2024',
+        year: { fr: 'Août 2024', en: 'August 2024' },
         description: {
             fr: "Août 2024. Les Pouilles. Ce n’est pas un simple road-trip familial, c’est une parenthèse cinématographique sous le soleil écrasant du sud de l'Italie. Pour capturer cette \"Dolce Vita\" brute, le choix s'est imposé : la CineStill 400D. Une pellicule cinéma détournée de son usage, capable d'imprégner chaque image d'une chaleur saturée et de reflets dorés. L'inspiration est claire : retrouver l'esthétique moite et sensuelle de Plein Soleil. Entre les eaux turquoise et la terre brûlée, les figures familières deviennent des personnages de fiction, figés dans une lumière qui ne semble exister que dans les souvenirs des années 60.",
             en: "August 2024. Puglia. This is not a simple family road trip, it is a cinematic interlude under the crushing sun of Southern Italy. To capture this raw \"Dolce Vita\", the choice was obvious: CineStill 400D. A cinema film diverted from its use, capable of imbuing each image with saturated warmth and golden reflections. The inspiration is clear: to rediscover the sweaty and sensual aesthetic of Purple Noon. Between turquoise waters and scorched earth, familiar figures become fictional characters, frozen in a light that seems to exist only in the memories of the 60s."
@@ -166,7 +166,7 @@ export const seriesData: Series[] = [
     {
         id: 'retro-mountain',
         title: 'Retro Mountain',
-        year: 'Janvier 2024',
+        year: { fr: 'Janvier 2024', en: 'January 2024' },
         description: {
             fr: "Thollon-les-Mémises, Janvier 2024. L’hiver alpin se révèle ici sous un jour purement graphique. L'objectif n'est pas de documenter le ski, mais de saisir l'esthétique du silence blanc. Capturée à la Rollei Retro 400S, la série exploite un grain puissant, quasi charbonneux, qui affronte la lumière crue de la neige dans un duel sans nuance. Au cœur de ce décor minimaliste, une silhouette à l'allure anachronique semble flotter hors du temps. Une étude où le noir et le blanc cessent d'être des couleurs pour devenir des matières brutes.",
             en: "Thollon-les-Mémises, January 2024. Alpine winter reveals itself here in a purely graphic light. The goal is not to document skiing, but to capture the aesthetic of white silence. Captured on Rollei Retro 400S, the series exploits a powerful, almost charcoal-like grain that confronts the raw light of snow in a nuanceless duel. At the heart of this minimalist setting, an anachronistic-looking silhouette seems to float out of time. A study where black and white cease to be colors to become raw materials."
@@ -210,7 +210,7 @@ export const seriesData: Series[] = [
     {
         id: 'winter-in-the-fruit',
         title: 'A Winter in the Fruit',
-        year: 'Décembre 2023',
+        year: { fr: 'Décembre 2023', en: 'December 2023' },
         description: {
             fr: "Décembre 2023. Premier pas sur le continent américain. New York ne se découvre pas, elle se confronte. Cette série documente le choc initial face à la verticalité absolue de Manhattan. Sous un soleil d'hiver rasant qui découpe les ombres au scalpel, la ville se révèle dans ses contrastes : la froideur minérale des gratte-ciels, le silence végétal de Central Park et la chaleur souterraine du métro. Le grain chaud de la Kodak Gold 400 capture l'esthétique brute de la métropole, figée dans l'air glacé, entre mythe cinématographique et réalité de béton.",
             en: "December 2023. First steps on the American continent. New York is not discovered, it is confronted. This series documents the initial shock of Manhattan's absolute verticality. Under a grazing winter sun that cuts shadows with a scalpel, the city reveals itself in its contrasts: the mineral coldness of skyscrapers, the vegetable silence of Central Park, and the subterranean heat of the subway. The warm grain of Kodak Gold 400 captures the metropolis's raw aesthetic, frozen in icy air, between cinematic myth and concrete reality."
@@ -357,7 +357,7 @@ export const seriesData: Series[] = [
     {
         id: 'psychadelic-mtl',
         title: 'Psychadelic MTL',
-        year: 'Octobre 2023',
+        year: { fr: 'Octobre 2023', en: 'October 2023' },
         description: {
             fr: "Octobre 2023. Montréal passée au crible de la LomoChrome Turquoise. Dans cette série expérimentale, la chimie de la pellicule inverse le spectre lumineux pour révéler une dimension parallèle. Les lois de la nature sont révoquées : le ciel d'automne s'embrase en un orange apocalyptique, tandis que le feuillage des érables gèle dans des teintes bleutées surnaturelles. Ce n'est plus la ville de l'échange universitaire, c'est une métropole de science-fiction, une hallucination visuelle où la chaleur de l'été indien se mue en une froideur électrique.",
             en: "October 2023. Montreal filtered through LomoChrome Turquoise. In this experimental series, the film's chemistry reverses the light spectrum to reveal a parallel dimension. The laws of nature are revoked: the autumn sky ignites in an apocalyptic orange, while maple foliage freezes in supernatural bluish hues. It is no longer the city of the academic exchange, it is a science fiction metropolis, a visual hallucination where the heat of Indian summer transforms into an electric coldness."
@@ -401,7 +401,7 @@ export const seriesData: Series[] = [
     {
         id: 'canadian-evasion',
         title: 'Canadian Evasion',
-        year: 'Août 2023',
+        year: { fr: 'Août 2023', en: 'August 2023' },
         description: {
             fr: "Août 2023. Une errance solitaire sur les routes du Québec, sac au dos et pouce levé. Cette série n'est pas un simple carnet de voyage, c'est l'enregistrement d'une confrontation : celle de l'immensité sauvage face à la mécanique minuscule du Rollei 35. De Montréal aux fjords de Tadoussac, en passant par les Laurentides, la pellicule capture l'improvisation totale d'un road-trip sans itinéraire. La Portra 400 y révèle la rudesse de la marche et la douceur des lumières du Saint-Laurent, peignant un monde où l'homme redevient une échelle négligeable face à la nature.",
             en: "August 2023. A solitary wandering on the roads of Quebec, backpack on and thumb raised. This series is not a simple travelogue, it is the recording of a confrontation: that of the wild vastness against the tiny mechanics of the Rollei 35. From Montreal to the fjords of Tadoussac, through the Laurentians, the film captures the total improvisation of a road trip without an itinerary. Portra 400 reveals the harshness of the walk and the softness of the Saint Lawrence lights, painting a world where man becomes a negligible scale against nature."
@@ -445,7 +445,7 @@ export const seriesData: Series[] = [
     {
         id: 'mauvais-garcons',
         title: 'Rue des Mauvais Garçons',
-        year: 'Avril 2023',
+        year: { fr: 'Avril 2023', en: 'April 2023' },
         description: {
             fr: "Avril 2023. Paris, entre l'aristocratie de l'Île Saint-Louis et les ruelles du Marais. Cette série inaugurale capture l'essence de Gabriel, dandy moderne et frère d'âme, figé dans une époque qu'il fantasme autant qu'il l'incarne. Au guidon de son Astor, il ne traverse pas la ville, il habite le décor. Entre poses étudiées et mélancolie brute, cette série est le récit silencieux d'une attente : celle d'une élégance perdue, ou d'un rendez-vous qui ne viendra peut-être jamais.",
             en: "April 2023. Paris, between the aristocracy of Île Saint-Louis and the alleys of the Marais. This inaugural series captures the essence of Gabriel, a modern dandy and soul brother, frozen in an era he fantasizes about as much as he embodies. Riding his Astor, he doesn't just cross the city, he inhabits the setting. Between studied poses and raw melancholy, this series is the silent tale of a wait: that of a lost elegance, or a meeting that may never come."

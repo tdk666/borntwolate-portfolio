@@ -328,8 +328,9 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, photoSlu
                     onChange={(e) => setCgvAccepted(e.target.checked)}
                     required
                   />
-                  <span className="leading-tight">
+                  <span className="leading-tight block">
                     J'accepte les <a href="/legals" target="_blank" rel="noopener noreferrer" className="underline hover:text-white transition-colors">CGV</a> et <a href="/legals" target="_blank" rel="noopener noreferrer" className="underline hover:text-white transition-colors">Confidentialité</a>. Œuvre produite sur commande.
+                    <span className="block mt-1 opacity-70">Tirage sur papier d'art 100% coton (sans acide), certifié FSC. Emballages recyclables.</span>
                   </span>
                 </label>
               </div>
