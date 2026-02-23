@@ -236,7 +236,7 @@ i18n
                     },
                     acquisition: {
                         selected_work: "Œuvre sélectionnée",
-                        limited_edition: "Édition limitée, signée et numérotée. Produite artisanalement par Picto Paris.",
+                        limited_edition: "Tirage Original (Limité à 30 exemplaires), signé et numéroté. Produit artisanalement par Picto Paris.",
                         custom_request_label: "Une demande spécifique ?",
                         custom_request_btn: "Demander un devis sur mesure",
                         cert_note: "* Votre commande inclut le certificat d'authenticité et la signature de l'artiste.",

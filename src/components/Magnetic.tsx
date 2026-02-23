@@ -6,14 +6,16 @@ export const Magnetic = ({ children }: { children: React.ReactNode }) => {
     const [position, setPosition] = useState({ x: 0, y: 0 });
 
     const handleMouse = (e: React.MouseEvent) => {
+        // Feature detection: Do not enable magnetic math on touch-device screens
+        if (window.matchMedia("(hover: none)").matches) return;
+
         const { clientX, clientY } = e;
-        // Ensure ref is available
         if (!ref.current) return;
 
         const { height, width, left, top } = ref.current.getBoundingClientRect();
         const middleX = clientX - (left + width / 2);
         const middleY = clientY - (top + height / 2);
-        // On divise par 5 pour une attraction subtile (le bouton bouge moins vite que la souris)
+
         setPosition({ x: middleX * 0.2, y: middleY * 0.2 });
     };
 

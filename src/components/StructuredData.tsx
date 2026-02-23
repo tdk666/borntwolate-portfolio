@@ -84,9 +84,17 @@ export const StructuredData: React.FC<StructuredDataProps> = ({ type = 'website'
                         "url": acquireUrl,
                         "priceCurrency": "EUR",
                         "price": basePrice.toFixed(2),
+                        "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
                         "availability": isSoldOut ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
                         "itemCondition": "https://schema.org/NewCondition",
-                        "hasMerchantReturnPolicy": true,
+                        "hasMerchantReturnPolicy": {
+                            "@type": "MerchantReturnPolicy",
+                            "applicableCountry": "FR",
+                            "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                            "merchantReturnDays": "14",
+                            "returnMethod": "https://schema.org/ReturnByMail",
+                            "returnFees": "https://schema.org/CustomerResponsibility"
+                        },
                         "shippingDetails": {
                             "@type": "OfferShippingDetails",
                             "shippingRate": {
