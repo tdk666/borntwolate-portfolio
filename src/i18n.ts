@@ -123,7 +123,12 @@ i18n
                         legals: 'Mentions Légales',
                         instagram_aria: 'Suivez-moi sur Instagram',
                         rights: 'Born Too Late',
-                        prints: "L'Atelier"
+                        prints: "L'Atelier",
+                        newsletter_desc: "Inscrivez-vous pour être notifié en avant-première de la sortie de nos nouveaux tirages d'art limités.",
+                        newsletter_placeholder: "votre@email.com",
+                        newsletter_btn: "S'inscrire",
+                        newsletter_success: "Inscription confirmée. Merci.",
+                        newsletter_error: "Erreur technique. Veuillez réessayer."
                     },
 
                     wall: {
@@ -274,13 +279,6 @@ i18n
                         visualize: "Mise en situation",
                         compare_finish: "Visualiser les formats et finitions",
                         pricing_grid: "Tarifs & Finitions"
-                    },
-                    footer: {
-                        newsletter_desc: "Inscrivez-vous pour être notifié en avant-première de la sortie de nos nouveaux tirages d'art limités.",
-                        newsletter_placeholder: "votre@email.com",
-                        newsletter_btn: "S'inscrire",
-                        newsletter_success: "Inscription confirmée. Merci.",
-                        newsletter_error: "Erreur technique. Veuillez réessayer."
                     }
                 },
             },
@@ -396,7 +394,12 @@ i18n
                         legals: 'Legal Notice',
                         instagram_aria: 'Follow me on Instagram',
                         rights: 'Born Too Late',
-                        prints: "The Workshop"
+                        prints: "The Workshop",
+                        newsletter_desc: "Sign up to be notified in advance of the release of our new limited art prints.",
+                        newsletter_placeholder: "your@email.com",
+                        newsletter_btn: "Subscribe",
+                        newsletter_success: "Subscription confirmed. Thank you.",
+                        newsletter_error: "Technical error. Please try again."
                     },
                     wall: {
                         simulated_size: "Simulation",
@@ -549,13 +552,6 @@ i18n
                         visualize: "Visualize Formats",
                         compare_finish: "Compare Nielsen Frame and Shadow Box",
                         pricing_grid: "Pricing Grid & Finishes"
-                    },
-                    footer: {
-                        newsletter_desc: "Sign up to be notified in advance of the release of our new limited art prints.",
-                        newsletter_placeholder: "your@email.com",
-                        newsletter_btn: "Subscribe",
-                        newsletter_success: "Subscription confirmed. Thank you.",
-                        newsletter_error: "Technical error. Please try again."
                     }
                 },
             },
