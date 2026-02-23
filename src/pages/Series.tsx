@@ -96,7 +96,9 @@ const Series = () => {
                                             <h2 className="text-2xl md:text-3xl font-space-mono text-off-white group-hover:text-warm-sepia transition-colors duration-300">
                                                 {seriesItem.title}
                                             </h2>
-                                            <span className="text-sm font-inter text-silver opacity-60">{seriesItem.year}</span>
+                                            <span className="text-sm font-inter text-silver opacity-60">
+                                                {typeof seriesItem.year === 'string' ? seriesItem.year : seriesItem.year[i18n.language.startsWith('en') ? 'en' : 'fr']}
+                                            </span>
                                         </div>
                                         <p className="mt-4 text-silver font-inter text-sm max-w-md opacity-80 group-hover:opacity-100 transition-opacity">
                                             {seriesItem.description[i18n.language.startsWith('en') ? 'en' : 'fr']}
