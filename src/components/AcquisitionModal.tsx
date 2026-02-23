@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { X, ShieldCheck, ArrowRight, Eye, Globe, Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -28,6 +28,48 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, photoSlu
   const [isLoading, setIsLoading] = useState(false);
   const [stockData, setStockData] = useState<{ remaining: number; total: number } | null>(null);
   const pricingCatalog = usePricing();
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  // Focus Trap Accessibility
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const modal = modalRef.current;
+    if (!modal) return;
+
+    const focusableElements = modal.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusableElements.length === 0) return;
+
+    const firstElement = focusableElements[0] as HTMLElement;
+    const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+    // Slight delay to ensure React commits DOM before grabbing focus natively
+    const timer = setTimeout(() => firstElement.focus(), 50);
+
+    const handleTab = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          lastElement.focus();
+          e.preventDefault();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          firstElement.focus();
+          e.preventDefault();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleTab);
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('keydown', handleTab);
+    };
+  }, [isOpen]);
 
   // Stock Fetching
   useEffect(() => {
@@ -82,7 +124,13 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, photoSlu
 
   return (
     <>
-      <div className="fixed inset-0 z-[60] flex flex-col items-center justify-end md:justify-center p-0 md:p-4">
+      <div
+        ref={modalRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="modal-title"
+        className="fixed inset-0 z-[60] flex flex-col items-center justify-end md:justify-center p-0 md:p-4"
+      >
         <div className="absolute inset-0 bg-black/90 backdrop-blur-sm" onClick={onClose} />
 
         <FadeIn
@@ -118,7 +166,7 @@ export default function AcquisitionModal({ isOpen, onClose, photoTitle, photoSlu
             <div className="absolute bottom-0 left-0 p-6 md:p-8 w-full md:relative md:h-full md:flex md:flex-col md:justify-end z-10 pointer-events-none">
               <div className="pointer-events-auto">
                 <div className="text-[10px] uppercase tracking-widest text-white/60 mb-1 md:mb-2">{t('acquisition.selected_work')}</div>
-                <h2 className="font-serif text-2xl md:text-3xl text-white leading-tight shadow-black drop-shadow-md md:drop-shadow-none">{photoTitle}</h2>
+                <h2 id="modal-title" className="font-serif text-2xl md:text-3xl text-white leading-tight shadow-black drop-shadow-md md:drop-shadow-none">{photoTitle}</h2>
                 <p className="text-xs md:text-sm text-white/80 md:text-white/60 mt-1">
                   {t('acquisition.limited_edition')} {stockData ? `(${stockData.remaining}/${stockData.total})` : ''}
                 </p>

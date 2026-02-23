@@ -109,6 +109,9 @@ export const SEO = ({
             <meta name="description" content={description} />
             <meta name="author" content="Théophile Dequecker" />
             <link rel="canonical" href={absoluteUrl} />
+            <link rel="alternate" hrefLang="fr" href={absoluteUrl} />
+            <link rel="alternate" hrefLang="en" href={`${absoluteUrl}?lang=en`} />
+            <link rel="alternate" hrefLang="x-default" href={absoluteUrl} />
             <meta name="robots" content={robots} />
 
             {/* --- FACEBOOK / OPEN GRAPH --- */}

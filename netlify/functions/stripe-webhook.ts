@@ -30,10 +30,15 @@ export const handler: Handler = async (event) => {
     let stripeEvent: Stripe.Event;
 
     try {
-        stripeEvent = stripe.webhooks.constructEvent(event.body || '', sig, webhookSecret);
+        stripeEvent = stripe.webhooks.constructEvent(
+            event.body || '',
+            sig,
+            webhookSecret
+        );
     } catch (err: any) {
-        console.error(`Webhook Signature Verification Failed: ${err.message}`);
-        return { statusCode: 400, body: `Webhook Error: ${err.message}` };
+        console.error(`[SECURITY] Webhook Signature Verification Failed: ${err.message}`);
+        // IMMEDIATELY halt processing. Do not trust the payload.
+        return { statusCode: 400, body: `Webhook Error: Signature Verification Failed.` };
     }
 
     // Handle specific events

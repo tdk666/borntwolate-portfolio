@@ -15,4 +15,15 @@ export default defineConfig({
       avif: { quality: 70, lossless: false },
     }),
   ],
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'framer-motion': ['framer-motion'],
+          'maps': ['react-simple-maps', 'd3-geo', 'd3-zoom', 'topojson-client']
+        }
+      }
+    }
+  }
 })
