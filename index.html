@@ -2,7 +2,20 @@
 <html lang="fr">
 
 <head>
-  <!-- Google Consent Mode v2 & Analytics Configuration (Externalized) -->
+  <!-- LCP Preload -->
+  <link rel="preload" as="image" href="/assets/living-room-bg-wide.avif" type="image/avif" fetchpriority="high">
+
+  <!-- Google Consent Mode v2 Default -->
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('consent', 'default', {
+      'ad_storage': 'denied',
+      'analytics_storage': 'denied',
+      'ad_user_data': 'denied',
+      'ad_personalization': 'denied'
+    });
+  </script>
   <script async src="/analytics.js"></script>
   <meta charset="UTF-8" />
 

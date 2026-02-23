@@ -74,6 +74,18 @@ export const handler: Handler = async (event) => {
                 `${shippingAddress.line1 || ''} ${shippingAddress.line2 || ''}, ${shippingAddress.postal_code || ''} ${shippingAddress.city || ''}, ${shippingAddress.country || ''}`.trim()
                 : 'N/A';
 
+            // Idempotency Check: Prevent duplicate processing across retries
+            const { data: existingOrder } = await supabase
+                .from('orders')
+                .select('id')
+                .eq('stripe_session_id', session.id)
+                .single();
+
+            if (existingOrder) {
+                console.log(`[IDEMPOTENCY] Webhook received duplicate event for session ${session.id}. Silently ignoring.`);
+                return { statusCode: 200, body: 'Order already processed' };
+            }
+
             // Insert into Supabase 'orders' table
             // Ensure you have an 'orders' table with these columns!
             const { error } = await supabase

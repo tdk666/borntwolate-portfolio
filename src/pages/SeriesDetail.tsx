@@ -131,7 +131,7 @@ const SeriesDetail = () => {
                 <div className="md:col-span-5 md:sticky md:top-32 z-10">
                     <FadeIn delay={0.2}>
                         <span className="block font-space-mono text-xs text-darkroom-red uppercase tracking-widest mb-4">
-                            {t('series_detail.series_no')} {seriesData.length - seriesIndex} — {series.year}
+                            {t('series_detail.series_no')} {seriesData.length - seriesIndex} — <time dateTime={`${series.year}-01-01`}>{series.year}</time>
                         </span>
                         <h1
                             className="font-space-mono font-bold uppercase tracking-tighter leading-[0.8] mb-8 text-outline cursor-default whitespace-nowrap"
