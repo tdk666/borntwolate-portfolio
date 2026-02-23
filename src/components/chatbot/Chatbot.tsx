@@ -144,8 +144,8 @@ export const Chatbot = () => {
 
             if (err.message === 'API_KEY_MISSING') {
                 errorMsg = t('chatbot.err_api_missing');
-            } else if (err.message?.includes('429') || err.message?.includes('Quota')) {
-                errorMsg = t('chatbot.err_quota');
+            } else if (err.message?.includes('429') || err.message?.includes('500') || err.message?.includes('Quota') || err.status === 429 || err.status >= 500) {
+                errorMsg = "Désolé, la galerie est très fréquentée actuellement. N'hésitez pas à me contacter via le formulaire.";
             } else if (err.message) {
                 // Temporary debugging: show the real error
                 errorMsg = t('chatbot.err_generic_human');

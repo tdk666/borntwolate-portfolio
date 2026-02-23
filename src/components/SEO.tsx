@@ -37,6 +37,12 @@ export const SEO = ({
     // Assure l'URL absolue pour l'image
     const absoluteImage = imageUrl.startsWith('http') ? imageUrl : `${baseUrl}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
 
+    // EDGE FUNCTION WIRING:
+    // Encodage strict URI component pour le titre et l'image pour l'Edge Function og-image
+    const encodedTitle = encodeURIComponent(fullTitle);
+    const encodedImage = encodeURIComponent(absoluteImage);
+    const dynamicOgImage = `${baseUrl}/og-image?title=${encodedTitle}&image=${encodedImage}`;
+
     // Schéma JSON-LD de base (Identité)
     const baseSchema = {
         "@context": "https://schema.org",
@@ -121,7 +127,7 @@ export const SEO = ({
             <meta property="og:title" content={fullTitle} />
             <meta property="og:description" content={description} />
             <meta property="og:url" content={absoluteUrl} />
-            <meta property="og:image" content={absoluteImage} />
+            <meta property="og:image" content={dynamicOgImage} />
             <meta property="og:image:alt" content={title} />
             <meta property="og:image:width" content="1200" />
             <meta property="og:image:height" content="630" />
@@ -130,7 +136,7 @@ export const SEO = ({
             <meta name="twitter:card" content="summary_large_image" />
             <meta name="twitter:title" content={fullTitle} />
             <meta name="twitter:description" content={description} />
-            <meta name="twitter:image" content={absoluteImage} />
+            <meta name="twitter:image" content={dynamicOgImage} />
             <meta name="twitter:creator" content="@borntwolate_" />
 
             {/* --- DONNÉES STRUCTURÉES (JSON-LD) --- */}
