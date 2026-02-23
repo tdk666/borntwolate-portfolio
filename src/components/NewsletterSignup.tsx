@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Mail, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { sendEmail } from '../services/email';
+import { supabase } from '../services/supabase';
 
 export const NewsletterSignup = () => {
     const { t } = useTranslation();
@@ -26,9 +27,20 @@ export const NewsletterSignup = () => {
                 reply_message: "Merci pour votre inscription. Vous serez notifié 48h avant la sortie de nos prochains tirages limités."
             });
 
-            // If Supabase is connected, we would ideally do:
-            // await supabase.from('subscribers').insert([{ email }]);
-            // But EmailJS acts as a reliable fallback notification system here.
+            // Enregistrement fiable dans la base de données Supabase
+            if (supabase) {
+                const { error: dbError } = await supabase
+                    .from('subscribers')
+                    .insert([{ email }]);
+
+                if (dbError) {
+                    console.error("Supabase Error:", dbError);
+                    // On ne bloque pas si c'est un doublon (l'utilisateur est déjà inscrit)
+                    if (dbError.code !== '23505') { // 23505 = unique_violation
+                        throw new Error("Erreur base de données");
+                    }
+                }
+            }
 
             setStatus('success');
             setEmail('');
