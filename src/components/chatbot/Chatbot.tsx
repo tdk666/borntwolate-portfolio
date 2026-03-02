@@ -238,7 +238,6 @@ export const Chatbot = () => {
                         onCopy={(e) => e.stopPropagation()}
                         onCut={(e) => e.stopPropagation()}
                         onPaste={(e) => e.stopPropagation()}
-                        onContextMenu={(e) => e.stopPropagation()}
                         onKeyDown={(e) => e.stopPropagation()}
                         onMouseDown={(e) => e.stopPropagation()}
                     // ------------------------------------

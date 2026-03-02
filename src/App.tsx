@@ -58,13 +58,22 @@ function AnimatedRoutes() {
 function App() {
   const { isDarkroom } = useDarkroom();
 
-  // PREVENT RIGHT CLICK
+  // PREVENT RIGHT CLICK AND IMAGE DRAG
   useEffect(() => {
     const handleContextMenu = (e: MouseEvent) => {
       e.preventDefault();
     };
+    const handleDragStart = (e: DragEvent) => {
+      if (e.target && (e.target as HTMLElement).tagName === 'IMG') {
+        e.preventDefault();
+      }
+    };
     document.addEventListener('contextmenu', handleContextMenu);
-    return () => document.removeEventListener('contextmenu', handleContextMenu);
+    document.addEventListener('dragstart', handleDragStart);
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+      document.removeEventListener('dragstart', handleDragStart);
+    };
   }, []);
 
   // EASTER EGG: MOLTBOOK
@@ -124,18 +133,18 @@ function LayoutContent({ isDarkroom }: { isDarkroom: boolean }) {
       >
         <div className="film-grain" style={{ backgroundImage: 'url("/assets/noise.svg")' }}></div>
         <GoogleAnalytics />
-        
+
         {!isLegacyPage && <ScrollToTop />}
         {!isLegacyPage && <Navbar />}
-        
+
         <main id="main-content" className="flex-grow">
           <Suspense fallback={<PageLoader />}>
             <AnimatedRoutes />
           </Suspense>
         </main>
-        
+
         {!isLegacyPage && <Footer />}
-        
+
         <ErrorBoundary fallback={null}>
           <Suspense fallback={null}>
             <Chatbot />
