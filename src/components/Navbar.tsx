@@ -64,6 +64,54 @@ const Navbar = () => {
         { path: '/contact', label: t('nav.contact') },
     ];
 
+    // FOCUS TRAP FOR MOBILE MENU
+    const menuRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        if (!isOpen) return;
+
+        const menu = menuRef.current;
+        if (!menu) return;
+
+        const focusableElements = menu.querySelectorAll(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0] as HTMLElement;
+        const lastElement = focusableElements[focusableElements.length - 1] as HTMLElement;
+
+        // Ensure focus goes to the first element when menu opens
+        const timer = setTimeout(() => firstElement.focus(), 50);
+
+        const handleTab = (e: KeyboardEvent) => {
+            if (e.key !== 'Tab') return;
+
+            if (e.shiftKey) {
+                if (document.activeElement === firstElement) {
+                    lastElement.focus();
+                    e.preventDefault();
+                }
+            } else {
+                if (document.activeElement === lastElement) {
+                    firstElement.focus();
+                    e.preventDefault();
+                }
+            }
+        };
+
+        const handleEscape = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') setIsOpen(false);
+        };
+
+        document.addEventListener('keydown', handleTab);
+        document.addEventListener('keydown', handleEscape);
+        return () => {
+            clearTimeout(timer);
+            document.removeEventListener('keydown', handleTab);
+            document.removeEventListener('keydown', handleEscape);
+        };
+    }, [isOpen]);
+
     return (
         <>
             <motion.nav
@@ -195,7 +243,7 @@ const Navbar = () => {
                         </button>
                     </div>
 
-                    <button onClick={() => setIsOpen(!isOpen)} aria-label="Ouvrir le menu de navigation" className="text-off-white drop-shadow-lg -mr-2 p-2">
+                    <button onClick={() => setIsOpen(!isOpen)} aria-label={isOpen ? "Fermer le menu" : "Ouvrir le menu de navigation"} aria-expanded={isOpen} className="text-off-white drop-shadow-lg -mr-2 p-2">
                         {isOpen ? <X size={28} /> : <Menu size={28} />}
                     </button>
                 </div>
@@ -204,27 +252,34 @@ const Navbar = () => {
             <AnimatePresence>
                 {isOpen && (
                     <motion.div
+                        ref={menuRef}
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label="Menu de navigation principal"
                         initial={{ opacity: 0, y: '-100%' }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: '-100%' }}
                         className="fixed inset-0 bg-black z-[90] flex flex-col items-center justify-center space-y-8 md:hidden"
                     >
+                        {/* Trap Focus Helper - Hidden Button to allow tabbing back to Close */}
+                        <button className="sr-only">Haut du menu</button>
+
                         {links.map((link, i) => (
                             <motion.div key={link.path} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.1 }}>
-                                <Link to={link.path} className="text-2xl font-space-mono uppercase tracking-widest text-off-white hover:text-darkroom-red transition-colors hover-analog">
+                                <Link to={link.path} onClick={() => setIsOpen(false)} className="text-2xl font-space-mono uppercase tracking-widest text-off-white hover:text-darkroom-red transition-colors hover-analog px-4 py-2 block text-center break-words max-w-[90vw]">
                                     {link.label}
                                 </Link>
                             </motion.div>
                         ))}
                         <div className="pt-8 border-t border-white/10 w-48 flex flex-col items-center gap-6">
-                            <button onClick={toggleLang} className="font-space-mono text-sm text-silver uppercase tracking-widest">
+                            <button onClick={toggleLang} className="font-space-mono text-sm text-silver uppercase tracking-widest px-4 py-2">
                                 {i18n.language === 'fr' ? 'Switch to EN' : 'Passer en FR'}
                             </button>
                             <div className="flex items-center gap-8">
-                                <button onClick={toggleDarkroom} aria-label="Mode Chambre Noire" className="text-silver hover:text-darkroom-red transition-colors">
+                                <button onClick={toggleDarkroom} aria-label="Mode Chambre Noire" className="text-silver hover:text-darkroom-red transition-colors p-2">
                                     {isDarkroom ? <Sun size={24} /> : <Moon size={24} />}
                                 </button>
-                                <a href="https://instagram.com/borntwolate" target="_blank" rel="noopener noreferrer" aria-label="Suivre sur Instagram" className="text-silver hover:text-darkroom-red transition-colors">
+                                <a href="https://instagram.com/borntwolate" target="_blank" rel="noopener noreferrer" aria-label="Suivre sur Instagram" className="text-silver hover:text-darkroom-red transition-colors p-2">
                                     <Instagram size={24} />
                                 </a>
                             </div>

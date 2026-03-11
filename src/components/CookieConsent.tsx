@@ -46,32 +46,37 @@ export const CookieConsent = () => {
         <AnimatePresence>
             {isVisible && (
                 <motion.div
-                    initial={{ y: 100, opacity: 0 }}
+                    initial={{ y: 200, opacity: 0 }}
                     animate={{ y: 0, opacity: 1 }}
-                    exit={{ y: 100, opacity: 0 }}
-                    className="fixed bottom-4 left-4 right-4 md:left-auto md:right-8 md:w-96 bg-[#1a1a1a] border border-white/10 p-6 shadow-2xl z-[100] flex flex-col gap-4"
+                    exit={{ y: 200, opacity: 0 }}
+                    transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                    className="fixed bottom-4 left-4 right-4 md:left-auto md:right-8 md:w-[420px] bg-[#121212] border border-white/5 rounded-2xl shadow-2xl z-[100] flex flex-col overflow-hidden"
                 >
-                    <div className="space-y-2">
-                        <p className="font-space-mono text-xs text-darkroom-red uppercase tracking-widest">
-                            Cookies & Vie Privée
-                        </p>
-                        <p className="font-inter text-xs text-silver leading-relaxed">
-                            Ce site utilise des cookies pour analyser le trafic et améliorer votre expérience.
-                        </p>
-                    </div>
-                    <div className="flex gap-4">
-                        <button
-                            onClick={handleAccept}
-                            className="flex-1 bg-off-white text-black font-space-mono text-xs uppercase tracking-widest py-3 hover:bg-white transition-colors"
-                        >
-                            Accepter
-                        </button>
-                        <button
-                            onClick={handleDecline}
-                            className="flex-1 bg-transparent border border-white/20 text-silver font-space-mono text-xs uppercase tracking-widest py-3 hover:text-white hover:border-white transition-colors"
-                        >
-                            Refuser
-                        </button>
+                    <div className="p-6 md:p-8 space-y-4">
+                        <div className="space-y-3">
+                            <h3 className="font-serif text-xl text-white">
+                                Soutenez mon travail.
+                            </h3>
+                            <p className="font-inter text-sm text-silver/80 leading-relaxed">
+                                Les analyses de trafic (cookies analytiques) m'aident énormément à comprendre ce qui vous plaît et à faire grandir ce projet artistique indépendant. Acceptez-vous de partager ces données anonymes ?
+                            </p>
+                        </div>
+
+                        <div className="flex flex-col gap-3 pt-2">
+                            <button
+                                onClick={handleAccept}
+                                className="w-full bg-white text-black font-space-mono text-sm uppercase tracking-widest py-4 rounded-xl hover:bg-gray-200 transition-colors shadow-lg shadow-white/5 font-bold"
+                            >
+                                Accepter & Soutenir
+                            </button>
+
+                            <button
+                                onClick={handleDecline}
+                                className="w-full bg-transparent text-silver/50 font-space-mono text-[10px] uppercase tracking-widest py-2 hover:text-white transition-colors underline decoration-white/20 underline-offset-4"
+                            >
+                                Continuer avec l'essentiel uniquement
+                            </button>
+                        </div>
                     </div>
                 </motion.div>
             )}

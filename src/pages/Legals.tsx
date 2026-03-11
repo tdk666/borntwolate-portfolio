@@ -37,7 +37,7 @@ const Legals = () => {
                                 40 rue du Père Corentin<br />
                                 75014 Paris, France<br />
                                 Email : <a href="mailto:theophile.dequecker@gmail.com" className="hover:text-darkroom-red transition-colors underline">theophile.dequecker@gmail.com</a><br />
-                                <span className="text-xs opacity-50 italic">Statut : Micro-entreprise en cours d'immatriculation</span>
+                                <span className="text-xs opacity-50 italic">SIRET : 101 173 763 00018</span>
                             </p>
                         </div>
                         <div>
