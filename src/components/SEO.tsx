@@ -67,6 +67,8 @@ export const SEO = ({
                 "@id": "https://borntwolate.com",
                 "url": "https://borntwolate.com",
                 "priceRange": "€€",
+                "taxID": "94037981600010",
+                "vatID": "FR00940379816",
                 "address": {
                     "@type": "PostalAddress",
                     "streetAddress": "",
