@@ -20,11 +20,12 @@ export const useSound = (soundFile: string, { loop = false, volume = 0.5 }: UseS
 
     useEffect(() => {
         return () => {
-            audio.pause();
+            audio?.pause();
         };
     }, [audio]);
 
     const play = useCallback(() => {
+        if (!audio) return;
         if (!loop) {
             // eslint-disable-next-line react-hooks/immutability
             audio.currentTime = 0;
@@ -34,7 +35,7 @@ export const useSound = (soundFile: string, { loop = false, volume = 0.5 }: UseS
     }, [audio, loop]);
 
     const stop = useCallback(() => {
-        audio.pause();
+        audio?.pause();
         if (loop) setIsPlaying(false);
     }, [audio, loop]);
 
