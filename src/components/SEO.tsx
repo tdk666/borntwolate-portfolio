@@ -23,9 +23,10 @@ export const SEO = ({
     const fullTitle = title === siteTitle ? title : `${title} | ${siteTitle}`;
     const baseUrl = 'https://borntwolate.com';
 
-    // URL Canonique propre
+    // URL Canonique propre (Removing trailing slashes to prevent dilution)
     const relativeUrl = url.startsWith('/') ? url : `/${url}`;
-    const absoluteUrl = `${baseUrl}${relativeUrl === '/' ? '' : relativeUrl}`;
+    const cleanRelativeUrl = relativeUrl !== '/' && relativeUrl.endsWith('/') ? relativeUrl.slice(0, -1) : relativeUrl;
+    const absoluteUrl = `${baseUrl}${cleanRelativeUrl === '/' ? '' : cleanRelativeUrl}`;
 
     // Gestion Intelligente de l'Image
     // 1. Si une image spécifique est fournie, on l'utilise.
@@ -100,6 +101,35 @@ export const SEO = ({
         ]
     };
 
+    // BreadcrumbList dynamique basé sur l'URL
+    const pathSegments = cleanRelativeUrl.split('/').filter(Boolean);
+    if (pathSegments.length > 0) {
+        const itemListElement = pathSegments.map((segment, index) => {
+            const path = `/${pathSegments.slice(0, index + 1).join('/')}`;
+            // If it's the last segment, use the SEO title for maximal semantic accuracy, else capitalize the segment
+            const name = index === pathSegments.length - 1 ? fullTitle.split(' |')[0] : segment.charAt(0).toUpperCase() + segment.slice(1).replace(/-/g, ' ');
+            return {
+                "@type": "ListItem",
+                "position": index + 2,
+                "name": name,
+                "item": `${baseUrl}${path}`
+            };
+        });
+        
+        itemListElement.unshift({
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Accueil",
+            "item": baseUrl
+        });
+
+        (baseSchema["@graph"] as any[]).push({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": itemListElement
+        });
+    }
+
     const finalSchema = structuredData
         ? {
             "@context": "https://schema.org",
@@ -114,35 +144,35 @@ export const SEO = ({
         <Helmet>
             {/* --- STANDARD --- */}
             <title>{fullTitle}</title>
-            <meta name="description" content={description} />
-            <meta name="author" content="Théophile Dequecker" />
-            <link rel="canonical" href={absoluteUrl} />
-            <link rel="alternate" hrefLang="fr" href={absoluteUrl} />
-            <link rel="alternate" hrefLang="en" href={`${absoluteUrl}?lang=en`} />
-            <link rel="alternate" hrefLang="x-default" href={absoluteUrl} />
-            <meta name="robots" content={robots} />
+            <meta name="description" content={description} data-rh="true" />
+            <meta name="author" content="Théophile Dequecker" data-rh="true" />
+            <link rel="canonical" href={absoluteUrl} data-rh="true" />
+            <link rel="alternate" hrefLang="fr" href={absoluteUrl} data-rh="true" />
+            <link rel="alternate" hrefLang="en" href={`${absoluteUrl}?lang=en`} data-rh="true" />
+            <link rel="alternate" hrefLang="x-default" href={absoluteUrl} data-rh="true" />
+            <meta name="robots" content={robots} data-rh="true" />
 
             {/* --- FACEBOOK / OPEN GRAPH --- */}
-            <meta property="og:site_name" content="Born Too Late" />
-            <meta property="og:locale" content="fr_FR" />
-            <meta property="og:type" content={type} />
-            <meta property="og:title" content={fullTitle} />
-            <meta property="og:description" content={description} />
-            <meta property="og:url" content={absoluteUrl} />
-            <meta property="og:image" content={dynamicOgImage} />
-            <meta property="og:image:alt" content={title} />
-            <meta property="og:image:width" content="1200" />
-            <meta property="og:image:height" content="630" />
+            <meta property="og:site_name" content="Born Too Late" data-rh="true" />
+            <meta property="og:locale" content="fr_FR" data-rh="true" />
+            <meta property="og:type" content={type} data-rh="true" />
+            <meta property="og:title" content={fullTitle} data-rh="true" />
+            <meta property="og:description" content={description} data-rh="true" />
+            <meta property="og:url" content={absoluteUrl} data-rh="true" />
+            <meta property="og:image" content={dynamicOgImage} data-rh="true" />
+            <meta property="og:image:alt" content={title} data-rh="true" />
+            <meta property="og:image:width" content="1200" data-rh="true" />
+            <meta property="og:image:height" content="630" data-rh="true" />
 
             {/* --- TWITTER --- */}
-            <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:title" content={fullTitle} />
-            <meta name="twitter:description" content={description} />
-            <meta name="twitter:image" content={dynamicOgImage} />
-            <meta name="twitter:creator" content="@borntwolate_" />
+            <meta name="twitter:card" content="summary_large_image" data-rh="true" />
+            <meta name="twitter:title" content={fullTitle} data-rh="true" />
+            <meta name="twitter:description" content={description} data-rh="true" />
+            <meta name="twitter:image" content={dynamicOgImage} data-rh="true" />
+            <meta name="twitter:creator" content="@borntwolate_" data-rh="true" />
 
             {/* --- DONNÉES STRUCTURÉES (JSON-LD) --- */}
-            <script type="application/ld+json">
+            <script type="application/ld+json" data-rh="true">
                 {JSON.stringify(finalSchema)}
             </script>
         </Helmet>

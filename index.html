@@ -3,13 +3,16 @@
 
 <head>
   <!-- LCP Preload (Star Image) -->
-  <link rel="preload" as="image" href="/assets/living-room-bg-wide.avif" type="image/avif" fetchpriority="high">
 
   <!-- FOUT/CLS Mitigation: Font Preconnects MUST be early -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Inter:ital,wght@0,100..900;1,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+    rel="stylesheet"
+  >
 
-  <!-- Google Consent Mode v2 Default (MUST Be Executed Before React or GTM) -->
+  <!-- Google Consent Mode v2 Default (Deferred) -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
@@ -20,40 +23,68 @@
       'ad_personalization': 'denied',
       'wait_for_update': 500
     });
+    
+    // Defer GTM to prioritize LCP
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const s = document.createElement('script');
+        s.src = '/analytics.js';
+        s.async = true;
+        document.head.appendChild(s);
+      }, 2000);
+    });
   </script>
-  <script async src="/analytics.js"></script>
   <meta charset="UTF-8" />
-
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="p:domain_verify" content="8fd9de69d0e59997286dabd0a1e062f3" />
 
-  <!-- SEO PRIMARY (Audit Correction) -->
-  <title>Borntwolate | Photographie Argentique & Tirages d'Art - Paris</title>
+  <!-- SEO PRIMARY (Managed via SEO.tsx / Edge Functions) -->
+  <title>Borntwolate | Photographie Argentique &amp; Tirages d'Art - Paris</title>
 
-
-  <!-- OPEN GRAPH / SOCIAL -->
+  <!-- Open Graph (Social Sharing) -->
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://borntwolate.com/" />
-  <meta property="og:title" content="Borntwolate | Photographie Argentique & Tirages d'Art - Paris" />
-  <meta property="og:description"
-    content="Tirages d'art limités, Photographe Paris, Esthétique noir et blanc. Découvrez l'univers argentique de Borntwolate." />
-  <meta property="og:image" content="https://borntwolate.com/social-card.jpg" />
+  <meta property="og:url" content="https://www.borntwolate.com/" />
+  <meta property="og:title" content="Born Too Late — Photographie Argentique Paris" />
+  <meta property="og:description" content="Tirages d'art argentiques numérotés. Photographe Paris — Rollei 35, Portra 400, Kodak TRI-X." />
+  <meta property="og:image" content="https://www.borntwolate.com/social-card.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:site_name" content="Born Too Late" />
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Born Too Late — Photographie Argentique Paris" />
+  <meta name="twitter:description" content="Tirages d'art argentiques numérotés. Photographe Paris — Rollei 35, Portra 400, Kodak TRI-X." />
+  <meta name="twitter:image" content="https://www.borntwolate.com/social-card.jpg" />
 
   <!-- SCHEMA.ORG JSON-LD (Strict Audit) -->
   <!-- Moved to src/components/SEO.tsx for dynamic handling -->
 
-  <meta http-equiv="Content-Security-Policy"
-    content="default-src 'self'; script-src 'self' https://cdn.emailjs.com https://www.googletagmanager.com https://js.stripe.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com; img-src 'self' data: blob: https://www.google-analytics.com https://stats.g.doubleclick.net; connect-src 'self' https://api.emailjs.com https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://region1.google-analytics.com https://stats.g.doubleclick.net https://generativelanguage.googleapis.com https://*.googleapis.com https://*.google.com https://naypugqytjwdmcvtocel.supabase.co https://ingesteer.services-prod.nsvcs.net; frame-src 'self' https://js.stripe.com https://hooks.stripe.com;">
+  <!-- NOTE: CSP is enforced via netlify.toml HTTP headers (higher priority than meta). DO NOT add a CSP meta tag here. -->
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap"
-    rel="stylesheet">
+  <style>
+    /* Critical LCP Shell Styles */
+    body { background-color: #000; margin: 0; padding: 0; }
+    #root:empty { display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; width: 100vw; }
+    .hero-shell { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; font-family: 'Playfair Display', serif; }
+    .hero-shell h1 { color: #fff; font-size: 3rem; font-style: italic; margin-bottom: 1.5rem; opacity: 0.9; }
+    @media (min-width: 768px) { .hero-shell h1 { font-size: 5rem; } }
+  </style>
 </head>
 
 <body>
 
-  <div id="root"></div>
+  <div id="root">
+    <!-- Static LCP Shell (Replaced during Hydration) -->
+    <div class="hero-shell">
+      <h1>Théophile Dequecker</h1>
+      <div style="height: 1px; width: 8rem; background-color: rgba(185, 28, 28, 0.8); margin-bottom: 1.5rem;"></div>
+      <p style="font-family: 'Inter', sans-serif; color: rgba(255,255,255,0.7); font-size: 10px; text-transform: uppercase; letter-spacing: 0.5em;">
+        Photographe Argentique Paris
+      </p>
+    </div>
+  </div>
   <!-- Netlify Form Detection -->
   <form name="contact" netlify netlify-honeypot="bot-field" hidden>
     <input type="text" name="user_name" />

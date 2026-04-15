@@ -34,10 +34,10 @@ const Legals = () => {
                             <h3 className="font-bold text-off-white mb-2">{t('legals.section1.editor')}</h3>
                             <p>
                                 <strong>Théophile Dequecker</strong> (Born Two Late)<br />
-                                40 rue du Père Corentin<br />
-                                75014 Paris, France<br />
+                                Paris 14e, France<br />
+                                <strong>Directeur de la publication</strong><br />
                                 Email : <a href="mailto:theophile.dequecker@gmail.com" className="hover:text-darkroom-red transition-colors underline">theophile.dequecker@gmail.com</a><br />
-                                <span className="text-xs opacity-50 italic">SIRET : 101 173 763 00018</span>
+                                <span className="text-xs opacity-50 italic">SIRET : 940 379 816 00010</span>
                             </p>
                         </div>
                         <div>
@@ -102,6 +102,18 @@ const Legals = () => {
                             <h3 className="font-bold text-off-white">{t('legals.section4.article4.title')}</h3>
                             <p dangerouslySetInnerHTML={{ __html: t('legals.section4.article4.text') }}></p>
                         </article>
+                    </div>
+                </section>
+
+                {/* --- 5. LIVRAISON ET RETOURS (GMC) --- */}
+                <section className="space-y-4">
+                    <h2 id="shipping-returns" className="text-xl font-space-mono text-off-white uppercase tracking-widest border-l-2 border-darkroom-red pl-4">{t('legals.section5.title')}</h2>
+                    <div className="space-y-4 text-justify">
+                        <p dangerouslySetInnerHTML={{ __html: t('legals.section5.shipping') }}></p>
+                        <p dangerouslySetInnerHTML={{ __html: t('legals.section5.returns') }}></p>
+                        <p className="font-bold border-t border-white/5 pt-4">
+                            Contact Support : <a href="mailto:theophile.dequecker@gmail.com" className="hover:text-darkroom-red underline">theophile.dequecker@gmail.com</a>
+                        </p>
                     </div>
                 </section>
             </motion.div>

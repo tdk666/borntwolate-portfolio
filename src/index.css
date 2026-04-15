@@ -139,6 +139,10 @@ textarea {
   color: #E5E5E5;
 }
 
+.text-balance {
+  text-wrap: balance;
+}
+
 /* Typographie "Outline" (Contour) */
 .text-outline {
   -webkit-text-stroke: 1px currentColor;
@@ -152,16 +156,17 @@ textarea {
   /* Se remplit au survol */
 }
 
-/* Lettrine Magazine */
+/* Lettrine Magazine (Robuste) */
 .drop-cap::first-letter {
   float: left;
   font-family: var(--font-serif);
-  font-size: 4.5rem;
-  line-height: 0.8;
-  padding-right: 1rem;
-  padding-top: 0.5rem;
+  font-size: 5rem;
+  line-height: 0.7;
+  margin-right: 0.75rem;
+  margin-top: 0.5rem;
   color: var(--color-darkroom-red);
   font-style: italic;
+  font-weight: 700;
 }
 
 /* Custom Scrollbar for Info Panels */
@@ -182,4 +187,106 @@ textarea {
 .custom-scrollbar {
   overscroll-behavior: contain;
   -webkit-overflow-scrolling: touch;
+}
+
+/* ============================================================
+   BROOK DA SYSTEM — Button Tokens (Unified CTA Design)
+   Two tiers: Primary (conversion focus) / Ghost (secondary)
+   ============================================================ */
+
+/* --- TIER 1: Primary CTA — Glassmorphism + Red fill-sweep --- */
+.btn-primary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background-color: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f0f0f0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  overflow: hidden;
+  transition: border-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-darkroom-red);
+  opacity: 0;
+  transform: translateX(-101%);
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+  z-index: 0;
+}
+.btn-primary:hover::before {
+  transform: translateX(0);
+  opacity: 1;
+}
+.btn-primary:hover {
+  border-color: rgba(139, 0, 0, 0.6);
+}
+/* Ensure ALL direct content (elements + text via span) stays above ::before */
+.btn-primary > *,
+.btn-primary > span {
+  position: relative;
+  z-index: 1;
+}
+
+/* --- TIER 2: Ghost CTA — Border + subtle fill --- */
+.btn-ghost {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  background-color: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #f0f0f0;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  overflow: hidden;
+  transition: border-color 0.3s ease, color 0.3s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+.btn-ghost::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: rgba(255, 255, 255, 0.06);
+  opacity: 0;
+  transform: translateX(-101%);
+  transition: transform 0.45s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.3s ease;
+}
+.btn-ghost:hover::before {
+  transform: translateX(0);
+  opacity: 1;
+}
+.btn-ghost:hover {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+.btn-ghost > *,
+.btn-ghost > span {
+  position: relative;
+  z-index: 1;
+}
+
+/* Mobile perf: remove backdrop-blur */
+@media (max-width: 768px) {
+  .btn-primary {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background-color: rgba(139, 0, 0, 0.12);
+  }
 }

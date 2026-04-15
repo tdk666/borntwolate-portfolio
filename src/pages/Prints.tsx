@@ -127,6 +127,20 @@ export default function Prints() {
                             );
                         })}
                     </div>
+
+                    {/* FINAL CALL TO ACTION */}
+                    <div className="mt-24 text-center pb-12">
+                        <h2 className="font-serif text-3xl mb-8">{t('prints.cta_title')}</h2>
+                        <Link
+                            to="/series"
+                            className="inline-block px-12 py-5 bg-white text-black font-space-mono text-sm uppercase tracking-[0.3em] hover:bg-silver transition-all duration-300"
+                        >
+                            {t('prints.cta_button')}
+                        </Link>
+                        <p className="mt-6 text-white/40 text-xs">
+                            {t('prints.cta_note')}
+                        </p>
+                    </div>
                 </div>
             </FadeIn>
 

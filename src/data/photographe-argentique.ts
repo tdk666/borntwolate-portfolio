@@ -5,10 +5,10 @@ export const photographeArgentiqueData = {
             description: "Photographe argentique basé à Paris. Borntwolate capture la mélancolie urbaine et l'errance. Découvrez des tirages d'art limités (Qualité Musée / Picto) pour collectionneurs exigeants."
         },
         hero: {
-            title: "Photographe argentique : L'art de capturer ce qui va disparaître",
+            title: "Photographe argentique Paris : L'art de capturer ce qui va disparaître",
             text: [
                 "Dans un monde saturé d'images instantanées et jetables, le photographe argentique fait le choix de la pellicule comme un acte de résistance. \"BornTwoLate\" incarne cette sensation d'arriver juste après la bataille, cette volonté de figer une époque qui nous glisse entre les doigts. Ici, il ne s'agit pas de pixels froids, mais de lumière fixée par la chimie, de grain vivant et d'imperfections sublimes. Une relation intime se noue entre le sujet et la mécanique de précision du Rollei 35.",
-                "Que vous soyez un amateur d'esthétique urbaine ou un collectionneur averti, vous entrez dans un univers où chaque clic est une décision irréversible. Le travail de Borntwolate est une ode à la patience : figer sur une pellicule sensible l'atmosphère des rues de Paris, la verticalité de New York ou l'étrangeté de Montréal, pour en faire des souvenirs tangibles et intemporels."
+                "Que vous soyez un amateur d'esthétique urbaine ou un collectionneur averti, vous entrez dans un univers où chaque clic est une décision irréversible. Le travail de Borntwolate est une ode à la patience : depuis son ancrage à Paris, cet auteur s'efforce de figer sur pellicule sensible l'atmosphère des rues de la capitale, la verticalité de New York ou l'étrangeté de Montréal, pour en faire des tirages d'art de collection palpables et intemporels."
             ]
         },
         sections: [
@@ -81,6 +81,10 @@ export const photographeArgentiqueData = {
                     a: "Oui. La boutique propose les standards (20x30, 30x45, 40x60, 60x90, 70x105), mais des formats personnalisés peuvent être réalisés sur demande via le formulaire de contact, toujours sur papier Canson Infinity Platine Fibre Rag."
                 },
                 {
+                    q: "Proposez-vous des shootings ou portraits argentiques à Paris ?",
+                    a: "La démarche de Borntwolate se concentre presque exclusivement sur la création de tirages d'art (photographie de rue, errance, paysages). Les prestations sur commande (portraits, mariages) ne sont pas le cœur de métier, mais des collaborations ou projets éditoriaux ciblés à Paris intra-muros peuvent être étudiés sur dossier."
+                },
+                {
                     q: "Quels sont les délais pour recevoir une œuvre ?",
                     a: "L'artisanat demande du temps. Chaque tirage est réalisé à la commande par le laboratoire Picto à Paris. Comptez généralement entre 10 et 15 jours pour la production, le contrôle qualité et l'expédition sécurisée en emballage renforcé."
                 },
@@ -90,7 +94,7 @@ export const photographeArgentiqueData = {
                 },
                 {
                     q: "Pourquoi choisir la finition Caisse Américaine ?",
-                    a: "C'est la finition \"Luxe\" par excellence. Le tirage est contrecollé et semble flotter à l'intérieur d'un cadre en bois, sans vitre. Cela offre une immersion totale dans l'image, sans reflet, mettant en valeur la texture du papier et le grain de la pellicule. C'est la finition recommandée pour les grands formats."
+                    a: "C'est la finition \"Luxe\" par excellence. Le tirage est contrecollé et semble flotter à l'intérieur d'un cadre en bois, sans vitre. Cela offre une immersion totale dans l'image, sans reflet, mettant en valeur la texture du papier et le grain de la pellicule. C'est la finition recommandée pour les grands formats artistiques."
                 }
             ]
         },

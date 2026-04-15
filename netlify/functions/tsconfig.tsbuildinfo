@@ -1,1 +1,1 @@
-{"root":["./admin-sheets-proxy.ts","./ai-curator.ts","./get-prices.ts","./stripe-webhook.ts","./verify-admin.ts"],"version":"5.9.3"}
+{"root":["./admin-get-order.ts","./admin-sheets-proxy.ts","./ai-curator.ts","./api-chat.ts","./get-prices.ts","./legacy-api.ts","./stripe-webhook.ts","./verify-admin.ts"],"version":"5.9.3"}

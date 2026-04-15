@@ -267,10 +267,10 @@ const Contact = () => {
                     </p>
                     <a
                         href="/"
-                        className="inline-flex items-center gap-2 text-xs font-space-mono text-off-white border border-white/20 px-8 py-4 hover:bg-white/5 hover:border-off-white transition-all duration-300 uppercase tracking-widest mt-8"
+                        className="btn-ghost mt-8"
                     >
                         <ArrowLeft size={16} />
-                        {t('contact.back_gallery')}
+                        <span>{t('contact.back_gallery')}</span>
                     </a>
                 </FadeIn>
             </div>
@@ -466,10 +466,10 @@ const Contact = () => {
                         <button
                             type="submit"
                             disabled={status === 'submitting'}
-                            className="text-off-white font-space-mono uppercase tracking-widest text-sm border border-white/20 px-8 py-3 hover:bg-white/5 hover:border-off-white transition-all duration-300 disabled:opacity-50 w-full md:w-auto"
+                            className="btn-primary w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {status === 'submitting' ? t('contact.developing') :
-                                (subject === 'acquisition') ? t('contact.validate_request') : t('contact.send')}
+                            <span>{status === 'submitting' ? t('contact.developing') :
+                                (subject === 'acquisition') ? t('contact.validate_request') : t('contact.send')}</span>
                         </button>
                     </div>
 

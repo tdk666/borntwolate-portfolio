@@ -41,20 +41,16 @@ export const GoogleAnalytics = () => {
             });
         };
 
-        const consent = localStorage.getItem('cookie-consent');
 
-        // Initial Page View check
-        if (consent === 'accepted') {
-            injectScript();
-            // Allow script to load before firing config
-            setTimeout(executeTracking, 500);
-        }
+        // INJECTION INCONDITIONNELLE POUR CONSENT MODE V2
+        // Le script est bloqué par défaut en 'denied' dans index.html, mais DOIT se 
+        // charger pour envoyer les pings anonymisés de modélisation.
+        injectScript();
+        setTimeout(executeTracking, 500);
 
         const handleStorageChange = () => {
-            if (localStorage.getItem('cookie-consent') === 'accepted') {
-                injectScript();
-                setTimeout(executeTracking, 500);
-            }
+            // Le changement d'état est géré directement via gtag('consent', 'update') 
+            // dans CookieConsent.tsx. Pas besoin de re-injecter ici.
         };
 
         window.addEventListener('storage', handleStorageChange);

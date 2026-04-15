@@ -54,7 +54,7 @@ export const sendEmail = async (data: ChameleonEmailParams) => {
             date: new Date().toLocaleString('fr-FR'),
         };
 
-        console.log(`🦎 [Chameleon Email] Sending [${data.contact_type}]...`, templateParams);
+
 
         // 1. Admin Notification
         const adminResponse = await emailjs.send(

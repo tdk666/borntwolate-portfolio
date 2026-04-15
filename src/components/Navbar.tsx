@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Menu, X, Instagram, Moon, Sun, Search } from 'lucide-react';
 import { useSearch } from '../context/SearchContext';
 import { useDarkroom } from '../context/DarkroomContext';
-import { useSound } from '../hooks/useSound';
+// import { useSound } from '../hooks/useSound';
 // ... previous imports
 
 const Navbar = () => {
@@ -51,10 +51,11 @@ const Navbar = () => {
         }
     };
 
-    // SOUND DESIGN
-    // SFX for navigation interaction
+    // SOUND DESIGN (Deactivated due to missing assets to preserve Best Practices 100/100)
+    /*
     const { play: playClick } = useSound('/sounds/shutter-click.mp3', { volume: 0.4 });
     const { play: playHover } = useSound('/sounds/slide-projector.mp3', { volume: 0.1 });
+    */
 
     const links = [
         { path: '/portfolio', label: t('nav.portfolio') },
@@ -173,10 +174,10 @@ const Navbar = () => {
                                 key={link.path}
                                 to={link.path}
                                 onClick={() => {
-                                    playClick();
+                                    // playClick();
                                     resetSearch();
                                 }}
-                                onMouseEnter={() => playHover()}
+                                // onMouseEnter={() => playHover()}
                                 className="relative group px-4 py-2 overflow-hidden"
                             >
                                 <span className={`relative z-10 transition-colors duration-500 ${isActive ? 'text-off-white font-medium' : 'text-off-white/90 group-hover:text-warm-sepia'} hover-analog inline-block drop-shadow-lg`}>

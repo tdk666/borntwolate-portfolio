@@ -1,10 +1,10 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { SEO } from '../components/SEO';
 import NotFound from './NotFound';
 import { motion, AnimatePresence } from 'framer-motion';
 import { seriesData } from '../data/photos';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Masonry from 'react-masonry-css';
 import Lightbox from '../components/Lightbox';
 import { useTranslation } from 'react-i18next';
@@ -16,6 +16,7 @@ import { StructuredData } from '../components/StructuredData';
 
 const SeriesDetail = () => {
     const { id, photoId } = useParams<{ id: string; photoId?: string }>();
+    const navigate = useNavigate();
     const { isDarkroom } = useDarkroom();
     const { t, i18n } = useTranslation();
     const currentLang = i18n.language.split('-')[0] as 'fr' | 'en';
@@ -28,15 +29,7 @@ const SeriesDetail = () => {
         return <NotFound />;
     }
 
-    const breadcrumbSchema = {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-            { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://borntwolate.com" },
-            { "@type": "ListItem", "position": 2, "name": "Portfolio", "item": "https://borntwolate.com/portfolio" },
-            { "@type": "ListItem", "position": 3, "name": currentSeries.title, "item": `https://borntwolate.com/series/${currentSeries.id}` }
-        ]
-    };
+
 
     const series = currentSeries;
     const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
@@ -67,46 +60,52 @@ const SeriesDetail = () => {
     const nextSeries = seriesData[(seriesIndex + 1) % seriesData.length];
     const prevSeries = seriesData[(seriesIndex - 1 + seriesData.length) % seriesData.length];
 
-    const handleNextPhoto = () => selectedPhotoIndex !== null && setSelectedPhotoIndex((prev) => (prev! + 1) % series.photos.length);
-    const handlePrevPhoto = () => selectedPhotoIndex !== null && setSelectedPhotoIndex((prev) => (prev! - 1 + series.photos.length) % series.photos.length);
+    const handleNextPhoto = () => {
+        if (selectedPhotoIndex === null) return;
+        const nextIndex = (selectedPhotoIndex + 1) % series.photos.length;
+        const nextPhoto = series.photos[nextIndex];
+        navigate(`/series/${series.id}/${nextPhoto.slug}`, { replace: true });
+    };
+    const handlePrevPhoto = () => {
+        if (selectedPhotoIndex === null) return;
+        const prevIndex = (selectedPhotoIndex - 1 + series.photos.length) % series.photos.length;
+        const prevPhoto = series.photos[prevIndex];
+        navigate(`/series/${series.id}/${prevPhoto.slug}`, { replace: true });
+    };
+    const handleClose = () => {
+        setSelectedPhotoIndex(null);
+        navigate(`/series/${series.id}`);
+    };
 
     // HYBRID FLUID TYPOGRAPHY LOGIC (Mobile & Desktop)
     // 1. Split title into lines based on length (Short: 1 word/line, Long: 2 words/line)
     // 2. Calculate font size based on the longest line to fill the width
 
-    const words = series.title.split(' ');
-    // Threshold increased to 18 to include "Puglia Famiglia" (15) & "Psychadelic MTL" (15) in the 'Short' stack logic (1 word/line)
-    const isShortTitle = series.title.length <= 18;
-    let lines: string[] = [];
+    const { lines, desktopSize, mobileSize } = useMemo(() => {
+        const words = series.title.split(' ');
+        const isShortTitle = series.title.length <= 18;
+        let localLines: string[] = [];
 
-    if (isShortTitle) {
-        // 1 word per line
-        lines = words;
-    } else {
-        // 2 words per line (grouping)
-        for (let i = 0; i < words.length; i += 2) {
-            lines.push(words.slice(i, i + 2).join(' '));
+        if (isShortTitle) {
+            localLines = words;
+        } else {
+            for (let i = 0; i < words.length; i += 2) {
+                localLines.push(words.slice(i, i + 2).join(' '));
+            }
         }
-    }
 
-    // Find the longest line to calculate the scaling factor
-    const longestLineChars = Math.max(...lines.map(line => line.length));
+        const longestLineChars = Math.max(...localLines.map(line => line.length));
+        const desktopFactor = 50;
+        const dSize = `${desktopFactor / longestLineChars}vw`;
+        const mobileFactor = 120;
+        const mSize = `${mobileFactor / longestLineChars}vw`;
 
-    // Desktop Calculation (Target STRICT ~35vw width to avoid overlap)
-    // Left col is ~37vw (5/12 of 90vw). Factor reduced to 50 for absolute safety (fixes "White Mounts").
-    const desktopFactor = 50;
-    const desktopSize = `${desktopFactor / longestLineChars}vw`;
-
-    // Mobile Calculation (Target ~90vw width)
-    // Factor: 90 / 0.6 = 150. 
-    // Increased to 120 for "Monumental" mobile feel (was 100), safe within margins.
-    const mobileFactor = 120;
-    const mobileSize = `${mobileFactor / longestLineChars}vw`;
+        return { lines: localLines, desktopSize: dSize, mobileSize: mSize };
+    }, [series.title]);
 
     return (
         <div key={id} className="min-h-screen pt-24 px-4 md:px-8 pb-12 transition-colors duration-1000 ease-in-out">
             <Helmet>
-                <script type="application/ld+json">{JSON.stringify(breadcrumbSchema)}</script>
             </Helmet>
             <SEO
                 title={series.seo_title?.[currentLang] || `Série ${series.title} | Photographie Argentique | Born Too Late`}
@@ -183,14 +182,15 @@ const SeriesDetail = () => {
                             viewport={{ once: true, margin: "0px 0px -50px 0px" }}
                             transition={{ duration: 0.8, delay: index * 0.05, ease: "easeOut" }}
                             className="mb-10 gallery-matting cursor-examine relative group block m-0 bg-white/5 min-h-[200px] focus:outline-none focus:ring-2 focus:ring-current focus:ring-offset-4 focus:ring-offset-black rounded-sm"
-                            onClick={() => setSelectedPhotoIndex(index)}
+                            onClick={() => navigate(`/series/${series.id}/${photo.slug}`)}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter' || e.key === ' ') {
                                     e.preventDefault();
-                                    setSelectedPhotoIndex(index);
+                                    navigate(`/series/${series.id}/${photo.slug}`);
                                 }
                             }}
-                            tabIndex={0}
+                            tabIndex={selectedPhotoIndex === null ? 0 : -1}
+                            aria-hidden={selectedPhotoIndex !== null ? "true" : "false"}
                             role="button"
                             aria-label={`Agrandir la photo : ${photo.title}`}
                         >
@@ -247,7 +247,7 @@ const SeriesDetail = () => {
                 {selectedPhotoIndex !== null && (
                     <Lightbox
                         photo={series.photos[selectedPhotoIndex as number]}
-                        onClose={() => setSelectedPhotoIndex(null)}
+                        onClose={handleClose}
                         onNext={handleNextPhoto}
                         onPrev={handlePrevPhoto}
                         showContextualLink={true}

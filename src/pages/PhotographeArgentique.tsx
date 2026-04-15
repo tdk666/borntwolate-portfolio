@@ -36,14 +36,17 @@ const PhotographeArgentique = () => {
             },
             {
                 "@type": "ProfessionalService",
-                "name": "BornTwoLate",
+                "name": "Borntwolate - Photographe Argentique",
+                "description": content.seo.description,
                 "image": "https://borntwolate.com/images/portrait.jpg",
                 "url": "https://borntwolate.com",
                 "priceRange": "45€ - 450€",
+                "areaServed": "Paris",
                 "address": {
                     "@type": "PostalAddress",
                     "addressLocality": "Paris",
-                    "addressCountry": "FR"
+                    "addressCountry": "FR",
+                    "addressRegion": "Île-de-France"
                 }
             }
         ]
@@ -64,7 +67,7 @@ const PhotographeArgentique = () => {
                 <FadeIn delay={0.2} noVertical>
                     <header className="mb-20 text-center">
                         <h1 className="text-4xl md:text-6xl font-serif font-light mb-10 tracking-tight italic">
-                            <span className="block mb-2 text-off-white">Photographe argentique</span>
+                            <span className="block mb-2 text-off-white">Photographe argentique Paris</span>
                             <span className="block text-2xl md:text-3xl text-darkroom-red font-space-mono normal-case tracking-normal opacity-90">
                                 {content.hero.title.split(':')[1]?.trim() || "L'art de capturer ce qui va disparaître"}
                             </span>
@@ -187,9 +190,9 @@ const PhotographeArgentique = () => {
                     <div className="mb-24 text-center">
                         <Link
                             to="/series"
-                            className="inline-block px-10 py-4 bg-off-white text-deep-black font-space-mono uppercase text-xs tracking-[0.2em] hover:bg-darkroom-red hover:text-white transition-colors duration-300"
+                            className="btn-primary"
                         >
-                            {content.opening.cta_portfolio}
+                            <span>{content.opening.cta_portfolio}</span>
                         </Link>
                     </div>
                 </FadeIn>
@@ -252,9 +255,9 @@ const PhotographeArgentique = () => {
 
                         <Link
                             to="/prints"
-                            className="inline-block px-10 py-4 border border-white/20 text-off-white font-space-mono uppercase text-xs tracking-[0.2em] hover:bg-white hover:text-deep-black transition-colors duration-300"
+                            className="btn-ghost"
                         >
-                            {content.opening.cta_shop}
+                            <span>{content.opening.cta_shop}</span>
                         </Link>
                     </div>
                 </FadeIn>

@@ -14,9 +14,10 @@ const Footer = () => {
                     <NewsletterSignup />
                 </div>
 
-                {/* Copyright */}
-                <div className="order-3 md:order-1 pt-6 md:pt-0">
-                    &copy; {new Date().getFullYear()} {t('footer.rights')}
+                {/* Copyright & Contact (GMC) */}
+                <div className="order-3 md:order-1 pt-6 md:pt-0 flex flex-col items-center md:items-start opacity-70">
+                    <div>&copy; {new Date().getFullYear()} {t('footer.rights')}</div>
+                    <a href="mailto:theophile.dequecker@gmail.com" className="text-[9px] mt-1 hover:text-darkroom-red transition-colors">theophile.dequecker@gmail.com</a>
                 </div>
 
                 {/* Links */}

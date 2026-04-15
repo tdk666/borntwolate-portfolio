@@ -1,0 +1,13 @@
+Salut Ben. Nouveau projet client pour l'agence.
+
+**CLIENT :** [Full System]
+**SECTEUR :** [Cybersécurité, Informatique, Audit]
+**OBJECTIF DU PROJET :** [Refonte totale du site vitrine pour générer des leads qualifiés B2B].
+
+**VIBE / DIRECTION ARTISTIQUE SOUHAITÉE :** [Design ultra-moderne, mode sombre (dark mode) dominant avec des accents de couleurs tech (ex: bleu néon ou vert matrix). Typographie monospace ou sans-serif très géométrique. L'ambiance doit respirer la confiance, l'impénétrabilité et la haute technologie.]
+
+**MISSION DU JOUR :**
+J'ai connecté le repository actuel du client. Fais un audit de l'existant. 
+1. Dis-moi ce qu'on garde et ce qu'on jette.
+2. Propose-moi une architecture de navigation (Silo SEO méthode Bouchand) adaptée à ce secteur.
+3. Rédige-moi le premier "Mega Prompt" à envoyer à Antigravity pour initialiser la structure Vite/React avec les bons headers de sécurité Netlify (crucial pour la cybersécurité).

@@ -1,20 +1,24 @@
 import { useState, useMemo, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { photos, type Photo } from '../data/photos';
 import { useTranslation } from 'react-i18next';
 import { SEO } from '../components/SEO'; // AJOUT SEO
 import { FadeIn } from '../components/animations/FadeIn'; // AJOUT SEO
 import Lightbox from '../components/Lightbox';
+import AcquisitionModal from '../components/AcquisitionModal';
 import { Magnetic } from '../components/Magnetic';
 import { useSearch } from '../context/SearchContext';
 
 const categories = ['all', 'urban', 'nature', 'portrait', 'bnw'];
 
 const Portfolio = () => {
-    const { t, i18n } = useTranslation(); // Récupération de i18n pour la langue
+    const { t, i18n } = useTranslation();
+    const { category: urlCategory, seriesId, photoSlug } = useParams<{ category?: string; seriesId?: string; photoSlug?: string }>();
+    const navigate = useNavigate();
     const [filter, setFilter] = useState('all');
     const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
+    const [acquiringPhoto, setAcquiringPhoto] = useState<Photo | null>(null);
     const [columns, setColumns] = useState(1);
     const [searchParams, setSearchParams] = useSearchParams();
 
@@ -48,23 +52,39 @@ const Portfolio = () => {
         setFilteredPhotos(result);
     }, [filter, isSearching, searchResults]);
 
-    // Deep Linking: Open Lightbox via URL
+    // Deep Linking: Open Lightbox via URL (New Path Format + Legacy Search Param)
     useEffect(() => {
         const photoId = searchParams.get('open');
-        if (photoId) {
-            // Fix Type Mismatch: p.id is number, photoId is string. Convert both to string for safety.
+
+        if (photoSlug) {
+            // Find by slug (Modern)
+            const index = filteredPhotos.findIndex(p => p.slug === photoSlug);
+            if (index !== -1) setSelectedPhotoIndex(index);
+        } else if (photoId) {
+            // Find by ID (Legacy Compatibility)
             const index = filteredPhotos.findIndex(p => String(p.id) === String(photoId));
-            if (index !== -1) {
-                setSelectedPhotoIndex(index);
-            }
+            if (index !== -1) setSelectedPhotoIndex(index);
+        } else {
+            setSelectedPhotoIndex(null);
         }
-    }, [searchParams, filteredPhotos]);
+    }, [photoSlug, searchParams, filteredPhotos]);
+
+    // Sync Filter with URL category
+    useEffect(() => {
+        if (urlCategory && categories.includes(urlCategory)) {
+            setFilter(urlCategory);
+        }
+    }, [urlCategory]);
 
     // Sync Lightbox close with URL
     const closeLightbox = () => {
         setSelectedPhotoIndex(null);
-        searchParams.delete('open');
-        setSearchParams(searchParams);
+        if (searchParams.has('open')) {
+            searchParams.delete('open');
+            setSearchParams(searchParams);
+        }
+        // Navigate back to the filter root
+        navigate(filter === 'all' ? '/portfolio' : `/portfolio/${filter}`);
     };
 
     // Responsive Columns
@@ -94,11 +114,22 @@ const Portfolio = () => {
 
     // Lightbox Handlers
     const handlePhotoClick = (photo: Photo) => {
-        const index = filteredPhotos.findIndex(p => p.id === photo.id);
-        setSelectedPhotoIndex(index);
+        navigate(`/portfolio/${photo.seriesId}/${photo.slug}`);
     };
-    const handleNext = () => selectedPhotoIndex !== null && setSelectedPhotoIndex((selectedPhotoIndex + 1) % filteredPhotos.length);
-    const handlePrev = () => selectedPhotoIndex !== null && setSelectedPhotoIndex((selectedPhotoIndex - 1 + filteredPhotos.length) % filteredPhotos.length);
+    const handleNext = () => {
+        const currentIndex = filteredPhotos.findIndex(p => p.slug === photoSlug);
+        if (currentIndex === -1) return;
+        const nextIndex = (currentIndex + 1) % filteredPhotos.length;
+        const nextPhoto = filteredPhotos[nextIndex];
+        navigate(`/portfolio/${nextPhoto.seriesId}/${nextPhoto.slug}`, { replace: true });
+    };
+    const handlePrev = () => {
+        const currentIndex = filteredPhotos.findIndex(p => p.slug === photoSlug);
+        if (currentIndex === -1) return;
+        const prevIndex = (currentIndex - 1 + filteredPhotos.length) % filteredPhotos.length;
+        const prevPhoto = filteredPhotos[prevIndex];
+        navigate(`/portfolio/${prevPhoto.seriesId}/${prevPhoto.slug}`, { replace: true });
+    };
 
     return (
         <div className="min-h-screen pt-24 px-4 md:px-8 pb-12">
@@ -189,11 +220,22 @@ const Portfolio = () => {
                                                     draggable="false"
                                                     style={{ aspectRatio: photo.orientation === 'portrait' ? '2/3' : '3/2' }}
                                                 />
-                                                <figcaption className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center z-[60]">
+                                                <figcaption className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center z-[60] space-y-4">
                                                     <div className="text-center p-2">
-                                                        <h3 className="text-off-white font-space-mono text-lg">{photo.title}</h3>
-                                                        <p className="text-warm-sepia font-inter text-xs uppercase tracking-widest mt-2">{t(`categories.${photo.category}`)}</p>
+                                                        <h3 className="text-off-white font-serif text-2xl">{photo.title}</h3>
+                                                        <p className="text-warm-sepia font-space-mono text-[10px] uppercase tracking-[0.2em] mt-2">{t(`categories.${photo.category}`)}</p>
                                                     </div>
+                                                    <motion.button
+                                                        whileHover={{ scale: 1.05 }}
+                                                        whileTap={{ scale: 0.95 }}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setAcquiringPhoto(photo);
+                                                        }}
+                                                        className="px-6 py-2 bg-white text-black text-[10px] font-space-mono uppercase tracking-widest hover:bg-darkroom-red hover:text-white transition-all shadow-lg"
+                                                    >
+                                                        {t('lightbox.collect_button')}
+                                                    </motion.button>
                                                 </figcaption>
                                             </div>
                                         </div>
@@ -206,16 +248,31 @@ const Portfolio = () => {
             </div>
 
             <AnimatePresence>
-                {selectedPhotoIndex !== null && (
-                    <Lightbox
-                        photo={filteredPhotos[selectedPhotoIndex]}
-                        onClose={closeLightbox}
-                        onNext={handleNext}
-                        onPrev={handlePrev}
-                        showContextualLink={true}
-                    />
+                {photoSlug && (
+                    (() => {
+                        const currentPhoto = filteredPhotos.find(p => p.slug === photoSlug);
+                        if (!currentPhoto) return null;
+                        return (
+                            <Lightbox
+                                photo={currentPhoto}
+                                onClose={closeLightbox}
+                                onNext={handleNext}
+                                onPrev={handlePrev}
+                                showContextualLink={true}
+                            />
+                        );
+                    })()
                 )}
             </AnimatePresence>
+
+            {/* Direct Acquisition Funnel */}
+            <AcquisitionModal
+                isOpen={!!acquiringPhoto}
+                onClose={() => setAcquiringPhoto(null)}
+                photoTitle={acquiringPhoto?.title || ''}
+                photoSlug={acquiringPhoto?.slug || ''}
+                imageSrc={acquiringPhoto?.url}
+            />
         </div>
     );
 };

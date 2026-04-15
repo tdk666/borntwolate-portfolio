@@ -24,6 +24,8 @@ export default defineConfig({
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'framer-motion': ['framer-motion'],
+          'i18n': ['i18next', 'react-i18next', 'i18next-browser-languagedetector'],
+          'ui': ['lucide-react'],
           'maps': ['react-simple-maps', 'd3-geo', 'd3-zoom', 'topojson-client']
         }
       }

@@ -72,7 +72,7 @@ export const CookieConsent = () => {
 
                             <button
                                 onClick={handleDecline}
-                                className="w-full bg-transparent text-silver/50 font-space-mono text-[10px] uppercase tracking-widest py-2 hover:text-white transition-colors underline decoration-white/20 underline-offset-4"
+                                className="w-full bg-transparent text-silver/90 font-space-mono text-[10px] uppercase tracking-widest py-2 hover:text-white transition-colors underline decoration-white/20 underline-offset-4"
                             >
                                 Continuer avec l'essentiel uniquement
                             </button>

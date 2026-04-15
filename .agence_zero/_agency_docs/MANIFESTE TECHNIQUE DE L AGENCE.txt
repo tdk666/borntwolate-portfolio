@@ -1,0 +1,11 @@
+MANIFESTE TECHNIQUE DE L'AGENCE
+
+Stack Technique Standard : React, Vite, TypeScript, Tailwind CSS.
+
+Hébergement : Netlify (avec utilisation de netlify.toml pour les headers de sécurité et redirects).
+
+Backend/BaaS : Supabase (PostgreSQL, Row Level Security stricte).
+
+Animations : Framer Motion (à utiliser avec parcimonie, désactiver le hover sur mobile).
+
+Golden Standard (Référence d'architecture) : L'architecture du site "borntwolate.com" est notre standard de production. Elle inclut : Webhooks Stripe idempotents, Consent Mode v2 injecté en HTML pur, LCP optimisé avec fetchpriority="high", et routage SEO en silo.

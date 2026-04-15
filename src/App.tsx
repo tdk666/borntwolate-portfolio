@@ -36,7 +36,10 @@ function AnimatedRoutes() {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Home />} />
+        <Route path="/index.html" element={<Home />} />
         <Route path="/portfolio" element={<Portfolio />} />
+        <Route path="/portfolio/:category" element={<Portfolio />} />
+        <Route path="/portfolio/:seriesId/:photoSlug" element={<Portfolio />} />
         <Route path="/series" element={<Series />} />
         <Route path="/series/:id" element={<SeriesDetail />} />
         <Route path="/series/:id/:photoId" element={<SeriesDetail />} />
@@ -151,7 +154,16 @@ function LayoutContent({ isDarkroom }: { isDarkroom: boolean }) {
           </Suspense>
         </ErrorBoundary>
       </div>
-      {!isLegacyPage && <CookieConsent />}
+      {!isLegacyPage && (
+        <>
+          <div className="md:hidden fixed bottom-6 left-0 right-0 z-[45] flex justify-center pointer-events-none px-4">
+             <a href="/portfolio" className="pointer-events-auto bg-darkroom-red text-white uppercase font-space-mono text-[10px] tracking-widest px-6 py-3 shadow-[0_0_20px_rgba(0,0,0,0.5)] border border-white/20 backdrop-blur-sm opacity-95 hover:opacity-100 transition-all font-semibold">
+                Acquérir un tirage
+             </a>
+          </div>
+          <CookieConsent />
+        </>
+      )}
     </>
   );
 }

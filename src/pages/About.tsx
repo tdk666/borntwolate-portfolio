@@ -52,6 +52,19 @@ const About = () => {
                             </p>
                         ))}
                     </div>
+
+                    {/* NEW: Semantic Narrative for SEO */}
+                    {content.narrative && (
+                        <div className="mt-12 p-8 bg-white/5 border border-white/10 rounded-2xl relative overflow-hidden group">
+                           <div className="absolute top-0 right-0 w-24 h-24 bg-darkroom-red/5 rounded-full -mr-12 -mt-12 blur-2xl group-hover:bg-darkroom-red/10 transition-colors" />
+                           <p 
+                             className="text-xl md:text-2xl font-serif italic text-off-white/90 leading-relaxed"
+                             dangerouslySetInnerHTML={{ 
+                                __html: content.narrative.replace(/\*\*(.*?)\*\*/g, '<strong class="text-darkroom-red font-bold">$1</strong>') 
+                             }}
+                           />
+                        </div>
+                    )}
                 </header>
 
                 {/* Manifeste Technique */}

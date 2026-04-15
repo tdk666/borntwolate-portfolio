@@ -1,4 +1,5 @@
 import { useEffect, useCallback, useState, useRef } from 'react';
+import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
 import { motion, useAnimation, type PanInfo } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { type Photo, seriesData } from '../data/photos';
@@ -18,6 +19,9 @@ interface LightboxProps {
 
 const Lightbox = ({ photo, onClose, onNext, onPrev, showContextualLink = true }: LightboxProps) => {
     const { t, i18n } = useTranslation();
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const location = useLocation();
     const currentLang = i18n.language.split('-')[0] as 'fr' | 'en';
     const controls = useAnimation();
 
@@ -57,7 +61,7 @@ const Lightbox = ({ photo, onClose, onNext, onPrev, showContextualLink = true }:
             { "@type": "ListItem", "position": 1, "name": "Accueil", "item": "https://borntwolate.com" },
             { "@type": "ListItem", "position": 2, "name": "Portfolio", "item": "https://borntwolate.com/portfolio" },
             { "@type": "ListItem", "position": 3, "name": currentSeries?.title || "Série", "item": `https://borntwolate.com/portfolio#${currentSeries?.id}` },
-            { "@type": "ListItem", "position": 4, "name": photo.title, "item": `https://borntwolate.com/portfolio?open=${photo.id}` }
+            { "@type": "ListItem", "position": 4, "name": photo.title, "item": `https://borntwolate.com/portfolio/${photo.seriesId}/${photo.slug}` }
         ]
     };
 
@@ -243,32 +247,12 @@ const Lightbox = ({ photo, onClose, onNext, onPrev, showContextualLink = true }:
                                         key={p.id}
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            // Navigation logic would be ideally handled by parent or context to switch photo
-                                            // For now we assume typical behavior or could trigger a callback if exists
-                                            // Since onNext/Prev are specific, we might just hack navigation 
-                                            // But standard link is better for SEO? 
-                                            // We probably need a callback prop for direct navigation, 
-                                            // but as per instructions "internal linking" implies SEO value. 
-                                            // A real <a> tag is better for SEO, but here we are in a SPA modal.
-                                            // Ideally this should change the photo in the lightbox.
-                                            // For now, let's just make them look like links but behave as close/re-open or just 'next'
-                                            // We don't have 'goToPhoto' prop. 
-                                            // Let's rely on standard anchor for SEO, and manual reload? No that breaks SPA.
-                                            // We will settle for a simple visual cue. 
-                                            // Since I cannot easily switch photo by ID without a new prop, I will omit the click handler for jump
-                                            // OR I can try to find if there is a way. 
-                                            // Actually, `onNext` / `onPrev` traverse the list.
-                                            // The user asked for "Maillage", which usually implies links.
-                                            // Let's use <a> tags with href for SEO crawler, but preventDefault to avoid full reload?
-                                            // Given constraints, I will use `window.location.href` update which might force reload but works, 
-                                            // OR better: use `href` but Intercept?
-                                            // I'll stick to a simple visual representation that is clickable.
-                                            // Since I can't easily change the photo state from here without a new prop,
-                                            // I will assume the user accepts a page reload for these links OR 
-                                            // I will leave them as visual recommendation. 
-                                            // Wait, the prompt says "optimisation SEO". 
-                                            // So <a> tags are mandatory.
-                                            window.location.href = `/portfolio?open=${p.id}`;
+                                            // Determine context based on current path
+                                            if (location.pathname.startsWith('/series')) {
+                                                navigate(`/series/${p.seriesId}/${p.slug}`, { replace: true });
+                                            } else {
+                                                navigate(`/portfolio/${p.seriesId}/${p.slug}`, { replace: true });
+                                            }
                                         }}
                                         className="group relative w-16 h-12 overflow-hidden bg-white/5 hover:ring-1 hover:ring-white/50 transition-all"
                                     >
@@ -283,6 +267,29 @@ const Lightbox = ({ photo, onClose, onNext, onPrev, showContextualLink = true }:
                         </div>
                     )}
                 </div>
+
+                {/* --- FLOATING MOBILE CTA (BEN BECKMANN SOLUTION) --- */}
+                {!isAcquisitionOpen && !showInfo && (
+                    <div className="md:hidden absolute bottom-32 left-0 w-full z-[90] flex justify-center pointer-events-none">
+                        <motion.button
+                            initial={{ y: 20, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1, transition: { delay: 0.5 } }}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (!isSoldOut) {
+                                    setIsAcquisitionOpen(true);
+                                    trackEvent('begin_checkout', 'Ecommerce', `${photo.title} - ${currentSeries?.title || 'Série'}`, 45);
+                                }
+                            }}
+                            disabled={isSoldOut}
+                            className={`pointer-events-auto bg-black/60 backdrop-blur-md border border-white/20 text-white px-8 py-4 rounded-full font-space-mono text-sm uppercase tracking-widest shadow-2xl transition-all active:scale-95 flex items-center justify-center ${
+                                isSoldOut ? 'opacity-50 cursor-not-allowed hidden' : 'hover:bg-white/20'
+                            }`}
+                        >
+                            {t('lightbox.collect_button')}
+                        </motion.button>
+                    </div>
+                )}
 
                 {/* Hide mobile info when Acquisition Modal is open to prevent scroll conflict */}
                 {!isAcquisitionOpen && (

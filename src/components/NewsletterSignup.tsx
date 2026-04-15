@@ -75,6 +75,7 @@ export const NewsletterSignup = () => {
                     <button
                         type="submit"
                         disabled={status === 'loading' || status === 'success' || !consent}
+                        aria-label="S'inscrire à la newsletter"
                         className="absolute right-2 p-1.5 text-white/50 hover:text-white transition-colors disabled:opacity-50"
                     >
                         {status === 'success' ? (

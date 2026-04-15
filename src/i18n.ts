@@ -88,19 +88,24 @@ i18n
                         scan: "Scan / Scroll Up"
                     },
                     series_seo: {
-                        title: "Séries",
-                        desc: "Explorez les séries thématiques de Théophile Dequecker. De l'hiver new-yorkais aux montagnes polonaises, chaque série raconte une histoire unique sur pellicule.",
+                        title: "Séries Photographiques Narratives, Reportage Argentique & Paysages",
+                        desc: "Explorez les séries thématiques documentaires et artistiques de Théophile Dequecker. Un travail sur pellicule 35mm célébrant le grain et le temps.",
                         aria_view: "Voir la série {{title}}"
                     },
                     home: {
                         seo_title: 'Photographe Argentique & Portfolio Voyage',
                         seo_desc: 'Bienvenue sur Born Too Late. Le portfolio de photographie argentique de Théophile Dequecker. Une exploration esthétique du monde en 35mm, de Paris à Montréal.',
-                        subtitle: 'Photographie Argentique',
-                        loading: 'Développement...'
+                        subtitle: 'Photographe Argentique Paris',
+                        loading: 'Développement...',
+                        manifest_title: "L'art du tirage argentique à Paris : Authenticité & Matière",
+                        manifest_p1: "Théophile Dequecker est un <1>photographe argentique basé à Paris</1>. Dans l'ère du tout-numérique, il privilégie l'attente, l'organique et le grain du film 35mm pour capturer des instants suspendus entre Paris et le restant du monde.",
+                        manifest_p2: "Chaque tirage d'art est une œuvre pensée pour le support physique. Ses épreuves limitées sont réalisées à Paris sur papier Canson Infinity Platine Fibre Rag, garantissant une pérennité muséale et une profondeur de noir propre à la photographie argentique traditionnelle.",
+                        manifest_cta_explore: "Sa démarche artistique",
+                        manifest_cta_buy: "Galerie des tirages"
                     },
                     portfolio: {
-                        seo_title: 'Portfolio',
-                        seo_desc: 'Galerie complète des œuvres de Théophile Dequecker.',
+                        seo_title: "Portfolio Photographie Argentique | Fine Art & Voyage | Borntwolate",
+                        seo_desc: "Galerie complète des œuvres photographiques de Théophile Dequecker. Tirages d'art disponibles pour les passionnés d'argentique.",
                         filter_aria: 'Filtrer par {{category}}'
                     },
                     categories: {
@@ -181,6 +186,11 @@ i18n
                                 title: "4.4 Paiement Sécurisé",
                                 text: "Les paiements par carte bancaire sont traités par notre partenaire <strong>Stripe</strong>, utilisant le protocole de cryptage SSL/TLS. Aucune donnée bancaire n'est conservée sur nos serveurs."
                             }
+                        },
+                        section5: {
+                            title: "5. Livraison et Retours",
+                            shipping: "<strong>Expédition :</strong> Les tirages sont produits à la demande sous 5 à 7 jours ouvrés. La livraison est assurée par Colissimo ou transporteur spécialisé avec suivi. Les frais de port sont calculés lors du paiement ou inclus selon l'offre (France métropolitaine).",
+                            returns: "<strong>Retours :</strong> Vous disposez de 14 jours calendaires pour retourner une œuvre si elle ne vous donne pas entière satisfaction (hors commandes sur-mesure). Les frais de retour sont à la charge de l'acheteur."
                         }
                     },
                     chatbot: {
@@ -269,8 +279,8 @@ i18n
                         stock_limited: "Édition Limitée - {{count}}/30 exemplaires"
                     },
                     prints: {
-                        seo_title: 'Atelier & Collection',
-                        seo_desc: 'Tirages d\'art en édition limitée. Signés et numérotés.',
+                        seo_title: "Acheter Tirage d'Art Photographique (Édition Limitée) | Borntwolate",
+                        seo_desc: "Tirages originaux signés et numérotés. Qualité musée pour collectionneurs d'art contemporain et photographie argentique.",
                         title: "L'Atelier",
                         subtitle: "Chaque tirage est une pièce unique, produite artisanalement pour sublimer l'image.",
                         craft_title: "Savoir-Faire",
@@ -278,7 +288,10 @@ i18n
                         explore_series: "Parcourir la collection",
                         visualize: "Mise en situation",
                         compare_finish: "Visualiser les formats et finitions",
-                        pricing_grid: "Tarifs & Finitions"
+                        pricing_grid: "Tarifs & Finitions",
+                        cta_title: "Prêt à choisir votre tirage ?",
+                        cta_button: "Parcourir le catalogue",
+                        cta_note: "Expédition sécurisée sous 5 à 7 jours ouvrés."
                     }
                 },
             },
@@ -366,8 +379,13 @@ i18n
                     home: {
                         seo_title: 'Analog Photographer & Travel Portfolio',
                         seo_desc: 'Welcome to Born Too Late. The analog photography portfolio of Théophile Dequecker. An aesthetic exploration of the world in 35mm, from Paris to Montreal.',
-                        subtitle: 'Analog Photography',
-                        loading: 'Developing...'
+                        subtitle: 'Analog Photographer Paris',
+                        loading: 'Developing...',
+                        manifest_title: "The Art of Analog Printing in Paris: Authenticity & Fine Art",
+                        manifest_p1: "Théophile Dequecker is an <1>analog photographer based in Paris</1>. In the digital age, he embraces the slow process, organic grain, and the soul of 35mm film to capture suspended moments from Paris to the rest of the world.",
+                        manifest_p2: "Each fine art print is conceived as a unique physical object. His limited editions are produced in Paris on Canson Infinity Platine Fibre Rag paper, ensuring museum-grade longevity and the deep blacks unique to the analog photography tradition.",
+                        manifest_cta_explore: "Artistic Vision",
+                        manifest_cta_buy: "Acquire a Print"
                     },
                     portfolio: {
                         seo_title: 'Portfolio',
@@ -451,6 +469,11 @@ i18n
                                 title: "4.4 Secure Payment",
                                 text: "Credit card payments are processed by our partner <strong>Stripe</strong>, using SSL/TLS encryption protocol. No banking data is stored on our servers."
                             }
+                        },
+                        section5: {
+                            title: "5. Shipping & Returns",
+                            shipping: "<strong>Shipping:</strong> Prints are produced to order within 5 to 7 business days. Delivery is provided by Colissimo or specialized carrier with tracking. Shipping costs are calculated at checkout or included depending on the offer (France).",
+                            returns: "<strong>Returns:</strong> You have 14 calendar days to return an artwork if you are not entirely satisfied (except for custom orders). Return shipping costs are at the buyer's expense."
                         }
                     },
                     chatbot: {
@@ -542,16 +565,19 @@ i18n
                         stock_limited: "Limited Edition - {{count}}/30 copies"
                     },
                     prints: {
-                        seo_title: 'Workshop & Collection',
-                        seo_desc: 'Acquire an original Born Too Late print. Limited editions.',
+                        seo_title: 'Limited Edition Fine Art Photo Prints | Borntwolate Workshop',
+                        seo_desc: 'Discover and acquire original signed and numbered analog photography prints. Museum-quality papers (Canson Infinity) and custom framing available.',
                         title: "The Workshop",
-                        subtitle: "The print is the culmination of the photographic process. It is the moment when the virtual image becomes matter.",
-                        craft_title: "The Artisanal Gesture",
-                        craft_text: "Each print is made to order by our partner laboratory Picto Paris. We exclusively use <1>Canson Infinity Platine Fibre Rag 310g</1> paper.",
-                        explore_series: "Explore Series",
-                        visualize: "Visualize Formats",
-                        compare_finish: "Compare Nielsen Frame and Shadow Box",
-                        pricing_grid: "Pricing Grid & Finishes"
+                        subtitle: "The print is the final stage of the analog process. It is the moment when the latent image becomes physical matter and light.",
+                        craft_title: "The Master Print",
+                        craft_text: "Each print is made to order in Paris by our partner laboratory Picto. We exclusively use <1>Canson Infinity Platine Fibre Rag 310g</1> paper (100% cotton, acid-free).",
+                        explore_series: "Browse the Collection",
+                        visualize: "In-Room View",
+                        compare_finish: "Compare Formats & Finishes",
+                        pricing_grid: "Pricing & Custom Options",
+                        cta_title: "Ready to acquire a limited edition print?",
+                        cta_button: "Browse the Portfolio",
+                        cta_note: "Secure shipping to Europe and worldwide within 5-7 business days."
                     }
                 },
             },

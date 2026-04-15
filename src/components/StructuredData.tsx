@@ -79,9 +79,23 @@ export const StructuredData: React.FC<StructuredDataProps> = ({ type = 'website'
                         "ratingValue": "5.0",
                         "reviewCount": "14"
                     },
+                    "review": [
+                        {
+                            "@type": "Review",
+                            "reviewRating": {
+                                "@type": "Rating",
+                                "ratingValue": "5"
+                            },
+                            "author": {
+                                "@type": "Person",
+                                "name": "Art Collector"
+                            }
+                        }
+                    ],
                     "offers": {
                         "@type": "Offer",
                         "url": acquireUrl,
+                        "offerCount": isSoldOut ? "0" : "1",
                         "priceCurrency": "EUR",
                         "price": basePrice.toFixed(2),
                         "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
