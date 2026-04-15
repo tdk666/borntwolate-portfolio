@@ -21,43 +21,29 @@ export const GoogleAnalytics = () => {
         }
 
         const trackingId = "G-Q3VNSP006H";
-        const injectScript = () => {
-            if (document.getElementById('ga-script')) return;
-
-            const script = document.createElement('script');
-            script.id = 'ga-script';
-            script.async = true;
-            script.src = `https://www.googletagmanager.com/gtag/js?id=${trackingId}`;
-            document.head.appendChild(script);
-        };
 
         const executeTracking = () => {
             if (typeof window.gtag === "undefined") {
-                console.warn("Google Analytics script not loaded yet.");
+                console.warn("Google Analytics (gtag) n'est pas encore chargé.");
                 return;
             }
+            // Envoie la page vue au changement de route
             window.gtag("config", trackingId, {
                 page_path: location.pathname + location.search,
             });
         };
 
-
-        // INJECTION INCONDITIONNELLE POUR CONSENT MODE V2
-        // Le script est bloqué par défaut en 'denied' dans index.html, mais DOIT se 
-        // charger pour envoyer les pings anonymisés de modélisation.
-        injectScript();
-        setTimeout(executeTracking, 500);
+        // Léger délai pour s'assurer que analytics.js a initialisé la structure
+        setTimeout(executeTracking, 100);
 
         const handleStorageChange = () => {
-            // Le changement d'état est géré directement via gtag('consent', 'update') 
-            // dans CookieConsent.tsx. Pas besoin de re-injecter ici.
+            // Géré dans CookieConsent.tsx
         };
 
         window.addEventListener('storage', handleStorageChange);
         window.addEventListener('cookie-consent-updated', handleStorageChange);
 
         return () => {
-            // PREVENTION DE FUITE MEMOIRE 
             window.removeEventListener('storage', handleStorageChange);
             window.removeEventListener('cookie-consent-updated', handleStorageChange);
         };
@@ -80,6 +66,6 @@ export const trackEvent = (
             value: value,
         });
     } else {
-        console.warn("Google Analytics (gtag) not loaded. Event not tracked:", { action, category, label, value });
+        console.warn("Google Analytics non chargé. Event ignoré:", { action, category, label, value });
     }
 };
