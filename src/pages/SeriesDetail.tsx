@@ -108,10 +108,12 @@ const SeriesDetail = () => {
             <Helmet>
             </Helmet>
             <SEO
-                title={series.seo_title?.[currentLang] || `Série ${series.title} | Photographie Argentique | Born Too Late`}
+                title={selectedPhotoIndex !== null 
+                    ? `${series.photos[selectedPhotoIndex].title} | ${series.title} | Born Too Late`
+                    : (series.seo_title?.[currentLang] || `Série ${series.title} | Photographie Argentique | Born Too Late`)}
                 description={series.description[currentLang].substring(0, 160)}
-                image={series.coverImage}
-                url={`/series/${series.id}`}
+                image={selectedPhotoIndex !== null ? series.photos[selectedPhotoIndex].url : series.coverImage}
+                url={selectedPhotoIndex !== null ? `/series/${series.id}/${series.photos[selectedPhotoIndex].slug}` : `/series/${series.id}`}
                 type="article"
             />
             {/* Generate distinct Product Schema for each photo */}

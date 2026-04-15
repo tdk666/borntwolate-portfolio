@@ -9,9 +9,12 @@ export const useSound = (soundFile: string, { loop = false, volume = 0.5 }: UseS
     const [isPlaying, setIsPlaying] = useState(false);
 
     const audio = useMemo(() => {
-        const a = new Audio(soundFile);
+        if (typeof window === 'undefined') return null;
+        const a = new Audio();
+        a.src = soundFile;
         a.loop = loop;
         a.volume = volume;
+        a.preload = 'none'; // PERFORMANCE: Do not preload automatically to avoid 404s on missing assets
         return a;
     }, [soundFile, loop, volume]);
 

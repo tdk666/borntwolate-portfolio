@@ -2,12 +2,31 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 
+import { useEffect } from 'react';
+import { SEO } from '../components/SEO';
+
 const Success = () => {
-    // Hardcoded for now per requirements, or we can use keys if they exist.
-    // User requested specific text.
+    useEffect(() => {
+        // Track successful purchase event for GA4
+        if (typeof window.gtag !== 'undefined') {
+            window.gtag('event', 'purchase', {
+                transaction_id: `btl_${Math.random().toString(36).substr(2, 9)}`,
+                value: 0.00, // No dynamic price passed yet, used as success marker
+                currency: 'EUR',
+                items: [{
+                    item_name: 'Art Print (Confirmation)',
+                    item_category: 'Photography'
+                }]
+            });
+        }
+    }, []);
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] relative overflow-hidden">
+            <SEO 
+                title="Merci pour votre commande | Born Too Late" 
+                description="Nous avons bien reçu votre commande. Votre tirage d'art entre en production."
+            />
             {/* Background Texture */}
             <div className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
                 style={{ backgroundImage: 'url("/assets/noise.svg")' }} />

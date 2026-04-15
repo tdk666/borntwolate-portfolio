@@ -114,6 +114,12 @@ const Legals = () => {
                         <p className="font-bold border-t border-white/5 pt-4">
                             Contact Support : <a href="mailto:theophile.dequecker@gmail.com" className="hover:text-darkroom-red underline">theophile.dequecker@gmail.com</a>
                         </p>
+                        <div className="text-xs opacity-70 mt-6 space-y-2">
+                             <h3 className="font-bold text-off-white uppercase tracking-widest text-[10px] mb-2">Médiation de la consommation</h3>
+                             <p>Conformément aux dispositions du Code de la consommation, le client a le droit de recourir gratuitement à un médiateur de la consommation en vue de la résolution amiable du litige qui l'opposerait à Born Too Late.</p>
+                             <p>Médiateur : <strong>CNPM - MÉDIATION CONSOMMATION</strong><br />
+                             Site web : <a href="https://www.cnpm-mediation-consommation.eu" target="_blank" rel="noopener noreferrer" className="underline hover:text-darkroom-red">www.cnpm-mediation-consommation.eu</a></p>
+                        </div>
                     </div>
                 </section>
             </motion.div>

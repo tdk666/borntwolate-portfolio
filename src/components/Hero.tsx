@@ -26,6 +26,8 @@ const Hero = () => {
     // We use a flagship analog photo instead of a mockup
     const landingImage = "/images/winter-in-the-fruit/empire-state.avif";
 
+    const [isImageReady, setIsImageReady] = useState(false);
+
     useEffect(() => {
         const handleResize = () => {
             setIsMobile(window.innerWidth < 768);
@@ -39,9 +41,15 @@ const Hero = () => {
         setCurrentIndex(0);
     }, [isMobile]);
 
+    // PRELOAD CHECK: If image already in cache, it might not fire onLoad properly
     useEffect(() => {
-        setIsLoading(false);
-    }, []);
+        const img = new Image();
+        img.src = landingImage;
+        if (img.complete) {
+            setIsImageReady(true);
+            setTimeout(() => setIsLoading(false), 800);
+        }
+    }, [landingImage]);
 
     useEffect(() => {
         if (currentPhotos.length === 0) return;
@@ -63,23 +71,38 @@ const Hero = () => {
                 <link rel="preload" as="image" href={landingImage} type="image/avif" fetchPriority="high" />
             </Helmet>
 
-            {/* Loading Screen */}
+            {/* Loading Screen — "BROOK'S DARKROOM" */}
             <AnimatePresence>
                 {isLoading && (
                     <motion.div
                         initial={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.8 }}
-                        className="absolute inset-0 z-40 bg-deep-black flex items-center justify-center"
+                        transition={{ duration: 1.2, ease: "easeInOut" }}
+                        className="absolute inset-0 z-40 bg-deep-black flex flex-col items-center justify-center"
                     >
+                        <div className="film-grain" />
+                        <motion.div
+                            initial={{ opacity: 0.3 }}
+                            animate={{ opacity: [0.3, 0.6, 0.3] }}
+                            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                            className="absolute inset-0 bg-darkroom-red/5 pointer-events-none"
+                        />
                         <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: [0, 1, 0] }}
-                            transition={{ duration: 1.5, repeat: Infinity }}
-                            className="text-warm-sepia font-space-mono text-sm tracking-[0.5em] uppercase"
+                            initial={{ opacity: 0, scale: 0.98 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ duration: 1 }}
+                            className="text-warm-sepia font-space-mono text-[10px] tracking-[0.8em] uppercase mb-4"
                         >
-                            {t('home.loading')}
+                            {t('home.loading', 'DÉVELOPPEMENT...')}
                         </motion.p>
+                        <div className="w-24 h-[1px] bg-white/10 overflow-hidden">
+                            <motion.div 
+                                initial={{ x: '-100%' }}
+                                animate={{ x: '100%' }}
+                                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+                                className="w-full h-full bg-darkroom-red/40"
+                            />
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -105,6 +128,10 @@ const Hero = () => {
                                 loading="eager"
                                 fetchPriority="high"
                                 decoding="sync"
+                                onLoad={() => {
+                                    setIsImageReady(true);
+                                    setTimeout(() => setIsLoading(false), 800); // Small buffer for CSS paint
+                                }}
                             />
                         ) : (
                             // Subsquent images use standard dynamic optimization
@@ -126,46 +153,51 @@ const Hero = () => {
                 </motion.div>
             </AnimatePresence>
 
-            {/* Overlay Text with Static LCP Shell Match */}
-            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4">
-                <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 1, delay: 0.5 }}
-                    className="text-5xl md:text-8xl font-serif italic text-white tracking-tighter mb-6 drop-shadow-2xl"
-                >
-                    Théophile Dequecker
-                </motion.h1>
+            {/* Overlay Text — SYNCED WITH isImageReady & isLoading */}
+            <div className={`absolute inset-0 z-10 flex flex-col items-center justify-center text-center px-4 transition-opacity duration-700 ${!isImageReady || isLoading ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+                <AnimatePresence>
+                    {isImageReady && !isLoading && (
+                        <>
+                            <motion.h1
+                                initial={{ opacity: 0, y: 30 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 1.5, delay: 0.2, ease: "easeOut" }}
+                                className="text-5xl md:text-8xl font-serif italic text-white tracking-tighter mb-6 drop-shadow-2xl"
+                            >
+                                Théophile Dequecker
+                            </motion.h1>
 
-                <motion.div
-                    initial={{ scaleX: 0 }}
-                    animate={{ scaleX: 1 }}
-                    transition={{ duration: 1, delay: 0.8 }}
-                    className="h-px w-32 bg-darkroom-red/80 mb-6 drop-shadow-lg"
-                />
+                            <motion.div
+                                initial={{ scaleX: 0 }}
+                                animate={{ scaleX: 1 }}
+                                transition={{ duration: 1, delay: 0.8 }}
+                                className="h-px w-32 bg-darkroom-red/80 mb-6 drop-shadow-lg"
+                            />
 
-                <motion.h2
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 1, delay: 1.2 }}
-                    className="text-xs md:text-sm font-space-mono text-white/90 uppercase tracking-[0.5em] drop-shadow-lg mb-12"
-                >
-                    {t('home.subtitle')}
-                </motion.h2>
+                            <motion.h2
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 1.2, delay: 1.2 }}
+                                className="text-xs md:text-sm font-space-mono text-white/90 uppercase tracking-[0.5em] drop-shadow-lg mb-12"
+                            >
+                                {t('home.subtitle')}
+                            </motion.h2>
 
-                {/* --- CONVERSION CTA (Brook Audit) --- */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, delay: 1.5 }}
-                >
-                    <Link
-                        to="/portfolio"
-                        className="btn-primary"
-                    >
-                        <span>{t('home.manifest_cta_buy')}</span>
-                    </Link>
-                </motion.div>
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ duration: 0.8, delay: 1.8 }}
+                            >
+                                <Link
+                                    to="/portfolio"
+                                    className="btn-primary"
+                                >
+                                    <span>{t('home.manifest_cta_buy')}</span>
+                                </Link>
+                            </motion.div>
+                        </>
+                    )}
+                </AnimatePresence>
             </div>
         </section>
     );

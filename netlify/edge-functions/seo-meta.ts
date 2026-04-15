@@ -38,48 +38,46 @@ export default async (request: Request, context: Context) => {
         const url = new URL(request.url);
         let path = url.pathname;
 
-        // PERFORMANCE: Early exit for static assets to avoid unnecessary processing
+        // PERFORMANCE: Early exit for static assets
         if (path.match(/\.(png|jpg|jpeg|gif|webp|svg|ico|js|css|map|json|xml|txt|avif)$/i)) {
             return context.next();
         }
-        
+
         // Remove trailing slash for matching
         if (path !== "/" && path.endsWith('/')) {
             path = path.slice(0, -1);
         }
 
         const response = await context.next();
-        
-        // SECURITY SCRUB: Only process HTML responses
+
+        // SECURITY: Only process HTML
         const contentType = response.headers.get("content-type");
         if (!contentType || !contentType.includes("text/html")) {
             return response;
         }
 
-        let text = await response.text();
         let metaData = null;
         let dynamicImageUrl = null;
-            
+
         // 1. Check static dictionary
         if (seoDictionary[path]) {
             metaData = seoDictionary[path];
-        } 
-        // 2. Check dynamic photo path
+        }
+        // 2. Check dynamic path
         else {
             const photoMatch = path.match(/^\/series\/([^/]+)\/([^/]+)$/);
             if (photoMatch) {
                 const seriesId = photoMatch[1];
-                const photoId = photoMatch[2];
+                const photoId = photoMatch[ photoMatch.length - 1]; // Robustness
                 const formattedSeries = formatSlug(seriesId);
                 const formattedPhoto = formatSlug(photoId);
-                
+
                 metaData = {
                     title: `Tirage Art: ${formattedPhoto} - ${formattedSeries} | Borntwolate`,
                     description: `Découvrez la photographie argentique "${formattedPhoto}" issue de la série "${formattedSeries}". Disponible en tirage d'art édition limitée.`
                 };
                 dynamicImageUrl = `${url.origin}/images/${seriesId}/${photoId}.jpg`;
-            } 
-            // 3. Check generic series path
+            }
             else {
                 const seriesMatch = path.match(/^\/series\/([^/]+)$/);
                 if (seriesMatch) {
@@ -93,54 +91,50 @@ export default async (request: Request, context: Context) => {
             }
         }
 
-        // If we matched something, inject it
-        if (metaData) {
-            // HELPER: Inject or replace a meta tag
-            const injectMeta = (html: string, nameOrProperty: string, value: string, isProperty = false) => {
-                const attr = isProperty ? 'property' : 'name';
-                const regex = new RegExp(`<meta [^>]*${attr}="${nameOrProperty.replace(/:/g, '\\:')}"[^>]*content="[^"]*"[^>]*>`, 'gi');
-                const newTag = `<meta ${attr}="${nameOrProperty}" content="${value}" />`;
-                
-                if (html.match(regex)) {
-                    return html.replace(regex, newTag);
-                }
-                return html.replace(/<\/head>/i, `${newTag}\n</head>`);
-            };
-
-            // 1. Canonical (Remove existing if present to avoid SEO penalty)
-            text = text.replace(/<link rel="canonical" [^>]*>/gi, '');
-            text = text.replace(/<\/head>/i, `<link rel="canonical" href="${url.origin}${path}" />\n</head>`);
-            
-            // 2. Title
-            if (text.match(/<title>.*?<\/title>/gi)) {
-                text = text.replace(/<title>.*?<\/title>/gi, `<title>${metaData.title}</title>`);
-            } else {
-                text = text.replace(/<\/head>/i, `<title>${metaData.title}</title>\n</head>`);
-            }
-
-            // 3. Description
-            text = injectMeta(text, 'description', metaData.description);
-            
-            // 4. OpenGraph
-            text = injectMeta(text, 'og:title', metaData.title, true);
-            text = injectMeta(text, 'og:description', metaData.description, true);
-            text = injectMeta(text, 'og:url', `${url.origin}${path}`, true);
-            
-            // 5. Twitter
-            text = injectMeta(text, 'twitter:title', metaData.title);
-            text = injectMeta(text, 'twitter:description', metaData.description);
-            
-            // 6. Image (OpenGraph & Twitter)
-            if (dynamicImageUrl) {
-                text = injectMeta(text, 'og:image', dynamicImageUrl, true);
-                text = injectMeta(text, 'twitter:image', dynamicImageUrl);
-            }
+        if (!metaData) {
+            return response;
         }
 
-        return new Response(text, {
-            status: response.status,
-            headers: response.headers,
-        });
+        // --- HTML REWRITER (Memory Efficient) ---
+        // @ts-expect-error Deno-specific HTMLRewriter
+        return new HTMLRewriter()
+            .on("title", {
+                element(el: any) { el.setInnerContent(metaData.title); }
+            })
+            .on("head", {
+                element(el: any) {
+                    // Inject Canonical
+                    el.append(`<link rel="canonical" href="${url.origin}${path}" />`, { html: true });
+                }
+            })
+            .on('meta[name="description"]', {
+                element(el: any) { el.setAttribute("content", metaData.description); }
+            })
+            .on('meta[property="og:title"]', {
+                element(el: any) { el.setAttribute("content", metaData.title); }
+            })
+            .on('meta[property="og:description"]', {
+                element(el: any) { el.setAttribute("content", metaData.description); }
+            })
+            .on('meta[property="og:url"]', {
+                element(el: any) { el.setAttribute("content", `${url.origin}${path}`); }
+            })
+            .on('meta[name="twitter:title"]', {
+                element(el: any) { el.setAttribute("content", metaData.title); }
+            })
+            .on('meta[name="twitter:description"]', {
+                element(el: any) { el.setAttribute("content", metaData.description); }
+            })
+            .on('head', {
+                element(el: any) {
+                    if (dynamicImageUrl) {
+                        el.append(`<meta property="og:image" content="${dynamicImageUrl}" />`, { html: true });
+                        el.append(`<meta name="twitter:image" content="${dynamicImageUrl}" />`, { html: true });
+                    }
+                }
+            })
+            .transform(response);
+
     } catch (error) {
         return context.next();
     }

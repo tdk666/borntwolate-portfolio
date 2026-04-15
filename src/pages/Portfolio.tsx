@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { useSearchParams, useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { photos, type Photo } from '../data/photos';
 import { useTranslation } from 'react-i18next';
@@ -14,10 +14,9 @@ const categories = ['all', 'urban', 'nature', 'portrait', 'bnw'];
 
 const Portfolio = () => {
     const { t, i18n } = useTranslation();
-    const { category: urlCategory, seriesId, photoSlug } = useParams<{ category?: string; seriesId?: string; photoSlug?: string }>();
+    const { photoSlug } = useParams<{ category?: string; seriesId?: string; photoSlug?: string }>();
     const navigate = useNavigate();
     const [filter, setFilter] = useState('all');
-    const [selectedPhotoIndex, setSelectedPhotoIndex] = useState<number | null>(null);
     const [acquiringPhoto, setAcquiringPhoto] = useState<Photo | null>(null);
     const [columns, setColumns] = useState(1);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -47,8 +46,6 @@ const Portfolio = () => {
                 [result[i], result[j]] = [result[j], result[i]];
             }
         }
-        // eslint-disable-next-line
-        setFilteredPhotos(result);
         setFilteredPhotos(result);
     }, [filter, isSearching, searchResults]);
 
@@ -56,20 +53,18 @@ const Portfolio = () => {
     useEffect(() => {
         const photoId = searchParams.get('open');
 
-        if (photoSlug) {
-            // Find by slug (Modern)
-            const index = filteredPhotos.findIndex(p => p.slug === photoSlug);
-            if (index !== -1) setSelectedPhotoIndex(index);
-        } else if (photoId) {
-            // Find by ID (Legacy Compatibility)
-            const index = filteredPhotos.findIndex(p => String(p.id) === String(photoId));
-            if (index !== -1) setSelectedPhotoIndex(index);
-        } else {
-            setSelectedPhotoIndex(null);
+        // If we have a legacy link but no slug, we might want to redirect or handle it.
+        // For now, we follow the trend of using photoSlug from URL params.
+        if (photoId && !photoSlug) {
+            const photo = photos.find(p => String(p.id) === String(photoId));
+            if (photo) {
+                navigate(`/portfolio/${photo.seriesId}/${photo.slug}`, { replace: true });
+            }
         }
-    }, [photoSlug, searchParams, filteredPhotos]);
+    }, [photoSlug, searchParams, navigate]);
 
     // Sync Filter with URL category
+    const { category: urlCategory } = useParams<{ category?: string }>();
     useEffect(() => {
         if (urlCategory && categories.includes(urlCategory)) {
             setFilter(urlCategory);
@@ -78,7 +73,6 @@ const Portfolio = () => {
 
     // Sync Lightbox close with URL
     const closeLightbox = () => {
-        setSelectedPhotoIndex(null);
         if (searchParams.has('open')) {
             searchParams.delete('open');
             setSearchParams(searchParams);

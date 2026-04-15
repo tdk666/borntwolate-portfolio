@@ -121,6 +121,10 @@ export default function Prints() {
                                         ))}
                                     </div>
                                     <div className="text-xs text-white/40 text-center border-t border-white/5 pt-4">
+                                        <div className="flex items-center justify-center gap-2 mb-1 text-darkroom-red/60 uppercase tracking-tighter text-[9px] font-bold">
+                                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="w-2 h-2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                            Certificat d'Authenticité Inclus
+                                        </div>
                                         {trRange.shipping || range.shipping_text}
                                     </div>
                                 </div>

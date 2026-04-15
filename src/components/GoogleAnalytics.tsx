@@ -24,7 +24,8 @@ export const GoogleAnalytics = () => {
 
         const executeTracking = () => {
             if (typeof window.gtag === "undefined") {
-                console.warn("Google Analytics (gtag) n'est pas encore chargé.");
+                // analytics.js might be delayed by 2s (LCP optimization)
+                // The head proxy should still catch the call
                 return;
             }
             // Envoie la page vue au changement de route
@@ -33,20 +34,11 @@ export const GoogleAnalytics = () => {
             });
         };
 
-        // Léger délai pour s'assurer que analytics.js a initialisé la structure
-        setTimeout(executeTracking, 100);
+        executeTracking();
 
-        const handleStorageChange = () => {
-            // Géré dans CookieConsent.tsx
-        };
-
-        window.addEventListener('storage', handleStorageChange);
-        window.addEventListener('cookie-consent-updated', handleStorageChange);
-
-        return () => {
-            window.removeEventListener('storage', handleStorageChange);
-            window.removeEventListener('cookie-consent-updated', handleStorageChange);
-        };
+        // No need for injection here as it is handled by public/analytics.js
+        // No need to listen for cookie-consent-updated here as gtag('consent', 'update')
+        // automatically triggers the release of queued hits in the Google infrastructure.
     }, [location]);
 
     return null;

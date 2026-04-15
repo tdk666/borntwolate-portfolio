@@ -95,7 +95,6 @@ export const StructuredData: React.FC<StructuredDataProps> = ({ type = 'website'
                     "offers": {
                         "@type": "Offer",
                         "url": acquireUrl,
-                        "offerCount": isSoldOut ? "0" : "1",
                         "priceCurrency": "EUR",
                         "price": basePrice.toFixed(2),
                         "priceValidUntil": new Date(new Date().setFullYear(new Date().getFullYear() + 1)).toISOString().split('T')[0],
@@ -107,7 +106,7 @@ export const StructuredData: React.FC<StructuredDataProps> = ({ type = 'website'
                             "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
                             "merchantReturnDays": "14",
                             "returnMethod": "https://schema.org/ReturnByMail",
-                            "returnFees": "https://schema.org/CustomerResponsibility"
+                            "feesAndPayerPolicy": "https://schema.org/ReturnFeesCustomerResponsibility"
                         },
                         "shippingDetails": {
                             "@type": "OfferShippingDetails",
@@ -124,8 +123,14 @@ export const StructuredData: React.FC<StructuredDataProps> = ({ type = 'website'
                                 "@type": "ShippingDeliveryTime",
                                 "handlingTime": {
                                     "@type": "QuantitativeValue",
-                                    "minValue": 3,
-                                    "maxValue": 7,
+                                    "minValue": 1,
+                                    "maxValue": 3,
+                                    "unitCode": "DAY"
+                                },
+                                "transitTime": {
+                                    "@type": "QuantitativeValue",
+                                    "minValue": 2,
+                                    "maxValue": 5,
                                     "unitCode": "DAY"
                                 }
                             }

@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useState, useRef } from 'react';
-import { useSearchParams, useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { motion, useAnimation, type PanInfo } from 'framer-motion';
 import { X, ChevronLeft, ChevronRight } from 'lucide-react';
 import { type Photo, seriesData } from '../data/photos';
@@ -19,7 +19,7 @@ interface LightboxProps {
 
 const Lightbox = ({ photo, onClose, onNext, onPrev, showContextualLink = true }: LightboxProps) => {
     const { t, i18n } = useTranslation();
-    const [searchParams] = useSearchParams();
+
     const navigate = useNavigate();
     const location = useLocation();
     const currentLang = i18n.language.split('-')[0] as 'fr' | 'en';

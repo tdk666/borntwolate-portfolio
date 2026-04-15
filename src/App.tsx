@@ -1,7 +1,7 @@
-import { useEffect, Suspense, lazy } from 'react';
+import { useEffect, useState, Suspense, lazy } from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, useScroll, useMotionValueEvent } from 'framer-motion';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Portfolio from './pages/Portfolio';
@@ -108,10 +108,25 @@ function App() {
   );
 }
 
+
+
 // Sub-component to use useLocation() inside Router context
 function LayoutContent({ isDarkroom }: { isDarkroom: boolean }) {
   const location = useLocation();
+  const { scrollY } = useScroll();
+  const [scrolled, setScrolled] = useState(false);
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    setScrolled(latest > 200);
+  });
+
   const isLegacyPage = location.pathname === '/legacy';
+  const isPortfolioPage = location.pathname.startsWith('/portfolio');
+  const isSuccessPage = location.pathname === '/success';
+  const isHomePage = location.pathname === '/';
+
+  // Hide on portfolio/success. On Home, hide until scrolled to avoid Hero CTA conflict.
+  const showStickyCTA = !isLegacyPage && !isPortfolioPage && !isSuccessPage && (!isHomePage || scrolled);
 
   return (
     <>
@@ -154,16 +169,14 @@ function LayoutContent({ isDarkroom }: { isDarkroom: boolean }) {
           </Suspense>
         </ErrorBoundary>
       </div>
-      {!isLegacyPage && (
-        <>
-          <div className="md:hidden fixed bottom-6 left-0 right-0 z-[45] flex justify-center pointer-events-none px-4">
-             <a href="/portfolio" className="pointer-events-auto bg-darkroom-red text-white uppercase font-space-mono text-[10px] tracking-widest px-6 py-3 shadow-[0_0_20px_rgba(0,0,0,0.5)] border border-white/20 backdrop-blur-sm opacity-95 hover:opacity-100 transition-all font-semibold">
-                Acquérir un tirage
-             </a>
-          </div>
-          <CookieConsent />
-        </>
+      {showStickyCTA && (
+        <div className="md:hidden fixed bottom-6 left-0 right-0 z-[45] flex justify-center pointer-events-none px-4">
+           <a href="/portfolio" className="pointer-events-auto bg-darkroom-red text-white uppercase font-space-mono text-[10px] tracking-widest px-6 py-3 shadow-[0_0_20px_rgba(0,0,0,0.5)] border border-white/20 backdrop-blur-sm opacity-95 hover:opacity-100 transition-all font-semibold">
+              Acquérir un tirage
+           </a>
+        </div>
       )}
+      {!isLegacyPage && <CookieConsent />}
     </>
   );
 }

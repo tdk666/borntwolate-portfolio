@@ -1,8 +1,10 @@
-// 1. Initialiser le dataLayer en tout premier
+// --- GOOGLE TRACKING INFRASTRUCTURE ---
+// Source: setup in analytics.js to prioritize LCP (deferred loading)
+
 window.dataLayer = window.dataLayer || [];
 function gtag() { dataLayer.push(arguments); }
 
-// 2. Google Consent Mode v2 (Default Denied)
+// 1. Google Consent Mode v2 (Default Denied)
 gtag('consent', 'default', {
     'ad_storage': 'denied',
     'ad_user_data': 'denied',
@@ -11,17 +13,20 @@ gtag('consent', 'default', {
     'wait_for_update': 500
 });
 
-// 3. Initialiser gtag (sans déclencher de vue de page ici)
+// 2. Initialize gtag
 gtag('js', new Date());
-// ⚠️ On ne met pas gtag('config', 'G-Q3VNSP006H') ici pour éviter les doublons avec React
 
-// 4. Charger le script global Google Analytics 4
+// NOTE: We do NOT call gtag('config', 'G-Q3VNSP006H') here.
+// In a React SPA, the config (which triggers a page_view) is handled 
+// by src/components/GoogleAnalytics.tsx to capture correct route paths.
+
+// 3. Load GA4 (gtag.js)
 const gaScript = document.createElement('script');
 gaScript.async = true;
 gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-Q3VNSP006H';
 document.head.appendChild(gaScript);
 
-// 5. Charger Google Tag Manager
+// 4. Load Google Tag Manager
 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
