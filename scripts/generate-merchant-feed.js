@@ -133,7 +133,7 @@ try {
                         products.push({
                             gId: `${slug}-${range.id}-${variant.id}`,
                             gItemGroupId: slug,
-                            title: `Tirage Argentique ${title} - ${variant.label} - ${range.label}`,
+                            title: `Photographie - ${title} - ${variant.label} - ${range.label}`,
                             description: `${range.description} ${caption}`.slice(0, 5000),
                             link: `${BASE_URL}/series/${seriesId}/${slug}`,
                             imageLink: `${BASE_URL}${url}`,
@@ -164,23 +164,28 @@ const xml = `<?xml version="1.0"?>
 
 ${products.map(p => `
 <item>
-    <g:id>${p.gId}</g:id>
-    <g:item_group_id>${p.gItemGroupId}</g:item_group_id>
-    <g:title>${p.title.replace(/&/g, '&amp;')}</g:title>
-    <g:description>${p.description.replace(/&/g, '&amp;')}</g:description>
-    <g:link>${p.link}</g:link>
-    <g:image_link>${p.imageLink}</g:image_link>
-    <g:brand>BornTwoLate</g:brand>
-    <g:condition>new</g:condition>
-    <g:availability>${p.availability}</g:availability>
-    <g:quantity>${p.quantity}</g:quantity>
-    <g:price>${p.price}</g:price>
-    <g:shipping_weight>${p.weight}</g:shipping_weight>
-    <g:google_product_category>2155</g:google_product_category>
-    <g:custom_label_0>${p.customLabel0}</g:custom_label_0>
-    <g:custom_label_1>${p.customLabel1}</g:custom_label_1>
-    ${p.shipping}
-</item>
+            <g:id>${p.gId}</g:id>
+            <g:item_group_id>${p.gItemGroupId}</g:item_group_id>
+            <g:title>${p.title.replace(/&/g, '&amp;')}</g:title>
+            <g:description>${p.description.replace(/&/g, '&amp;')}</g:description>
+            <g:link>${p.link}</g:link>
+            <g:image_link>${p.imageLink}</g:image_link>
+            <g:brand>BornTooLate</g:brand>
+            <g:condition>new</g:condition>
+            <g:availability>${p.availability}</g:availability>
+            <g:quantity>${p.quantity}</g:quantity>
+            <g:price>${p.price}</g:price>
+            <g:shipping_weight>${p.weight}</g:shipping_weight>
+            <g:google_product_category>500044</g:google_product_category>
+            <g:product_type>Décoration intérieure &gt; Art &gt; Photographie</g:product_type>
+            <g:identifier_exists>false</g:identifier_exists>
+            <g:gender>unisex</g:gender>
+            <g:age_group>adult</g:age_group>
+            <g:adult>no</g:adult>
+            <g:custom_label_0>${p.customLabel0}</g:custom_label_0>
+            <g:custom_label_1>${p.customLabel1}</g:custom_label_1>
+            ${p.shipping}
+        </item>
 `).join('')}
 </channel>
 </rss>`;

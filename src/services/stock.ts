@@ -70,7 +70,7 @@ export const stockService = {
         if (cached) return cached;
 
         try {
-            const query = supabase.from('art_stocks').select('sold_count, max_limit').eq('slug', slug).single();
+            const query = supabase.from('art_stocks').select('sold_count, max_limit').eq('slug', slug).maybeSingle();
             const { data, error } = await fetchWithTimeout<any>(query, 3000);
 
             if (error) {
