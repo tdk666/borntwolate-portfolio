@@ -5,14 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "prebuild": "npm audit --audit-level=high || true && node scripts/optimize-images.js && node scripts/generate-sitemap.js && node scripts/generate-merchant-feed.js",
+    "prebuild": "npm audit --audit-level=critical && node scripts/optimize-images.js && node scripts/generate-sitemap.js && node scripts/generate-merchant-feed.js",
     "generate-sitemap": "node scripts/generate-sitemap.js",
     "generate-feed": "node scripts/generate-merchant-feed.js",
     "build": "tsc -b && vite build && node scripts/generate-sitemap.js && node scripts/generate-merchant-feed.js",
     "postbuild": "node scripts/validate-schema.js",
     "lint": "eslint .",
     "preview": "vite preview",
-    "lhci:ci": "lhci autorun"
+    "lhci:ci": "lhci autorun",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -25,7 +27,7 @@
     "framer-motion": "10.18.0",
     "i18next": "^25.7.2",
     "i18next-browser-languagedetector": "^8.2.0",
-    "jspdf": "^2.5.1",
+    "jspdf": "^4.2.1",
     "lucide-react": "^0.556.0",
     "postcss": "^8.5.6",
     "react": "^18.3.1",
@@ -39,13 +41,13 @@
     "sharp": "^0.34.5",
     "stripe": "^15.11.0",
     "tailwindcss": "^4.1.17",
-    "vite-plugin-image-optimizer": "^2.0.3",
-    "xlsx": "^0.18.5"
+    "vite-plugin-image-optimizer": "^2.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@lhci/cli": "^0.13.0",
     "@netlify/functions": "^5.1.2",
+    "@playwright/test": "^1.49.0",
     "@tailwindcss/postcss": "^4.1.17",
     "@types/node": "^24.10.1",
     "@types/react": "^18.3.3",

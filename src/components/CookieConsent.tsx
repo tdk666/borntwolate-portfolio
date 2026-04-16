@@ -13,11 +13,23 @@ export const CookieConsent = () => {
 
     useEffect(() => {
         const consent = localStorage.getItem('cookie-consent');
-        if (!consent) {
-            // Delay for better UX
+        if (consent === 'accepted') {
+            // Returning user who already accepted: restore consent immediately.
+            // gtag is a dataLayer proxy defined in index.html — safe to call before analytics.js loads.
+            if (typeof window.gtag === 'function') {
+                window.gtag('consent', 'update', {
+                    'analytics_storage': 'granted',
+                    'ad_storage': 'granted',
+                    'ad_user_data': 'granted',
+                    'ad_personalization': 'granted'
+                });
+            }
+        } else if (!consent) {
+            // New visitor: show banner after a short delay for UX
             const timer = setTimeout(() => setIsVisible(true), 1000);
             return () => clearTimeout(timer);
         }
+        // consent === 'declined': do nothing, keep defaults denied
     }, []);
 
     const handleAccept = () => {

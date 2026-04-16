@@ -4,29 +4,19 @@
 window.dataLayer = window.dataLayer || [];
 function gtag() { dataLayer.push(arguments); }
 
-// 1. Google Consent Mode v2 (Default Denied)
-gtag('consent', 'default', {
-    'ad_storage': 'denied',
-    'ad_user_data': 'denied',
-    'ad_personalization': 'denied',
-    'analytics_storage': 'denied',
-    'wait_for_update': 500
-});
+// NOTE: Consent Mode v2 default is already set in index.html (inline, executes first).
+// DO NOT redeclare gtag('consent', 'default') here — it would overwrite any consent
+// already restored by CookieConsent.tsx for returning users who accepted cookies.
 
-// 2. Initialize gtag
+// 1. Initialize gtag
 gtag('js', new Date());
 
-// NOTE: We do NOT call gtag('config', 'G-Q3VNSP006H') here.
-// In a React SPA, the config (which triggers a page_view) is handled 
-// by src/components/GoogleAnalytics.tsx to capture correct route paths.
+// NOTE: GA4 is loaded by GTM (tag "Balise Google GA4" in container GTM-KGB4WP3K).
+// Do NOT load gtag.js directly here — it would create double tracking.
+// Route-change page_views are handled by src/components/GoogleAnalytics.tsx
+// via gtag('config', ...) which pushes to the dataLayer that GTM reads.
 
-// 3. Load GA4 (gtag.js)
-const gaScript = document.createElement('script');
-gaScript.async = true;
-gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=G-Q3VNSP006H';
-document.head.appendChild(gaScript);
-
-// 4. Load Google Tag Manager
+// Load Google Tag Manager
 (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=

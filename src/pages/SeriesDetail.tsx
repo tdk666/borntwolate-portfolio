@@ -1,5 +1,4 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
 import { SEO } from '../components/SEO';
 import NotFound from './NotFound';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -105,8 +104,6 @@ const SeriesDetail = () => {
 
     return (
         <div key={id} className="min-h-screen pt-24 px-4 md:px-8 pb-12 transition-colors duration-1000 ease-in-out">
-            <Helmet>
-            </Helmet>
             <SEO
                 title={selectedPhotoIndex !== null 
                     ? `${series.photos[selectedPhotoIndex].title} | ${series.title} | Born Too Late`
@@ -224,7 +221,7 @@ const SeriesDetail = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <Link to={`/series/${prevSeries.id}`} className="group relative block overflow-hidden aspect-[3/2]">
                         <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-500 z-10" />
-                        <img src={prevSeries.coverImage} alt={prevSeries.title} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 grayscale group-hover:grayscale-0" />
+                        <img src={prevSeries.coverImage} alt={`Série photographique argentique : ${prevSeries.title}`} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 grayscale group-hover:grayscale-0" />
                         <div className="absolute bottom-4 left-4 z-20">
                             <span className="font-space-mono text-xs text-darkroom-red uppercase tracking-widest block mb-1">{t('series_detail.previous_series', { defaultValue: "Série Précédente" })}</span>
                             <span className="font-space-mono text-xl text-off-white uppercase tracking-widest">{prevSeries.title}</span>
@@ -232,7 +229,7 @@ const SeriesDetail = () => {
                     </Link>
                     <Link to={`/series/${nextSeries.id}`} className="group relative block overflow-hidden aspect-[3/2]">
                         <div className="absolute inset-0 bg-black/40 group-hover:bg-transparent transition-colors duration-500 z-10" />
-                        <img src={nextSeries.coverImage} alt={nextSeries.title} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 grayscale group-hover:grayscale-0" />
+                        <img src={nextSeries.coverImage} alt={`Série photographique argentique : ${nextSeries.title}`} className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 grayscale group-hover:grayscale-0" />
                         <div className="absolute bottom-4 right-4 z-20 text-right">
                             <span className="font-space-mono text-xs text-darkroom-red uppercase tracking-widest block mb-1">{t('series_detail.next_series', { defaultValue: "Série Suivante" })}</span>
                             <span className="font-space-mono text-xl text-off-white uppercase tracking-widest">{nextSeries.title}</span>

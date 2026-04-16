@@ -11,7 +11,6 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import { useDarkroom } from './context/DarkroomContext';
 import Prints from './pages/Prints';
-import CertificateGenerator from './pages/admin/CertificateGenerator';
 import { ErrorBoundary } from './components/ErrorBoundary';
 
 import Footer from './components/Footer';
@@ -20,13 +19,14 @@ import Legals from './pages/Legals';
 import ScrollToTop from './components/ScrollToTop';
 import { GoogleAnalytics } from './components/GoogleAnalytics';
 
-// LAZY LOAD CHATBOT
+// LAZY LOAD — pages hors critical path (réduisent le bundle principal)
 const Chatbot = lazy(() => import('./components/chatbot/Chatbot').then(module => ({ default: module.Chatbot })));
 const PhotographeArgentique = lazy(() => import('./pages/PhotographeArgentique'));
+const Legacy = lazy(() => import('./pages/Legacy'));
+const CertificateGenerator = lazy(() => import('./pages/admin/CertificateGenerator'));
 import { CookieConsent } from './components/CookieConsent';
 import Success from './pages/Success';
 import { PageLoader } from './components/PageLoader';
-import Legacy from './pages/Legacy'; // Import once
 
 
 function AnimatedRoutes() {

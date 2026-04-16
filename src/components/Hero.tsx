@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { photos, type Photo } from '../data/photos';
 import { useTranslation } from 'react-i18next';
-import { Helmet } from 'react-helmet-async';
 
 const Hero = () => {
     const { t, i18n } = useTranslation();
@@ -66,10 +65,9 @@ const Hero = () => {
 
     return (
         <section className="relative w-full h-screen overflow-hidden bg-deep-black flex flex-col justify-center items-center">
-            {/* LCP Preload Trigger */}
-            <Helmet>
-                <link rel="preload" as="image" href={landingImage} type="image/avif" fetchPriority="high" />
-            </Helmet>
+            {/* NOTE: LCP preload is already declared statically in index.html.
+                Duplicating it here via Helmet causes the browser to see two identical
+                preload hints for the same resource. Removed to avoid double fetch. */}
 
             {/* Loading Screen — "BROOK'S DARKROOM" */}
             <AnimatePresence>
