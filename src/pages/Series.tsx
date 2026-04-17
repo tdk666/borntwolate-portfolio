@@ -110,6 +110,15 @@ const Series = () => {
                     </div>
                 ))}
             </div>
+
+            <div className="mt-24 text-center">
+                <Link
+                    to="/carnets"
+                    className="font-space-mono text-[10px] tracking-widest uppercase text-silver/40 hover:text-darkroom-red transition-colors"
+                >
+                    Lire les carnets de terrain &rarr;
+                </Link>
+            </div>
         </div>
     );
 };

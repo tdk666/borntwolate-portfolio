@@ -24,6 +24,10 @@ const Chatbot = lazy(() => import('./components/chatbot/Chatbot').then(module =>
 const PhotographeArgentique = lazy(() => import('./pages/PhotographeArgentique'));
 const Legacy = lazy(() => import('./pages/Legacy'));
 const CertificateGenerator = lazy(() => import('./pages/admin/CertificateGenerator'));
+const Carnets = lazy(() => import('./pages/Carnets'));
+const CarnetDetail = lazy(() => import('./pages/CarnetDetail'));
+const CadeauPhoto = lazy(() => import('./pages/CadeauPhoto'));
+const PhotographieArgentiqueParis = lazy(() => import('./pages/PhotographieArgentiqueParis'));
 import { CookieConsent } from './components/CookieConsent';
 import Success from './pages/Success';
 import { PageLoader } from './components/PageLoader';
@@ -47,6 +51,10 @@ function AnimatedRoutes() {
         <Route path="/contact" element={<Contact />} />
         <Route path="/prints" element={<Prints />} />
         <Route path="/photographe-argentique" element={<PhotographeArgentique />} />
+        <Route path="/carnets" element={<Carnets />} />
+        <Route path="/carnets/:id" element={<CarnetDetail />} />
+        <Route path="/cadeau-photo-argentique" element={<CadeauPhoto />} />
+        <Route path="/photographie-argentique-paris" element={<PhotographieArgentiqueParis />} />
         <Route path="/admin/certificate" element={<CertificateGenerator />} />
         <Route path="/legals" element={<Legals />} />
         <Route path="/success" element={<Success />} />

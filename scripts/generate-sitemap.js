@@ -17,7 +17,18 @@ const pages = [
   '/contact',
   '/prints',
   '/legals',
-  '/photographe-argentique'
+  '/photographe-argentique',
+  '/cadeau-photo-argentique',
+  '/photographie-argentique-paris',
+  '/carnets',
+  '/carnets/retro-mountain',
+  '/carnets/mauvais-garcons',
+  '/carnets/winter-in-the-fruit',
+  '/carnets/puglia-famiglia',
+  '/carnets/psychadelic-mtl',
+  '/carnets/canadian-evasion',
+  '/carnets/white-mounts',
+  '/carnets/polish-hike',
 ];
 
 // 2. Advanced Parsing of src/data/photos.ts

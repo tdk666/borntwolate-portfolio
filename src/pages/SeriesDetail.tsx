@@ -1,5 +1,6 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { SEO } from '../components/SEO';
+import { carnets } from '../data/carnets';
 import NotFound from './NotFound';
 import { motion, AnimatePresence } from 'framer-motion';
 import { seriesData } from '../data/photos';
@@ -167,6 +168,15 @@ const SeriesDetail = () => {
                                 {series.description[currentLang]}
                             </p>
                         </div>
+                        {carnets.find(c => c.seriesId === series.id) && (
+                            <Link
+                                to={`/carnets/${series.id}`}
+                                className="inline-flex items-center gap-3 mt-10 font-space-mono text-[11px] uppercase tracking-[0.2em] text-darkroom-red/80 hover:text-darkroom-red border border-darkroom-red/30 hover:border-darkroom-red/60 transition-all duration-300 px-5 py-3"
+                            >
+                                <span className="w-5 h-px bg-current flex-shrink-0" />
+                                {currentLang === 'en' ? 'Field notes' : 'Carnet de série'}
+                            </Link>
+                        )}
                     </FadeIn>
                 </div>
             </div>

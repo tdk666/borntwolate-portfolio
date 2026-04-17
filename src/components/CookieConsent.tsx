@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 // import { useTranslation } from 'react-i18next'; // Unused
 
@@ -70,7 +71,10 @@ export const CookieConsent = () => {
                                 Soutenez mon travail.
                             </h3>
                             <p className="font-inter text-sm text-silver/80 leading-relaxed">
-                                Les analyses de trafic (cookies analytiques) m'aident énormément à comprendre ce qui vous plaît et à faire grandir ce projet artistique indépendant. Acceptez-vous de partager ces données anonymes ?
+                                Les analyses de trafic (cookies analytiques) m'aident énormément à comprendre ce qui vous plaît et à faire grandir ce projet artistique indépendant. Acceptez-vous de partager ces données anonymes ?{' '}
+                                <Link to="/legals" className="underline underline-offset-2 decoration-white/20 hover:text-white transition-colors">
+                                    Politique de confidentialité
+                                </Link>
                             </p>
                         </div>
 

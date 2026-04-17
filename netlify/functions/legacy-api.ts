@@ -50,7 +50,8 @@ export const handler: Handler = async (event) => {
         if (event.httpMethod === 'POST' && event.path.endsWith('/verify-admin')) {
             const body = JSON.parse(event.body || '{}');
             const { code } = body;
-            const adminCode = process.env.ADMIN_LEGACY_CODE || 'THEOPHILE-LEGACY'; // fallback for local dev if forgotten
+            const adminCode = process.env.ADMIN_LEGACY_CODE;
+            if (!adminCode) return { statusCode: 500, headers, body: JSON.stringify({ error: 'ADMIN_LEGACY_CODE non configuré.' }) };
 
             if (code === adminCode) {
                 return { statusCode: 200, headers, body: JSON.stringify({ role: 'admin' }) };
@@ -177,7 +178,8 @@ export const handler: Handler = async (event) => {
             const { admin_code, id } = body;
 
             // Admin verification
-            const adminCodeEnv = process.env.ADMIN_LEGACY_CODE || 'THEOPHILE-LEGACY';
+            const adminCodeEnv = process.env.ADMIN_LEGACY_CODE;
+            if (!adminCodeEnv) return { statusCode: 500, headers, body: JSON.stringify({ error: 'ADMIN_LEGACY_CODE non configuré.' }) };
             if (admin_code !== adminCodeEnv) {
                 return { statusCode: 403, headers, body: JSON.stringify({ error: 'Accès non autorisé' }) };
             }

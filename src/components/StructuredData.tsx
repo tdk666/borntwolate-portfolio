@@ -74,24 +74,6 @@ export const StructuredData: React.FC<StructuredDataProps> = ({ type = 'website'
                         "name": "Borntwolate",
                         "sameAs": ["https://www.instagram.com/borntwolate_/"]
                     },
-                    "aggregateRating": {
-                        "@type": "AggregateRating",
-                        "ratingValue": "5.0",
-                        "reviewCount": "14"
-                    },
-                    "review": [
-                        {
-                            "@type": "Review",
-                            "reviewRating": {
-                                "@type": "Rating",
-                                "ratingValue": "5"
-                            },
-                            "author": {
-                                "@type": "Person",
-                                "name": "Art Collector"
-                            }
-                        }
-                    ],
                     "offers": {
                         "@type": "Offer",
                         "url": acquireUrl,

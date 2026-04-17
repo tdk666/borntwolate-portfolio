@@ -32,6 +32,7 @@ const Footer = () => {
                     </Link>
 
 
+
                     <a
                         href="https://instagram.com/borntwolate"
                         target="_blank"

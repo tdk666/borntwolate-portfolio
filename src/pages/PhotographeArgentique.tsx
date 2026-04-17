@@ -309,6 +309,17 @@ const PhotographeArgentique = () => {
 
 
 
+                <FadeIn>
+                    <div className="mb-24 text-center">
+                        <Link
+                            to="/photographie-argentique-paris"
+                            className="font-space-mono text-[10px] tracking-widest uppercase text-silver/40 hover:text-darkroom-red transition-colors"
+                        >
+                            Photographie argentique à Paris &rarr;
+                        </Link>
+                    </div>
+                </FadeIn>
+
             </article>
         </div>
     );

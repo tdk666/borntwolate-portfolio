@@ -1,7 +1,8 @@
 import { Handler } from '@netlify/functions';
 import { createClient } from '@supabase/supabase-js';
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'MOLT2024'; // Fallback for dev
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+if (!ADMIN_PASSWORD) throw new Error('ADMIN_PASSWORD env var is not set');
 
 // Initialize Supabase (Service Role for Admin Access)
 const supabaseUrl = process.env.VITE_SUPABASE_URL || '';

@@ -101,7 +101,8 @@ i18n
                         manifest_p1: "Théophile Dequecker est un <1>photographe argentique basé à Paris</1>. Dans l'ère du tout-numérique, il privilégie l'attente, l'organique et le grain du film 35mm pour capturer des instants suspendus entre Paris et le restant du monde.",
                         manifest_p2: "Chaque tirage d'art est une œuvre pensée pour le support physique. Ses épreuves limitées sont réalisées à Paris sur papier Canson Infinity Platine Fibre Rag, garantissant une pérennité muséale et une profondeur de noir propre à la photographie argentique traditionnelle.",
                         manifest_cta_explore: "Sa démarche artistique",
-                        manifest_cta_buy: "Galerie des tirages"
+                        manifest_cta_buy: "Galerie des tirages",
+                        see_all: "Tout voir"
                     },
                     portfolio: {
                         seo_title: "Portfolio Photographie Argentique | Fine Art & Voyage | Borntwolate",
@@ -385,7 +386,8 @@ i18n
                         manifest_p1: "Théophile Dequecker is an <1>analog photographer based in Paris</1>. In the digital age, he embraces the slow process, organic grain, and the soul of 35mm film to capture suspended moments from Paris to the rest of the world.",
                         manifest_p2: "Each fine art print is conceived as a unique physical object. His limited editions are produced in Paris on Canson Infinity Platine Fibre Rag paper, ensuring museum-grade longevity and the deep blacks unique to the analog photography tradition.",
                         manifest_cta_explore: "Artistic Vision",
-                        manifest_cta_buy: "Acquire a Print"
+                        manifest_cta_buy: "Acquire a Print",
+                        see_all: "View all"
                     },
                     portfolio: {
                         seo_title: 'Portfolio',

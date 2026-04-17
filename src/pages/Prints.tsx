@@ -34,7 +34,7 @@ export default function Prints() {
             <FadeIn>
                 {/* HERO SECTION */}
                 <header className="text-center mb-20">
-                    <h1 className="font-serif text-5xl md:text-7xl mb-8">{t('prints.title')}</h1>
+                    <h1 className="font-serif italic font-light text-5xl md:text-7xl mb-8">{t('prints.title')}</h1>
                     <p className="text-white/60 max-w-2xl mx-auto text-lg leading-relaxed">
                         {t('prints.subtitle')}
                     </p>
@@ -43,17 +43,20 @@ export default function Prints() {
                 {/* SECTION SAVOIR-FAIRE & SIMULATION */}
                 <div className="grid md:grid-cols-2 gap-16 mb-24 items-center">
                     <div className="space-y-6">
-                        <h2 className="font-serif text-3xl">{t('prints.craft_title')}</h2>
+                        <h2 className="font-serif italic text-3xl">{t('prints.craft_title')}</h2>
                         <p className="text-white/70 leading-relaxed">
                             <Trans i18nKey="prints.craft_text">
                                 Chaque tirage est réalisé à la commande par notre laboratoire partenaire Picto Paris.
                                 Nous utilisons exclusivement le papier <strong>Canson Infinity Platine Fibre Rag 310g</strong>.
                             </Trans>
                         </p>
-                        <div className="pt-4">
+                        <div className="pt-4 flex flex-col gap-3">
                             <Link to="/series" className="text-white underline underline-offset-4 hover:text-white/70 transition-colors">
                                 {t('prints.explore_series')}
                                 <span className="sr-only">Découvrir l'ensemble des séries photographiques et tirages d'art limités</span>
+                            </Link>
+                            <Link to="/cadeau-photo-argentique" className="font-space-mono text-[10px] tracking-widest uppercase text-silver/40 hover:text-darkroom-red transition-colors">
+                                Offrir un tirage &rarr;
                             </Link>
                         </div>
                     </div>
@@ -91,7 +94,7 @@ export default function Prints() {
 
                 {/* CATALOGUE DES PRIX (Informatif) */}
                 <div className="border-t border-white/10 pt-16">
-                    <h2 className="font-serif text-3xl text-center mb-12">{t('prints.pricing_grid')}</h2>
+                    <h2 className="font-serif italic text-3xl text-center mb-12">{t('prints.pricing_grid')}</h2>
                     <div className="grid md:grid-cols-3 gap-8">
                         {Object.values(pricingCatalog).map((range) => {
                             const isElegance = range.id === 'elegance';
@@ -134,7 +137,7 @@ export default function Prints() {
 
                     {/* FINAL CALL TO ACTION */}
                     <div className="mt-24 text-center pb-12">
-                        <h2 className="font-serif text-3xl mb-8">{t('prints.cta_title')}</h2>
+                        <h2 className="font-serif italic text-3xl mb-8">{t('prints.cta_title')}</h2>
                         <Link
                             to="/series"
                             className="inline-block px-12 py-5 bg-white text-black font-space-mono text-sm uppercase tracking-[0.3em] hover:bg-silver transition-all duration-300"

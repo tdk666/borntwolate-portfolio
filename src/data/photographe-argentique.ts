@@ -65,7 +65,7 @@ export const photographeArgentiqueData = {
             items: [
                 {
                     title: "Boîtiers légendaires et émulsions mythiques",
-                    text: "Le matériel est le prolongement de l'œil. Borntwolate utilise des boîtiers analogiques réputés pour leur robustesse et leur optique, notamment le mythique Rollei 35. Mais le véritable pinceau, c'est la pellicule. Le choix du film détermine l'esthétique. L'artiste alterne entre le grain marqué d'une Rollei Retro 400S pour le noir et blanc contrasté, et les teintes cinématographiques des Kodak Portra ou CineStill 400D pour la couleur. Connaître la réaction de ces émulsions face aux néons de la nuit ou à la neige de New York est le fruit d'années d'expérience."
+                    text: "Le matériel est le prolongement de l'œil. Borntwolate utilise des boîtiers analogiques réputés pour leur robustesse et leur optique, notamment le mythique Rollei 35. Mais le véritable pinceau, c'est la pellicule. Le choix du film détermine l'esthétique. Kodak Gold 200 pour la chaleur dorée des lumières naturelles et la palette nostalgique (séries Polish Hike, Mauvais Garçons). Kodak Portra 400 pour la douceur des pastels dans la neige et les lumières froides (White Mounts). CineStill 400D pour les halos rouges cinématographiques de la nuit urbaine (Puglia). Rollei Retro 400S pour le noir et blanc contrasté, presque dramatique (Retro Mountain). Connaître la réaction de ces émulsions face aux néons de la nuit ou à la neige de New York est le fruit d'années d'expérience."
                 },
                 {
                     title: "De la numérisation HD au tirage d'art",
@@ -95,6 +95,22 @@ export const photographeArgentiqueData = {
                 {
                     q: "Pourquoi choisir la finition Caisse Américaine ?",
                     a: "C'est la finition \"Luxe\" par excellence. Le tirage est contrecollé et semble flotter à l'intérieur d'un cadre en bois, sans vitre. Cela offre une immersion totale dans l'image, sans reflet, mettant en valeur la texture du papier et le grain de la pellicule. C'est la finition recommandée pour les grands formats artistiques."
+                },
+                {
+                    q: "Combien d'exemplaires existent pour chaque tirage ?",
+                    a: "Chaque œuvre est limitée à 30 exemplaires tous formats et finitions confondus — c'est la limite légale française permettant de qualifier une photographie en tant qu'œuvre d'art originale (Article 98A du Code Général des Impôts). Au-delà, c'est une reproduction. En deçà, c'est une collection. Cette contrainte n'est pas marketing : elle est la garantie juridique de la rareté et de la valeur de revente."
+                },
+                {
+                    q: "Quelle est la différence entre un tirage argentique et une impression numérique classique ?",
+                    a: "Un tirage argentique naît d'un négatif physique exposé à la lumière, développé par la chimie. Chaque image a existé matériellement avant d'exister sur papier. Une impression numérique part de données binaires — aucune réalité physique intermédiaire. Ce n'est pas qu'une question de rendu : c'est une différence de nature. Le grain d'un Kodak Gold 200 sur une rue de Paris n'est pas un filtre. C'est la trace chimique de la lumière de ce jour-là."
+                },
+                {
+                    q: "La photographie d'art argentique est-elle un bon investissement ?",
+                    a: "Une édition de 30 exemplaires numérotés et signés, tirée sur papier Canson Infinity 310g avec certification Picto, peut voir sa valeur augmenter à mesure que la série se complète et que l'artiste gagne en reconnaissance. Ce qui est certain : la pérennité du support dépasse 100 ans (norme ISO 9706). L'œuvre survivra à son acheteur."
+                },
+                {
+                    q: "Quels films argentiques utilise Borntwolate ?",
+                    a: "Le choix du film est une décision artistique à part entière. Kodak Gold 200 pour la chaleur dorée des paysages et lumières naturelles (Polish Hike, Mauvais Garçons). Kodak Portra 400 pour la douceur des pastels dans la neige et la lumière froide (White Mounts). CineStill 400D pour les halos rouges cinématographiques de la nuit urbaine (Puglia). Rollei Retro 400S pour le noir et blanc contrasté, presque dramatique (Retro Mountain). Chaque série a son émulsion."
                 }
             ]
         },
@@ -172,7 +188,7 @@ export const photographeArgentiqueData = {
             items: [
                 {
                     title: "Legendary cameras and mythical emulsions",
-                    text: "Gear is the extension of the eye. Borntwolate uses analog cameras renowned for their robustness and optics, notably the mythical Rollei 35. But the real brush is the film. The choice of film determines the aesthetic. The artist alternates between the marked grain of a Rollei Retro 400S for contrasted black and white, and the cinematic hues of Kodak Portra or CineStill 400D for color. Knowing the reaction of these emulsions to night neons or New York snow is the fruit of years of experience."
+                    text: "Gear is the extension of the eye. Borntwolate uses analog cameras renowned for their robustness and optics, notably the mythical Rollei 35. But the real brush is the film. The choice of film determines the aesthetic. Kodak Gold 200 for the warm golden tones of natural light (Polish Hike, Mauvais Garçons). Kodak Portra 400 for soft pastels in snow and cold light (White Mounts). CineStill 400D for cinematic red halos of urban nights (Puglia). Rollei Retro 400S for contrasted, almost dramatic black and white (Retro Mountain). Knowing the reaction of these emulsions to night neons or New York snow is the fruit of years of experience."
                 },
                 {
                     title: "From HD digitization to fine art printing",
@@ -198,6 +214,22 @@ export const photographeArgentiqueData = {
                 {
                     q: "Why choose the American Box finish?",
                     a: "It is the \"Luxury\" finish par excellence. The print is laminated and seems to float inside a wooden frame, without glass. This offers total immersion in the image, without reflection, highlighting the paper texture and film grain. It is the finish recommended for large formats."
+                },
+                {
+                    q: "How many copies exist for each print?",
+                    a: "Each work is limited to 30 copies across all formats and finishes combined — this is the French legal threshold qualifying a photograph as an original work of art (Article 98A of the French Tax Code). Beyond 30, it becomes a reproduction. Below, it is a collection. This constraint is not marketing: it is the legal guarantee of rarity and resale value."
+                },
+                {
+                    q: "What is the difference between an analog print and a standard digital print?",
+                    a: "An analog print originates from a physical negative exposed to light, developed through chemistry. Each image existed materially before existing on paper. A digital print starts from binary data — no physical intermediate reality. This is not just a question of rendering: it is a difference in nature. The grain of a Kodak Gold 200 on a Paris street is not a filter. It is the chemical trace of the light from that specific day."
+                },
+                {
+                    q: "Is analog fine art photography a good investment?",
+                    a: "An edition of 30 numbered and signed copies, printed on Canson Infinity 310g paper with Picto certification, can increase in value as the series completes and the artist gains recognition. What is certain: the support's longevity exceeds 100 years (ISO 9706 standard). The work will outlast its buyer."
+                },
+                {
+                    q: "What analog films does Borntwolate use?",
+                    a: "The choice of film is an artistic decision in its own right. Kodak Gold 200 for warm golden tones in natural light (Polish Hike, Mauvais Garçons). Kodak Portra 400 for soft pastels in snow and cold light (White Mounts). CineStill 400D for cinematic red halos of urban nights (Puglia). Rollei Retro 400S for contrasted, almost dramatic black and white (Retro Mountain). Each series has its emulsion."
                 }
             ]
         },

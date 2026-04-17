@@ -4,13 +4,16 @@ import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
 // Initialize Stripe
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
+const stripeKey = process.env.STRIPE_SECRET_KEY;
+if (!stripeKey) throw new Error('STRIPE_SECRET_KEY is not configured');
+const stripe = new Stripe(stripeKey, {
     apiVersion: '2024-04-10',
 });
 
 // Initialize Supabase (Admin Context for writing orders)
 const supabaseUrl = process.env.VITE_SUPABASE_URL || '';
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || ''; // MUST use Service Role for Admin writes if RLS is strict
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+if (!supabaseServiceKey) throw new Error('SUPABASE_SERVICE_ROLE_KEY is not configured');
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 export const handler: Handler = async (event) => {

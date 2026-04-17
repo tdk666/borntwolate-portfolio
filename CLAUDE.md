@@ -5,8 +5,12 @@ URL : https://borntwolate.com
 
 ## Identifiants techniques
 
-- **GA4** : `G-Q3VNSP006H`
+- **GA4** : `G-Q3VNSP006H` — Property ID numérique : `519751784`
 - **GTM** : `GTM-KGB4WP3K` — GA4 chargé VIA GTM uniquement (pas de `gtag.js` direct)
+- **Search Console** : `sc-domain:borntwolate.com`
+- **Merchant Center** : `5723411250`
+- **GCP Project** : `gen-lang-client-0202374843` — Service account `borntwolate-api@gen-lang-client-0202374843.iam.gserviceaccount.com`
+- **Rapport Google** : `npm run report` (requiert `~/borntwolate-sa-key.json`)
 - **Supabase** : table `art_stocks` (colonnes : `slug`, `sold_count`, `max_limit=30`)
 - **Gemini** : `gemini-2.5-flash` — UNIQUEMENT via `/.netlify/functions/api-chat` (jamais côté client)
 - **Stripe** : 3 gammes (collection / elegance / exception), liens `buy.stripe.com`
