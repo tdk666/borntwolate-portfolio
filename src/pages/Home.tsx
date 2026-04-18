@@ -5,39 +5,14 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const FEATURED_SERIES = [
-    { id: 'retro-mountain',      title: 'Retro Mountain',        cover: '/images/retro-mountain/mountain-retro.jpg',       film: 'Rollei Retro 400S' },
-    { id: 'winter-in-the-fruit', title: 'A Winter in the Fruit', cover: '/images/winter-in-the-fruit/empire-state.jpg',    film: 'Kodak Portra 400'  },
-    { id: 'mauvais-garcons',     title: 'Mauvais Garçons',       cover: '/images/mauvais-garcons/le-rendez-vous.jpg',      film: 'Kodak Gold 200'    },
-    { id: 'puglia-famiglia',     title: 'Puglia Famiglia',       cover: '/images/puglia/vespa.jpg',                        film: 'CineStill 400D'    },
+    { id: 'retro-mountain',      title: 'Retro Mountain',        cover: '/images/retro-mountain/mountain-retro.avif',      film: 'Rollei Retro 400S' },
+    { id: 'winter-in-the-fruit', title: 'A Winter in the Fruit', cover: '/images/winter-in-the-fruit/empire-state.avif',   film: 'Kodak Portra 400'  },
+    { id: 'mauvais-garcons',     title: 'Mauvais Garçons',       cover: '/images/mauvais-garcons/le-rendez-vous.avif',     film: 'Kodak Gold 200'    },
+    { id: 'puglia-famiglia',     title: 'Puglia Famiglia',       cover: '/images/puglia/vespa.avif',                       film: 'CineStill 400D'    },
 ];
 
 const Home = () => {
     const { t } = useTranslation();
-
-    const personSchema = {
-        "@type": "Person",
-        "name": "Théophile Dequecker",
-        "jobTitle": "Photographe Argentique & Directeur Artistique",
-        "url": "https://borntwolate.com",
-        "sameAs": [
-            "https://instagram.com/borntwolate",
-            "https://www.linkedin.com/in/theophiledequecker/"
-        ]
-    };
-
-    const organizationSchema = {
-        "@type": "Organization",
-        "name": "Born Too Late",
-        "url": "https://borntwolate.com",
-        "logo": "https://borntwolate.com/logo.png", // Assuming logo exists or use text
-        "sameAs": [
-            "https://instagram.com/borntwolate"
-        ]
-    };
-
-    const homeSchema = {
-        "@graph": [personSchema, organizationSchema]
-    };
 
     return (
         <>
@@ -45,7 +20,6 @@ const Home = () => {
                 title="Théophile Dequecker | Photographe Argentique Paris"
                 description={t('home.seo_desc')}
                 url="/"
-                structuredData={homeSchema}
             />
             <Hero />
             

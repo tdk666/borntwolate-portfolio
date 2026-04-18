@@ -22,12 +22,6 @@ export const Chatbot = () => {
     };
 
     useEffect(() => {
-        console.log("Chatbot mounted. VITE_GEMINI_API_KEY present:", !!import.meta.env.VITE_GEMINI_API_KEY);
-        // Debug models once on mount
-        import('../../services/gemini').then(({ debugModels }) => debugModels());
-    }, []);
-
-    useEffect(() => {
         scrollToBottom();
     }, [messages]);
 
@@ -74,7 +68,6 @@ export const Chatbot = () => {
                     const orderData = JSON.parse(jsonPart);
                     const cleanMessage = response.split("<<<ORDER_ACTION>>>")[0].trim();
 
-                    console.log("🛒 Action Détectée : Commande", orderData);
 
                     // 2. Envoi de l'email (Chameleon Strategy)
                     const emailResult = await sendEmail({
@@ -110,7 +103,6 @@ export const Chatbot = () => {
                     if (orderData.artwork_title) {
                         const targetPhoto = photos.find(p => p.title.toLowerCase().includes(orderData.artwork_title.toLowerCase()));
                         if (targetPhoto) {
-                            console.log(`Navigating to photo: ${targetPhoto.title} (ID: ${targetPhoto.id})`);
                             navigate(`/portfolio?open=${targetPhoto.id}`);
                             setIsOpen(false); // Close chat so user sees the lightbox
                         }
@@ -149,7 +141,6 @@ export const Chatbot = () => {
             } else if (err.message) {
                 // Temporary debugging: show the real error
                 errorMsg = t('chatbot.err_generic_human');
-                console.error(`Erreur technique: ${err.message}`); // Keep logging for dev
             }
 
             setMessages(prev => [...prev, { sender: 'bot', text: errorMsg }]);
@@ -187,7 +178,6 @@ export const Chatbot = () => {
                             e.stopPropagation();
                             // TRACKING CLICK STRIPE
                             if (isStripe) {
-                                console.log("💳 Tracking Click Stripe via Chatbot");
                                 // Fire & Forget email (don't block the link)
                                 sendEmail({
                                     contact_type: "COMMANDE", // Use COMMANDE to ensure it triggers the same alert as Modal

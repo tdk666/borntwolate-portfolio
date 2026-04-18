@@ -31,7 +31,6 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
 
         try {
             const aiTags = await getSemanticTags(query);
-            console.log(`🤖 AI Tags for "${query}":`, aiTags);
 
             const normalize = (str: string) => str.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
             const normalizedQuery = normalize(query);
@@ -40,7 +39,6 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
             // If the user types the exact title, we return ONLY that photo.
             const exactMatch = photos.find(p => normalize(p.title) === normalizedQuery);
             if (exactMatch) {
-                console.log(`🎯 Exact Match Found: ${exactMatch.title}`);
                 setSearchResults([exactMatch]);
                 setIsSearching(true);
                 setLastQuery(query);
@@ -72,7 +70,6 @@ export const SearchProvider = ({ children }: { children: ReactNode }) => {
                 return directMatch || tagMatch;
             });
 
-            console.log(`Found ${results.length} results for "${query}"`);
             setSearchResults(results);
         } catch (criticalError) {
             console.error("CRITICAL SEARCH ERROR:", criticalError);
