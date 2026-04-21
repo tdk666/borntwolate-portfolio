@@ -1,25 +1,43 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft } from 'lucide-react';
 
 import { useEffect } from 'react';
 import { SEO } from '../components/SEO';
+import { PRICING_CATALOG } from '../data/pricing';
+
+const ALL_VARIANTS = Object.values(PRICING_CATALOG).flatMap(r => r.variants);
 
 const Success = () => {
+    const [searchParams] = useSearchParams();
+
     useEffect(() => {
-        // Track successful purchase event for GA4
-        if (typeof window.gtag !== 'undefined') {
-            window.gtag('event', 'purchase', {
-                transaction_id: `btl_${Math.random().toString(36).substr(2, 9)}`,
-                value: 0.00, // No dynamic price passed yet, used as success marker
-                currency: 'EUR',
-                items: [{
-                    item_name: 'Art Print (Confirmation)',
-                    item_category: 'Photography'
-                }]
-            });
-        }
-    }, []);
+        if (typeof window.gtag === 'undefined') return;
+
+        const ref = searchParams.get('client_reference_id') || searchParams.get('ref') || 'unknown';
+        const variantId = searchParams.get('variant') || searchParams.get('size');
+        const variant = variantId ? ALL_VARIANTS.find(v => v.id === variantId) : null;
+        const price = variant?.price ?? 0;
+
+        // Deduplicate: only fire once per session using sessionStorage
+        const dedupKey = `purchase_fired_${ref}`;
+        if (sessionStorage.getItem(dedupKey)) return;
+        sessionStorage.setItem(dedupKey, '1');
+
+        window.gtag('event', 'purchase', {
+            transaction_id: `btl_${ref}_${Date.now()}`,
+            value: price,
+            currency: 'EUR',
+            items: [{
+                item_id: ref,
+                item_name: variant ? `Tirage ${variant.label}` : 'Art Print',
+                item_category: 'Tirage argentique',
+                item_category2: variant?.label,
+                price: price,
+                quantity: 1,
+            }]
+        });
+    }, [searchParams]);
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] relative overflow-hidden">

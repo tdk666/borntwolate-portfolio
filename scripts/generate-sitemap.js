@@ -8,28 +8,35 @@ const __dirname = path.dirname(__filename);
 
 const BASE_URL = 'https://borntwolate.com';
 
-// 1. Static Pages
+// 1. Static Pages — avec priorité et changefreq adaptés par type
+// Logique : Home > Pages SEO longue traîne > Galeries/Boutique > Institutionnel > Légal
 const pages = [
-  '',
-  '/about',
-  '/portfolio',
-  '/series',
-  '/contact',
-  '/prints',
-  '/legals',
-  '/photographe-argentique',
-  '/cadeau-photo-argentique',
-  '/photographie-argentique-paris',
-  '/carnets',
-  '/carnets/retro-mountain',
-  '/carnets/mauvais-garcons',
-  '/carnets/winter-in-the-fruit',
-  '/carnets/puglia-famiglia',
-  '/carnets/psychadelic-mtl',
-  '/carnets/canadian-evasion',
-  '/carnets/white-mounts',
-  '/carnets/polish-hike',
+  { path: '',                             priority: '1.0', changefreq: 'weekly'  },
+  { path: '/portfolio',                   priority: '0.9', changefreq: 'weekly'  },
+  { path: '/prints',                      priority: '0.9', changefreq: 'weekly'  },
+  { path: '/series',                      priority: '0.9', changefreq: 'weekly'  },
+  // Pages SEO longue traîne — priorité haute car elles captent le trafic Google
+  { path: '/photographe-argentique',      priority: '0.9', changefreq: 'monthly' },
+  { path: '/cadeau-photo-argentique',     priority: '0.9', changefreq: 'monthly' },
+  { path: '/photographie-argentique-paris', priority: '0.9', changefreq: 'monthly' },
+  // Carnets (blog/éditorial)
+  { path: '/carnets',                     priority: '0.8', changefreq: 'weekly'  },
+  { path: '/carnets/retro-mountain',      priority: '0.7', changefreq: 'monthly' },
+  { path: '/carnets/mauvais-garcons',     priority: '0.7', changefreq: 'monthly' },
+  { path: '/carnets/winter-in-the-fruit', priority: '0.7', changefreq: 'monthly' },
+  { path: '/carnets/puglia-famiglia',     priority: '0.7', changefreq: 'monthly' },
+  { path: '/carnets/psychadelic-mtl',     priority: '0.7', changefreq: 'monthly' },
+  { path: '/carnets/canadian-evasion',    priority: '0.7', changefreq: 'monthly' },
+  { path: '/carnets/white-mounts',        priority: '0.7', changefreq: 'monthly' },
+  { path: '/carnets/polish-hike',         priority: '0.7', changefreq: 'monthly' },
+  // Institutionnel
+  { path: '/about',                       priority: '0.6', changefreq: 'monthly' },
+  { path: '/contact',                     priority: '0.6', changefreq: 'monthly' },
+  // Légal — indexé mais pas prioritaire
+  { path: '/legals',                      priority: '0.3', changefreq: 'yearly'  },
 ];
+// Pages exclues du sitemap (accès restreint / non-indexables) :
+// /legacy, /admin/certificate, /success
 
 // 2. Advanced Parsing of src/data/photos.ts
 const photosFilePath = path.join(__dirname, '../src/data/photos.ts');
@@ -49,7 +56,7 @@ try {
 
   // Regex to find: { id: '...', ... photos: [ ... ] }
   // We assume 'id' comes before 'photos'.
-  const seriesRegex = /id:\s*['"]([^'"]+)['"][\s\S]*?photos:\s*\[([\s\S]*?)\]/g;
+  const seriesRegex = /id:\s*['"]([^'"]+)['"][\s\S]*?photos:\s*\[([\s\S]*?)\n\s*\]/g;
 
   let match;
   while ((match = seriesRegex.exec(fileContent)) !== null) {
@@ -101,12 +108,12 @@ const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
         
   <!-- Static Pages -->
-  ${pages.map(page => `
+  ${pages.map(({ path, priority, changefreq }) => `
     <url>
-      <loc>${BASE_URL}${page}</loc>
+      <loc>${BASE_URL}${path}</loc>
       <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>
-      <changefreq>monthly</changefreq>
-      <priority>${page === '' ? '1.0' : '0.8'}</priority>
+      <changefreq>${changefreq}</changefreq>
+      <priority>${priority}</priority>
     </url>
   `).join('')}
 

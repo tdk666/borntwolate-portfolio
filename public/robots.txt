@@ -1,3 +1,9 @@
 User-agent: *
 Allow: /
+
+# Pages privées — accès restreint, non indexables
+Disallow: /legacy
+Disallow: /admin/
+Disallow: /success
+
 Sitemap: https://borntwolate.com/sitemap.xml

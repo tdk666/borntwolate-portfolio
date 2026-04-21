@@ -16,6 +16,12 @@ const cleanJsonOutput = (text: string): string => {
 export const getSemanticTags = async (query: string): Promise<string[]> => {
   if (!query || query.trim().length < 2) return [];
 
+  const cacheKey = `gemini_tags_${query.trim().toLowerCase()}`;
+  const cached = sessionStorage.getItem(cacheKey);
+  if (cached) {
+    try { return JSON.parse(cached); } catch { /* ignore */ }
+  }
+
   try {
     console.log(`🔍 Gemini Search: Asking via Proxy...`);
 
@@ -64,7 +70,9 @@ export const getSemanticTags = async (query: string): Promise<string[]> => {
     const tags = JSON.parse(cleanedText);
 
     if (Array.isArray(tags)) {
-      return tags.map(t => String(t).toLowerCase());
+      const result = tags.map(t => String(t).toLowerCase());
+      sessionStorage.setItem(cacheKey, JSON.stringify(result));
+      return result;
     }
     return [];
 
@@ -103,14 +111,17 @@ const CONTEXT_DATA = {
   series: seriesData.map(s => ({
     id: s.id,
     title: s.title,
-    desc: s.description
+    desc: s.description?.fr?.slice(0, 150),
   })),
   photos: photos.map(p => ({
     id: p.id,
     title: p.title,
     series: p.seriesId,
     tags: p.tags,
-    desc: p.caption_artistic
+    desc: {
+      fr: p.caption_artistic?.fr?.slice(0, 120),
+      en: p.caption_artistic?.en?.slice(0, 120),
+    }
   }))
 };
 

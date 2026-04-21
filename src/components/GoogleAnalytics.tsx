@@ -44,20 +44,29 @@ export const GoogleAnalytics = () => {
     return null;
 };
 
-// Exported helper for manual event tracking
+// GA4-native event helper (format GA4, pas Universal Analytics)
 export const trackEvent = (
     action: string,
     category: string,
     label: string,
-    value?: number
+    value?: number,
+    extraParams?: Record<string, string | number>
 ) => {
     if (typeof window.gtag !== "undefined") {
         window.gtag("event", action, {
-            event_category: category,
-            event_label: label,
-            value: value,
+            content_type: category,
+            content_id: label,
+            ...(value !== undefined && { value, currency: 'EUR' }),
+            ...extraParams,
         });
-    } else {
-        console.warn("Google Analytics non chargé. Event ignoré:", { action, category, label, value });
     }
 };
+
+// Helpers typés pour le funnel e-commerce
+export const trackViewItem = (itemId: string, itemName: string, price?: number) =>
+    trackEvent('view_item', 'Tirage argentique', itemName, price, { item_id: itemId });
+
+export const trackBeginCheckout = (itemName: string, price: number, variantId?: string) =>
+    trackEvent('begin_checkout', 'Tirage argentique', itemName, price, {
+        ...(variantId && { item_variant: variantId }),
+    });
